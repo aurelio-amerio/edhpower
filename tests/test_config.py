@@ -118,7 +118,7 @@ def test_sim_payoffs_block_loads_and_compiles():
     import re
     s = load_config().sim
     names = [r for r, _ in s.payoff_resources]
-    assert names == ["mana", "death", "etb", "tokens", "counters", "storm", "draw", "self_mill", "landfall"]
+    assert names == ["mana", "death", "etb", "tokens", "counters", "storm", "draw", "self_mill", "landfall", "lifegain"]
     assert all(isinstance(p, re.Pattern) for _, p in s.payoff_resources)
     assert s.payoff_converts["mana"] == ("mana_sink",)
     assert s.payoff_converts["tokens"] == ("go_wide", "etb_damage", "token_drain")

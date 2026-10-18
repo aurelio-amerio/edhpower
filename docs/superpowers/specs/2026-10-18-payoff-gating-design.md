@@ -89,7 +89,7 @@ not the list grown.
 Oracle, Laboratory Maniac, Jace and Simic Ascendancy; Torment of Hailfire carries neither, which is
 why the X-spell rule needs no tag). A pattern match in a tag-checked
 category is kept only if the card's profile carries the tag, **when the facts were built with
-that slug known**. `facts.fetched["tag_table"]` (new key, a sorted list of slugs, written by
+that slug known**. `facts.fetched["tag_table"]` (new key, a comma-joined sorted string of slugs, written by
 `build_facts`) says which slugs were known; a facts file without the key, or without the slug,
 gets pattern-only detection for that category and a note
 `"payoff tag check skipped for <category>: facts predate the <slug> tag"`. Fixtures frozen before
@@ -114,9 +114,10 @@ resources = [
   { resource = "draw",        pattern = "infinite card draw" },
   { resource = "self_mill",   pattern = "infinite self-mill" },
   { resource = "landfall",    pattern = "infinite landfall triggers" },
+  { resource = "lifegain",    pattern = "infinite lifegain" },
 ]
 # resource -> payoff categories that convert it
-converts = { mana = ["mana_sink"], death = ["drain"], etb = ["etb_damage"], tokens = ["go_wide", "etb_damage", "token_drain"], counters = ["counter_win"], storm = ["cast_damage"], draw = ["empty_library_win"], self_mill = ["empty_library_win"], landfall = ["landfall_payoff", "landfall_tokens"] }
+converts = { mana = ["mana_sink"], death = ["drain"], etb = ["etb_damage"], tokens = ["go_wide", "etb_damage", "token_drain"], counters = ["counter_win"], storm = ["cast_damage"], draw = ["empty_library_win"], self_mill = ["empty_library_win"], landfall = ["landfall_payoff", "landfall_tokens"], lifegain = ["life_drain"] }
 # landfall_tokens is fuel: it converts only when one of these is also in the deck
 chained = { landfall_tokens = ["go_wide", "token_drain", "etb_damage"] }
 # payoff may sit in hand for these resources (you can cast it with the infinite mana)

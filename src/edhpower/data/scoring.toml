@@ -93,6 +93,7 @@ resources = [
   { resource = "draw",      pattern = "infinite card draw" },
   { resource = "self_mill", pattern = "infinite self-mill" },
   { resource = "landfall",  pattern = "infinite landfall triggers" },
+  { resource = "lifegain",  pattern = "infinite lifegain" },
 ]
 # resource -> payoff categories (config.PAYOFF_CATEGORIES) that turn it into a win
 [sim.payoffs.converts]
@@ -105,6 +106,7 @@ storm     = ["cast_damage"]
 draw      = ["empty_library_win"]
 self_mill = ["empty_library_win"]
 landfall  = ["landfall_payoff", "landfall_tokens"]
+lifegain  = ["life_drain"]
 # a category listed here is fuel: it counts only when the deck also has one of the listed categories
 [sim.payoffs.chained]
 landfall_tokens = ["go_wide", "token_drain", "etb_damage"]

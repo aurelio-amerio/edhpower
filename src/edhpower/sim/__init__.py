@@ -81,6 +81,18 @@ def _clock(name: str, label: str, turns: list[int | None], max_turn: int, status
     return Clock(name, label, status, med if med <= max_turn else None, by_turn[max_turn], by_turn)
 
 
+def _fuel_only(resources: tuple[str, ...], cfg: SimConfig, payoffs: DeckPayoffs) -> list[dict[str, Any]]:
+    """Chained (fuel) categories the deck has cards for, whose finisher categories are all empty."""
+    out: list[dict[str, Any]] = []
+    for r in resources:
+        for category in cfg.payoff_converts.get(r, ()):
+            targets = cfg.payoff_chained.get(category)
+            cards = payoffs.by_category.get(category, [])
+            if targets and cards and not payoffs.cards_for(targets):
+                out.append({"category": category, "cards": list(cards), "needs": list(targets)})
+    return out
+
+
 def simulate(facts: DeckFacts, cfg: SimConfig, iterations: int, tipping_target: int, payoffs: DeckPayoffs | None = None) -> SimResult:
     payoffs = payoffs if payoffs is not None else detect(facts)
     deck = build_sim_deck(facts, cfg)
@@ -133,6 +145,7 @@ def simulate(facts: DeckFacts, cfg: SimConfig, iterations: int, tipping_target: 
             "categories": list(dict.fromkeys(c for r in l.resources for c in cfg.payoff_converts.get(r, ()))),
             "candidates": sorted(l.payoff.candidates) if l.payoff else [],
             "hand_ok": bool(l.payoff.hand_ok) if l.payoff else False,
+            "fuel_only": _fuel_only(l.resources, cfg, payoffs) if l.status == "no_payoff" else [],
         } for l in lines],
         payoffs={k: list(v) for k, v in payoffs.by_category.items()},
         combos_status="ok" if combos_ok else "unavailable",

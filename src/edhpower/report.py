@@ -33,6 +33,14 @@ def _status_text(row: dict) -> str:
     if row["status"] == "payoff":
         return f"{res} → {_names(row['candidates'], 3)}"
     if row["status"] == "no_payoff":
+        fuel = row.get("fuel_only") or []
+        if fuel:
+            parts = []
+            for f in fuel:
+                needs = [CATEGORY_LABELS.get(n, n) for n in f["needs"]]
+                needs_text = ", ".join(needs[:-1]) + (" or " if len(needs) > 1 else "") + needs[-1]
+                parts.append(f"{_names(f['cards'], 3)} is fuel only: no {needs_text} in deck")
+            return f"{res} → " + "; ".join(parts)
         return f"{res} → no payoff in deck"
     return res
 
@@ -145,6 +153,7 @@ def render_text(analysis: Analysis) -> str:
         if sim.lines_skipped:
             out.append("  not simulated: " + _truncated([f"{s.label} ({s.reason})" for s in sim.lines_skipped], 6, "; "))
         relevant = {c for row in sim.line_status for c in row["categories"]}
+        relevant |= {n for row in sim.line_status for f in row.get("fuel_only", []) for n in f["needs"]}
         cats = [c for c in CATEGORY_LABELS if c in relevant or sim.payoffs.get(c)]
         if cats:
             out.append("  payoffs: " + "; ".join(f"{CATEGORY_LABELS[c]}: {_names(sim.payoffs.get(c, []), 4) if sim.payoffs.get(c) else 'none'}" for c in cats))

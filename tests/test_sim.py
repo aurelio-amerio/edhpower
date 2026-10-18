@@ -100,7 +100,7 @@ def test_result_carries_line_statuses_and_payoffs():
     assert len(r.line_status) == len(r.lines_simulated)
     for row, label in zip(r.line_status, r.lines_simulated):
         assert row["label"] == label and row["status"] in ("direct", "payoff", "no_payoff", "unmapped")
-        assert set(row) == {"label", "status", "resources", "categories", "candidates", "hand_ok"}
+        assert set(row) == {"label", "status", "resources", "categories", "candidates", "hand_ok", "fuel_only"}
         assert all(c in r.payoffs for c in row["categories"])
         assert (row["status"] == "payoff") == bool(row["candidates"])
     d = r.to_dict()

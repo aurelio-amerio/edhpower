@@ -64,18 +64,21 @@ def test_report_prints_unevaluated_combo_clocks_and_no_sim():
     assert "Goldfish simulation: skipped (--no-sim)" in text and "Simulation skipped (--no-sim)" in text
 
 
-def _payoff_facts():
-    parsed = parse_decklist("1 Zhulodok, Void Gorger\n\n6 Wastes\n1 Basalt Monolith\n1 Forsaken Monument\n1 Glacial Chasm\n1 Walking Ballista\n")
+def _payoff_facts(extra_objs=(), extra_lines=()):
+    parsed = parse_decklist("1 Zhulodok, Void Gorger\n\n6 Wastes\n1 Basalt Monolith\n1 Forsaken Monument\n1 Glacial Chasm\n1 Walking Ballista\n"
+                            + "".join(f"1 {o['name']}\n" for o in extra_objs))
     objs = [make_card("Zhulodok, Void Gorger", cmc=7.0, type_line="Legendary Creature — Eldrazi"),
             make_card("Wastes", type_line="Basic Land", cmc=0.0, produced_mana=["C"]),
             make_card("Basalt Monolith", cmc=3.0), make_card("Forsaken Monument", cmc=5.0), make_card("Glacial Chasm", type_line="Land", cmc=0.0),
             make_card("Walking Ballista", cmc=0.0, mana_cost="{X}{X}", type_line="Artifact Creature — Construct", power="0", toughness="0",
                       oracle_text="This creature enters with X +1/+1 counters on it.\n{4}: Put a +1/+1 counter on this creature.\nRemove a +1/+1 counter from this creature: It deals 1 damage to any target.")]
+    objs = objs + list(extra_objs)
     res = Resolution({o["name"]: CardData.from_scryfall(o) for o in objs}, [], 0, "2026-09-10T00:00:00Z")
     mana = ComboLine("m", (ComboPiece("Basalt Monolith", ("B",), False), ComboPiece("Forsaken Monument", ("B",), False)), (), ("Infinite colorless mana",), "", 0, "R", 5, "", "")
     lock = ComboLine("l", (ComboPiece("Glacial Chasm", ("B",), False), ComboPiece("Forsaken Monument", ("B",), False)), (), ("Prevent all damage that would be dealt to you", "Lock"), "", 0, "S", 4, "", "")
-    flags = {cid: ComboFlags(cid, True, False, 5, False, False, False, False, True) for cid in ("m", "l")}
-    combos = ComboData("C", [mana, lock], 0, {}, flags, "R", "2026-09-10T01:00:00Z")
+    lines = [*extra_lines, mana, lock]
+    flags = {ln.id: ComboFlags(ln.id, True, False, 5, False, False, False, False, True) for ln in lines}
+    combos = ComboData("C", lines, 0, {}, flags, "R", "2026-09-10T01:00:00Z")
     from .conftest import full_tag_cache
     return build_facts(parsed, res, combos, None, "deck/p.txt", tag_cache=full_tag_cache(**{"mana-sink": ["Walking Ballista"]}))
 
@@ -95,3 +98,13 @@ def test_report_names_engines_without_payoff():
     assert "lines simulated: Basalt Monolith + Forsaken Monument [mana → no payoff in deck]" in text
     assert "payoffs: mana sink: none" in text
     assert "1 infinite engine(s) have no payoff in this deck: Basalt Monolith + Forsaken Monument" in text
+
+
+def test_report_explains_landfall_fuel_without_a_finisher():
+    field = make_card("Field of the Dead", type_line="Land", cmc=0.0, produced_mana=["C"],
+                      oracle_text="This land enters tapped.\n{T}: Add {C}.\nWhenever this land or another land you control enters, if you control seven or more lands with different names, create a 2/2 black Zombie creature token.")
+    land = ComboLine("lf", (ComboPiece("Basalt Monolith", ("B",), False), ComboPiece("Forsaken Monument", ("B",), False)), (), ("Infinite landfall triggers",), "", 0, "R", 9, "", "")
+    facts = _payoff_facts(extra_objs=[field], extra_lines=[land])
+    text = render_text(analyse(facts, iterations=20))
+    assert "Basalt Monolith + Forsaken Monument [landfall → Field of the Dead is fuel only: no go-wide finisher, token drain or ETB damage in deck]" in text
+    assert "go-wide finisher: none" in text and "token drain: none" in text and "ETB damage: none" in text

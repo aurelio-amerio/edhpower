@@ -175,3 +175,12 @@ def test_payoff_ready_zone_rules():
     assert payoff_ready(board_only, {"Impact Tremors"}, set()) and not payoff_ready(board_only, set(), {"Impact Tremors"})
     assert payoff_ready(hand_ok, set(), {"Walking Ballista"}) and payoff_ready(hand_ok, {"Walking Ballista"}, set())
     assert not payoff_ready(none, {"Walking Ballista"}, {"Walking Ballista"})
+
+
+def test_infinite_lifegain_converts_through_life_drain():
+    assert resources_of(["Infinite lifegain"], CFG) == ("lifegain",)
+    assert CFG.payoff_converts["lifegain"] == ("life_drain",)
+    vito = make_card("Vito, Thorn of the Dusk Rose", cmc=3.0, mana_cost="{2}{B}", type_line="Legendary Creature — Vampire Cleric", colors=["B"],
+                     oracle_text="Whenever you gain life, target opponent loses that much life.\n{3}{B}{B}: Creatures you control gain lifelink until end of turn.")
+    gain = _line("lg", [("Basalt Monolith", "B"), ("Forsaken Monument", "B")], produces=("Infinite lifegain",))
+    assert classify(gain, CFG, detect(_facts_with([gain], [vito]))) == ("payoff", ("lifegain",), PayoffNeed(frozenset({"Vito, Thorn of the Dusk Rose"}), False))

@@ -163,3 +163,15 @@ def test_commander_is_scanned_too():
     res = Resolution({"Thassa's Oracle": oracle_cmd, "Sol Ring": SOL_RING}, [], 0, None)
     facts = build_facts(parse_decklist("1 Thassa's Oracle\n\n1 Sol Ring\n"), res, None, "offline", "t.txt", tag_cache=full_tag_cache(**{"alternate-win-condition": ["Thassa's Oracle"]}))
     assert detect(facts).by_category["empty_library_win"] == ["Thassa's Oracle"]
+
+
+def test_mana_sink_x_spell_with_multiplied_life_loss():
+    debt = _card("Debt to the Deathless", "Each opponent loses two times X life. You gain life equal to the life lost this way.", cost="{X}{W}{W}{B}{B}", type_line="Sorcery")
+    assert categories_for(debt, (), ALL) == {"mana_sink"}
+
+
+def test_etb_damage_equal_to_power_family():
+    surge = _card("Warstorm Surge", "Whenever a creature you control enters, it deals damage equal to its power to any target.", cost="{5}{R}", type_line="Enchantment")
+    peaks = _card("Terror of the Peaks", "Flying\nSpells your opponents cast that target this creature cost an additional 3 life to cast.\nWhenever another creature you control enters, this creature deals damage equal to that creature's power to any target.", cost="{3}{R}{R}", type_line="Creature — Dragon")
+    assert categories_for(surge, (), ALL) == {"etb_damage"}
+    assert categories_for(peaks, (), ALL) == {"etb_damage"}

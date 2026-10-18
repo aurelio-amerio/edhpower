@@ -35,13 +35,13 @@ CATEGORY_LABELS: dict[str, str] = {
 _OPP_LOSS = r"(?:(?:each opponent|target opponent|target player|each player) loses? (?:\d+|x|one|two|that much) life|deals? (?:\d+|x|one|two|that much) damage to (?:each opponent|each player|any target|target (?:player|opponent)))"
 _NOT_THEIRS = r"(?:(?!opponent|don't own|attacking|blocking)[^.])*?"
 
-_X_SPELL_EFFECT = re.compile(r"deals x damage[^.]*divided|deals x damage to each (?:opponent|player|of (?:them|those|these))|each opponent loses x life|repeat the following process x times")
+_X_SPELL_EFFECT = re.compile(r"deals x damage[^.]*divided|deals x damage to each (?:opponent|player|of (?:them|those|these))|each opponent loses (?:two times |twice )?x life|repeat the following process x times")
 _SINK_PINGER = re.compile(r"remove a \+1/\+1 counter[^.]*deals? \d+ damage to any target")
 _SINK_COUNTER_FEED = re.compile(r"put[^.]*\+1/\+1 counter")
 _SINK_TRAMPLE = re.compile(r"\}: [^.]*creatures you control get \+\d+/\+\d+ and (?:gain|have) trample")
 _SINK_X_ACTIVATION = re.compile(r"\{x\}[^:\n]*:[^.\n]*(?:each opponent loses|deals x damage)")
 _DRAIN = re.compile(r"whenever (?:this creature or )?(?:a|an|another|one or more)\b" + _NOT_THEIRS + r"\bcreatures?\b" + _NOT_THEIRS + r"\bdie(?:s)?\b[^.]*?" + _OPP_LOSS)
-_ETB_DAMAGE = re.compile(r"whenever (?:a|another)[^.]*creature[^.]*enters[^.]*(?:deals \d+ damage to each opponent|each opponent loses \d+ life)")
+_ETB_DAMAGE = re.compile(r"whenever (?:a|another)[^.]*creature[^.]*enters[^.]*(?:deals \d+ damage to each opponent|deals damage equal to (?:its|that creature's) power to any target|each opponent loses \d+ life)")
 _GO_WIDE = re.compile(r"creatures you control (?:get \+[0-9x]+/\+[0-9x]+ and (?:gain|have) trample|gain trample and get \+[0-9x]+/\+[0-9x]+)")
 _TOKEN_DRAIN = re.compile(r"whenever (?:one or more )?tokens? you control (?:enters?|are created)[^.]*each opponent loses|whenever you create[^.]*tokens?[^.]*each opponent loses")
 _COUNTER_WIN = re.compile(r"\+1/\+1 counters?[^.]*you win the game|(?:twenty|\d+) or more [a-z+/1 ]*counters on (?:it|this [a-z]+)[^.]*you win the game")
