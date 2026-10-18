@@ -6,7 +6,7 @@ import random
 from dataclasses import dataclass, field
 
 from edhpower.config import SimConfig
-from edhpower.sim.combos import SimLine, missing_pieces, pieces_to_cast
+from edhpower.sim.combos import SimLine, missing_pieces, payoff_ready, pieces_to_cast
 from edhpower.sim.mana import COLORLESS, ManaCost, Unit, pay
 from edhpower.sim.model import SimCard, SimDeck, reduction_applies
 
@@ -46,6 +46,7 @@ class Game:
         self.damage = 0
         self.casts = 0
         self.fired: set[str] = set()
+        self.pending_payoff: set[str] = set()
         self.record = GameRecord({k: None for k in CLOCKS}, [0] * (cfg.max_turn + 1), [False] * (cfg.max_turn + 1))
         self._opening_hand()
 
@@ -299,10 +300,24 @@ class Game:
                 self._resolve(n, from_hand=n in hand)
             self.fired.add(line.id)
             self._stamp("combo")
-            if line.lethal:
+            board_now, hand_now, _ = self._zones()
+            if line.lethal or payoff_ready(line, board_now, hand_now):
                 self._stamp("lethal_combo")
+            elif line.payoff is not None:
+                self.pending_payoff.add(line.id)
             return True
         return False
+
+    def _check_pending_payoffs(self) -> None:
+        """A fired engine whose payoff arrived later: the lethal clock stamps the turn the condition first holds."""
+        if not self.pending_payoff:
+            return
+        board, hand, _ = self._zones()
+        for line in self.lines:
+            if line.id in self.pending_payoff and payoff_ready(line, board, hand):
+                self._stamp("lethal_combo")
+                self.pending_payoff.clear()
+                return
 
     def _try_one_shot(self) -> bool:
         for n in self._castable("one_shot"):
@@ -359,6 +374,7 @@ class Game:
         if self._commander_castable():
             self._stamp("commander")
         self._main_phase()
+        self._check_pending_payoffs()
         if self._commander_castable():
             self._stamp("commander")
         if t <= self.cfg.max_turn:

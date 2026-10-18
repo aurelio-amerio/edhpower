@@ -243,3 +243,80 @@ def test_threat_clock_stamps_for_a_high_mv_sorcery_cast_from_hand():
     g.pool = g._produce()
     g._main_phase()
     assert "All Is Dust" not in g.hand and g.record.clocks["threat"] == 7
+
+
+from edhpower.payoffs import detect
+
+BALLISTA_40 = make_card("Walking Ballista", cmc=40.0, mana_cost="{40}", type_line="Artifact Creature — Construct", power="0", toughness="0",
+                        oracle_text="This creature enters with X +1/+1 counters on it.\n{4}: Put a +1/+1 counter on this creature.\nRemove a +1/+1 counter from this creature: It deals 1 damage to any target.")
+TREMORS_2 = make_card("Impact Tremors", cmc=2.0, mana_cost="{2}", type_line="Enchantment",
+                      oracle_text="Whenever a creature you control enters, this enchantment deals 1 damage to each opponent.")
+TREMORS_40 = make_card("Impact Tremors", cmc=40.0, mana_cost="{40}", type_line="Enchantment",
+                       oracle_text="Whenever a creature you control enters, this enchantment deals 1 damage to each opponent.")
+
+
+BIG_CMD = make_card("Big Commander", cmc=20.0, mana_cost="{20}", type_line="Legendary Creature — Eldrazi", power="1", toughness="1")   # never castable: keeps the mana for the pieces
+
+
+def _payoff_line(produces):
+    line = ComboLine("pl", (ComboPiece("Basalt Monolith", ("B",), False), ComboPiece("Forsaken Monument", ("B",), False)), (), tuple(produces), "", 0, "R", 1, "", "")
+    return ComboData("C", [line], 0, {}, {"pl": ComboFlags("pl", True, False, 5, False, False, False, False, True)}, "R", "2026-09-10T00:00:00Z")
+
+
+def _deck_lines(commander, entries, combos, tags=None):
+    cards = [commander] + [c for c, _ in entries]
+    text = f"1 {commander['name']}\n\n" + "".join(f"{n} {c['name']}\n" for c, n in entries)
+    facts = sim_facts(text, cards, tags if tags is not None else {}, combos)
+    return build_sim_deck(facts, CFG), select_lines(facts, CFG, detect(facts))[0]
+
+
+def _staged_game(deck, lines, payoff_name):
+    """Turn 5 board of 8 Wastes; both pieces in hand; payoff drawn on turn 8 (library pops from the end)."""
+    g = _game(deck, lines)
+    g.turn = 5
+    g.board = [Perm(deck.cards["Wastes"], 0) for _ in range(8)]
+    g.hand = ["Basalt Monolith", "Forsaken Monument"]
+    g.library = [payoff_name, "Wastes", "Wastes"]
+    return g
+
+
+def _run_to(g, turn):
+    while g.turn < turn:
+        g.take_turn()
+    return g.record.clocks
+
+
+def test_payoff_line_in_hand_counts_for_infinite_mana():
+    deck, lines = _deck_lines(BIG_CMD, [(WASTES, 30), (BASALT, 1), (MONUMENT, 1), (BALLISTA_40, 1)], _payoff_line(["Infinite colorless mana"]), tags={"mana-sink": ["Walking Ballista"]})
+    assert lines[0].status == "payoff" and lines[0].payoff.hand_ok
+    g = _staged_game(deck, lines, "Walking Ballista")
+    clocks = _run_to(g, 8)
+    assert clocks["combo"] == 6 and clocks["lethal_combo"] == 8   # Ballista costs 40 (Monument doubles land mana, so 20 would be castable): never cast, but in hand is enough
+
+
+def test_payoff_line_needs_the_battlefield_for_etb():
+    deck, lines = _deck_lines(BIG_CMD, [(WASTES, 30), (BASALT, 1), (MONUMENT, 1), (TREMORS_2, 1)], _payoff_line(["Infinite creature ETB"]))
+    assert lines[0].status == "payoff" and not lines[0].payoff.hand_ok
+    clocks = _run_to(_staged_game(deck, lines, "Impact Tremors"), 8)
+    assert clocks["combo"] == 6 and clocks["lethal_combo"] == 8   # drawn and cast on turn 8, checked after the main phase
+    deck, lines = _deck_lines(BIG_CMD, [(WASTES, 30), (BASALT, 1), (MONUMENT, 1), (TREMORS_40, 1)], _payoff_line(["Infinite creature ETB"]))
+    clocks = _run_to(_staged_game(deck, lines, "Impact Tremors"), 12)
+    assert clocks["combo"] == 6 and clocks["lethal_combo"] is None   # in hand only: not enough for a battlefield payoff
+
+
+def test_no_payoff_line_never_goes_lethal_and_direct_line_does_at_once():
+    deck, lines = _deck_lines(BIG_CMD, [(WASTES, 30), (BASALT, 1), (MONUMENT, 1)], _payoff_line(["Infinite colorless mana"]))
+    assert lines[0].status == "no_payoff"
+    clocks = _run_to(_staged_game(deck, lines, "Wastes"), 12)
+    assert clocks["combo"] == 6 and clocks["lethal_combo"] is None
+    deck, lines = _deck_lines(BIG_CMD, [(WASTES, 30), (BASALT, 1), (MONUMENT, 1)], _payoff_line(["Infinite colorless mana", "Infinite damage"]))
+    clocks = _run_to(_staged_game(deck, lines, "Wastes"), 12)
+    assert clocks["combo"] == 6 and clocks["lethal_combo"] == 6
+
+
+def test_payoff_already_on_board_stamps_lethal_at_assembly():
+    deck, lines = _deck_lines(BIG_CMD, [(WASTES, 30), (BASALT, 1), (MONUMENT, 1), (TREMORS_2, 1)], _payoff_line(["Infinite creature ETB"]))
+    g = _staged_game(deck, lines, "Wastes")
+    g.board.append(Perm(deck.cards["Impact Tremors"], 0))
+    clocks = _run_to(g, 7)
+    assert clocks["combo"] == 6 and clocks["lethal_combo"] == 6
