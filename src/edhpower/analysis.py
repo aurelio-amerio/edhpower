@@ -51,7 +51,7 @@ def analyse(facts: DeckFacts, config: ScoringConfig | None = None, now: datetime
             iterations: int | None = None, run_sim: bool = True) -> Analysis:
     cfg = config or load_config()
     payoffs = detect(facts)
-    bracket = evaluate_bracket(facts)
+    bracket = evaluate_bracket(facts, payoffs, cfg.sim)
     curve = score_curve(facts, cfg.curve)
     components = score_components(facts, cfg.components)
     tipping = tipping_point(facts, cfg.tipping)

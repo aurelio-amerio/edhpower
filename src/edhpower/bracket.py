@@ -7,7 +7,9 @@ from dataclasses import asdict, dataclass
 from importlib import resources
 from typing import Any, Literal
 
+from edhpower.config import SimConfig
 from edhpower.facts import DeckFacts
+from edhpower.payoffs import DeckPayoffs
 
 Status = Literal["ok", "triggered", "review", "unevaluated"]
 
@@ -38,7 +40,7 @@ def load_rules() -> dict[str, Any]:
         return tomllib.load(fh)
 
 
-def evaluate_bracket(facts: DeckFacts) -> BracketVerdict:
+def evaluate_bracket(facts: DeckFacts, payoffs: DeckPayoffs | None = None, sim_cfg: SimConfig | None = None) -> BracketVerdict:
     rules = load_rules()
     criteria: list[Criterion] = []
     notes: list[str] = ["Brackets 1 (Exhibition) and 5 (cEDH) are self-declared; this is the minimum bracket the deckbuilding criteria allow."]
@@ -101,6 +103,22 @@ def evaluate_bracket(facts: DeckFacts) -> BracketVerdict:
                 arguably.append(label)
         detail = "two-card infinite combos are Bracket 3+ unless early-game" + (f"; arguably two-card: {', '.join(arguably)}" if arguably else "")
         criteria.append(Criterion("two_card_combos", "triggered" if two else "ok", 3 if two else None, two, detail if two else "none"))
+        if payoffs is not None and sim_cfg is not None:
+            from edhpower.sim.combos import classify   # local import: bracket must not depend on the sim package at import time
+            self_harm = {"self_mill", "draw"}
+            flagged: list[str] = []
+            for line in combos.included:
+                f = combos.combo_flags.get(line.id)
+                if f is None or not f.definitely_two_card:
+                    continue
+                status, resources, _ = classify(line, sim_cfg, payoffs)
+                if status == "no_payoff" and resources and set(resources) <= self_harm:
+                    flagged.append(f"{' + '.join(line.piece_names)} ({'/'.join(resources)})")
+            if flagged:
+                criteria.append(Criterion(
+                    "two_card_combos_no_payoff", "review", None, flagged,
+                    "floors Bracket 3 by the published rule, but its only product is self-harm and the deck has no empty-library win; scrollvault would not floor on it",
+                ))
         if early:
             criteria.append(Criterion(
                 "two_card_combos_early_review", "review", None, early,

@@ -138,3 +138,49 @@ def test_tutors_ok_below_review_threshold_and_review_at_or_above():
     v = evaluate_bracket(many)
     t = next(c for c in v.criteria if c.name == "tutors")
     assert t.status == "review" and t.floor is None and len(t.triggers) == 4 and v.minimum_bracket == 2
+
+
+def _self_mill_line(cid, *names):
+    return ComboLine(cid, tuple(ComboPiece(n, ("B",), False) for n in names), (), ("Infinite self-mill", "Near-infinite self-discard triggers"), "", 0, "S", 1, "", "")
+
+
+def test_self_harm_two_card_combo_without_payoff_is_flagged_for_review_not_floored_lower():
+    from edhpower.config import load_config
+    from edhpower.payoffs import detect
+    cards = [make_card("The Gitrog Monster", type_line="Legendary Creature — Frog Horror"), make_card("The Necrobloom", type_line="Legendary Creature — Plant Horror")]
+    combos = _combos(lines=[_self_mill_line("g", "The Gitrog Monster", "The Necrobloom")], combo_flags=[_cf("g", two=True, speed=5)])
+    facts = _facts(cards, combos)
+    v = evaluate_bracket(facts, detect(facts), load_config().sim)
+    names = {c.name: c for c in v.criteria}
+    assert v.minimum_bracket == 3 and names["two_card_combos"].status == "triggered"
+    r = names["two_card_combos_no_payoff"]
+    assert r.status == "review" and r.floor is None and r.triggers == ["The Gitrog Monster + The Necrobloom (self_mill)"]
+    assert "no empty-library win" in r.detail and "scrollvault would not floor" in r.detail
+
+
+def test_self_harm_combo_with_a_payoff_in_the_deck_is_not_flagged():
+    from edhpower.config import load_config
+    from edhpower.payoffs import detect
+    lab = make_card("Laboratory Maniac", type_line="Creature — Human Wizard", oracle_text="If you would draw a card while your library has no cards in it, you win the game instead.")
+    cards = [make_card("The Gitrog Monster"), make_card("The Necrobloom"), lab]
+    combos = _combos(lines=[_self_mill_line("g", "The Gitrog Monster", "The Necrobloom")], combo_flags=[_cf("g", two=True, speed=5)])
+    facts = _facts(cards, combos)   # tags unavailable → pattern-only detection finds Lab Man
+    v = evaluate_bracket(facts, detect(facts), load_config().sim)
+    assert "two_card_combos_no_payoff" not in {c.name for c in v.criteria}
+
+
+def test_mana_combo_without_sink_is_not_a_self_harm_review():
+    from edhpower.config import load_config
+    from edhpower.payoffs import detect
+    cards = [make_card("Basalt Monolith"), make_card("Forsaken Monument")]
+    combos = _combos(lines=[_line("m", "Basalt Monolith", "Forsaken Monument")], combo_flags=[_cf("m", two=True, speed=5)])
+    facts = _facts(cards, combos)
+    v = evaluate_bracket(facts, detect(facts), load_config().sim)
+    assert "two_card_combos_no_payoff" not in {c.name for c in v.criteria}
+
+
+def test_bracket_without_payoffs_argument_is_unchanged():
+    cards = [make_card("The Gitrog Monster"), make_card("The Necrobloom")]
+    combos = _combos(lines=[_self_mill_line("g", "The Gitrog Monster", "The Necrobloom")], combo_flags=[_cf("g", two=True, speed=5)])
+    v = evaluate_bracket(_facts(cards, combos))
+    assert "two_card_combos_no_payoff" not in {c.name for c in v.criteria} and v.minimum_bracket == 3
