@@ -226,7 +226,7 @@ def test_tags_are_built_once_and_reported(tmp_path: Path, fake_send):
     text = out.getvalue()
     assert "Functional profile (tags: ok)" in text and "Component model (v1)" in text and "Tipping point" in text
     data = json.loads((tmp_path / "o.json").read_text())
-    assert set(data) == {"tool", "config", "facts", "bracket", "scores", "tipping", "sim", "narrative", "freshness"}
+    assert set(data) == {"tool", "config", "facts", "payoffs", "bracket", "scores", "tipping", "sim", "narrative", "freshness"}
     assert data["facts"]["tags_status"] == "ok" and data["facts"]["partition"]["mana_rocks"] == ["Basalt Monolith"]
     assert data["tool"]["version"] == "0.3.0" and data["config"]["config_version"] == 1
     # second run: cache hit, no search requests
@@ -277,7 +277,7 @@ def test_iterations_and_no_sim_flags(tmp_path: Path, fake_send):
     deck.write_text(DECK)
     out = io.StringIO()
     code = main([str(deck), "--cache-dir", str(tmp_path / "c"), "--iterations", "15", "--json", str(tmp_path / "o.json")], send=fake_send, stdout=out, stderr=io.StringIO(), sleep=lambda s: None)
-    assert code == 0 and "Goldfish simulation (sim v1, 15 games" in out.getvalue()
+    assert code == 0 and "Goldfish simulation (sim v2, 15 games" in out.getvalue()
     assert json.loads((tmp_path / "o.json").read_text())["sim"]["iterations"] == 15
     out = io.StringIO()
     code = main([str(deck), "--cache-dir", str(tmp_path / "c"), "--no-sim"], send=fake_send, stdout=out, stderr=io.StringIO(), sleep=lambda s: None)

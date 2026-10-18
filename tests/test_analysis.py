@@ -24,7 +24,7 @@ def test_analyse_bundles_every_number_and_stamps_config():
     assert a.curve.profile == "edhpowerlevel-2026-08" and a.components.status == "partial"
     assert a.tipping.target >= 2 and a.freshness.now == "2026-09-10T00:00:00Z"
     d = a.to_dict()
-    assert set(d) == {"tool", "config", "facts", "bracket", "scores", "tipping", "sim", "narrative", "freshness"}
+    assert set(d) == {"tool", "config", "facts", "payoffs", "bracket", "scores", "tipping", "sim", "narrative", "freshness"}
     assert d["tool"] == {"name": "edhpower", "version": __version__} and d["config"] == load_config().stamp()
     assert d["scores"]["curve"]["power_level"] == a.curve.power_level and d["scores"]["components"]["total"] == a.components.total
     assert d["facts"]["schema_version"] == 2
@@ -41,7 +41,7 @@ def test_analyse_runs_the_sim_with_the_tipping_target_and_stamps_it():
     a = analyse(_facts(), iterations=25)
     assert a.sim is not None and a.sim.iterations == 25 and a.sim.sim_version == load_config().sim.version
     assert a.sim.clocks["tipping_target"].label.startswith(f"{a.tipping.target} mana available")
-    assert a.to_dict()["sim"]["iterations"] == 25 and a.to_dict()["config"]["sim_version"] == 1
+    assert a.to_dict()["sim"]["iterations"] == 25 and a.to_dict()["config"]["sim_version"] == 2
     assert {f.kind for f in a.narrative.findings} >= {"bracket", "tipping", "clocks"}
 
 
@@ -49,3 +49,15 @@ def test_analyse_can_skip_the_sim():
     a = analyse(_facts(), run_sim=False)
     assert a.sim is None and a.to_dict()["sim"] is None
     assert any(f.kind == "simulation" for f in a.narrative.findings)
+
+
+def test_analysis_carries_payoffs_once():
+    from edhpower.analysis import analyse
+    from edhpower.payoffs import DeckPayoffs, detect
+    from .conftest import fixture_facts
+    facts = fixture_facts("ulalek-bracket3-v2")
+    a = analyse(facts, iterations=10)
+    assert isinstance(a.payoffs, DeckPayoffs) and a.payoffs == detect(facts)
+    assert a.to_dict()["payoffs"] == a.payoffs.to_dict()
+    assert a.sim is not None and a.sim.payoffs == a.payoffs.by_category
+    assert a.config["sim_version"] == 2
