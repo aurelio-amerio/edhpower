@@ -64,27 +64,30 @@ by a space, as scrollvault's `_payoffText` does):
 
 | category | pattern (ported from scrollvault v393) | tag check |
 |---|---|---|
-| `mana_sink` | X in cost or `{X}` activation **and** `deals x damage ... divided` / `deals x damage to each (opponent\|player)` / `each opponent loses x life`; **or** `remove a +1/+1 counter ... deals N damage to any target` with `{X}` in cost or `put ... +1/+1 counter`; **or** `}: ... creatures you control get +N/+N and gain trample` | `mana-sink` |
+| `mana_sink` | **X-spell rule (no tag needed):** `{X}` in the mana cost **and** (`deals x damage ... divided` / `deals x damage to each (opponent\|player)` / `each opponent loses x life` / `repeat the following process x times`). **Activation rule (tag required):** `remove a +1/+1 counter ... deals N damage to any target` with `{X}` in cost or `put ... +1/+1 counter`; **or** `}: ... creatures you control get +N/+N and (gain\|have) trample`; **or** `{x}` inside an activation cost followed in the same sentence by `each opponent loses` / `deals x damage` | `mana-sink` (activation rule only) |
 | `drain` | `whenever (a\|an\|another\|...) creature(s) [you control] (dies\|die) ... each opponent loses` or the broader death-trigger form (`GEN_PAY_DEATH`: dies → each/target opponent loses N / deals N damage to each opponent or any target, excluding opponent/attacking/blocking clauses) | none |
 | `etb_damage` | `whenever (a\|another) ... creature ... enters ... (deals N damage to each opponent \| each opponent loses N life)` | none |
-| `go_wide` | `creatures you control get +N/+N and (gain\|have) trample` | none |
+| `go_wide` | `creatures you control get +N/+N and (gain\|have) trample` or `creatures you control gain trample and get +N/+N` (Craterhoof's word order) | none |
 | `token_drain` | `whenever (one or more) token(s) you control (enters\|are created) ... each opponent loses` or `whenever you create ... tokens ... each opponent loses` | none |
-| `counter_win` | `+1/+1 counter(s) ... you win the game` or `twenty or more +1/+1` | none |
+| `counter_win` | `+1/+1 counter(s) ... you win the game`, or `(twenty\|N) or more ... counters on (it\|this ...) ... you win the game` (Simic Ascendancy, Helix Pinnacle) | none |
 | `cast_damage` | `whenever you cast (a\|an\|your) (instant\|sorcery\|noncreature) ... spell ... deals N damage to each opponent` | none |
-| `empty_library_win` | `draw a card while your library has no cards` / `no cards in it, you win the game` / `library has no cards in it ... win the game` | `alternate-win-condition` |
-| `life_drain` | `whenever you gain life ... (each/target opponent loses N life \| deals N damage to each opponent/any target)` | `lifedrain` |
+| `empty_library_win` | `draw a card while your library has no cards` / `no cards in it, you win the game` / `library has no cards in it ... win the game` / `number of cards in your library, you win the game` (Thassa's Oracle) | `alternate-win-condition` |
+| `life_drain` | `whenever you gain life ... (each/target opponent loses (N\|that much) life \| deals N damage to each opponent/any target)` | none (the `lifedrain` tag marks drain *sources* such as Blood Artist, not lifegain payoffs: Vito and Sanguine Bond are untagged) |
 | `landfall_payoff` | `landfall` or `whenever a land (you control )?enters` followed in the same sentence by `each opponent loses` / `deals N damage to (each opponent\|any target)` | none |
 | `landfall_tokens` | `landfall` or `whenever a land (you control )?enters` followed in the same sentence by `create ... token` (Field of the Dead, Scute Swarm). Fuel, not a win: counts as a landfall payoff **only when** the deck also has a `go_wide`, `token_drain` or `etb_damage` card, and the report names both halves | none |
 
 Scrollvault's curated name lists (`MANA_SINK_CURATED` = Torment of Hailfire, Profane Source,
 Debt to the Deathless, Exsanguinate; `ETB_DMG_CURATED`; `CAST_DMG_CURATED`; `GAME_END_PAYOFF`
 = Thassa's Oracle, Laboratory Maniac, Jace, Wielder of Mysteries) are **not** copied as name lists.
-The four `MANA_SINK_CURATED` cards are X spells matched by the X-cost rule; the three empty-library
-cards match the pattern. If a test shows a curated card the patterns miss, the pattern is widened,
+The four `MANA_SINK_CURATED` cards are X spells matched by the X-spell rule (Torment of Hailfire
+via `repeat the following process x times`); the three empty-library cards match the widened
+pattern (Thassa's Oracle needed the `number of cards in your library` form). If a test shows a curated card the patterns miss, the pattern is widened,
 not the list grown.
 
-**Tag check rule.** `tags.TAG_TABLE` gains `mana-sink`, `alternate-win-condition` and
-`lifedrain` (probed 2026-10-18: 1814, 62 and 401 legal cards). A pattern match in a tag-checked
+**Tag check rule.** `tags.TAG_TABLE` gains `mana-sink` and `alternate-win-condition` (probed
+2026-10-18: 1814 and 62 legal cards; both tags verified on Walking Ballista, Exsanguinate, Thassa's
+Oracle, Laboratory Maniac, Jace and Simic Ascendancy; Torment of Hailfire carries neither, which is
+why the X-spell rule needs no tag). A pattern match in a tag-checked
 category is kept only if the card's profile carries the tag, **when the facts were built with
 that slug known**. `facts.fetched["tag_table"]` (new key, a sorted list of slugs, written by
 `build_facts`) says which slugs were known; a facts file without the key, or without the slug,
