@@ -12,6 +12,8 @@ _PLAIN = re.compile(r"^(\d+)\s+(.+?)\s*$")
 _ARCHIDEKT = re.compile(r"^(\d+)x\s+(.+?)\s+\(([^)]+)\)\s+(\S+)(?:\s+\[([^\]]+)\])?\s*$")
 _COMMANDER_MARKER = re.compile(r"^//\s*commander\s*$", re.IGNORECASE)
 DFC_SEPARATOR = " // "
+# Scryfall writes "A // B"; Archidekt/Moxfield exports and hand-typed lists often write "A/B" or "A / B".
+_FACE_SPLIT = re.compile(r"\s*/+\s*")
 
 
 @dataclass(frozen=True)
@@ -45,8 +47,8 @@ class _Raw:
 
 
 def front_face(name: str) -> str:
-    """'A // B' -> 'A'. Scryfall's collection endpoint only matches the front face."""
-    return name.split(DFC_SEPARATOR, 1)[0].strip()
+    """'A // B', 'A/B' or 'A / B' -> 'A'. Scryfall's collection endpoint only matches the front face."""
+    return _FACE_SPLIT.split(name, maxsplit=1)[0].strip()
 
 
 def _parse_line(line: str) -> tuple[int, str, bool] | None:

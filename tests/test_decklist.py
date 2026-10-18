@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from edhpower.decklist import load_decklist, parse_decklist, parse_decklist_json
+from edhpower.decklist import front_face, load_decklist, parse_decklist, parse_decklist_json
 
 REPO_STYLE = """1 Ulalek, Fused Atrocity
 
@@ -112,3 +112,17 @@ def test_json_commander_repeated_in_main_is_not_double_counted():
     assert {e.name: e.count for e in d.entries} == {"Zhulodok, Void Gorger": 1, "Wastes": 18}
     assert d.total_cards == 19
     assert d.commanders == ["Zhulodok, Void Gorger"]
+
+
+def test_dfc_name_with_single_slash_is_split_to_front_face():
+    d = parse_decklist("1 Walk-In Closet/Forgotten Cellar\n")
+    assert d.entries[0].name == "Walk-In Closet"
+
+
+def test_dfc_name_with_spaced_single_slash_is_split_to_front_face():
+    d = parse_decklist("1 Walk-In Closet / Forgotten Cellar\n")
+    assert d.entries[0].name == "Walk-In Closet"
+
+
+def test_front_face_accepts_single_slash():
+    assert front_face("Walk-In Closet/Forgotten Cellar") == "Walk-In Closet"
