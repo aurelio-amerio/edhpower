@@ -1,0 +1,6820 @@
+{
+  "schema_version": 2,
+  "tool_version": "0.2.0",
+  "source_path": "edhpower/tests/fixtures/decks/ulalek-b5.txt",
+  "commanders": [
+    "Ulalek, Fused Atrocity"
+  ],
+  "entries": [
+    {
+      "name": "Ulalek, Fused Atrocity",
+      "count": 1,
+      "is_commander": true,
+      "as_written": "1 Ulalek, Fused Atrocity",
+      "card": {
+        "name": "Ulalek, Fused Atrocity",
+        "cmc": 5.0,
+        "mana_cost": "{C/W}{C/U}{C/B}{C/R}{C/G}",
+        "type_line": "Legendary Creature — Eldrazi",
+        "oracle_text": "Devoid (This card has no color.)\nWhenever you cast an Eldrazi spell, you may pay {C}{C}. If you do, copy all spells you control, then copy all other activated and triggered abilities you control. You may choose new targets for the copies. (Mana abilities can't be copied.)",
+        "power": "2",
+        "toughness": "5",
+        "colors": [],
+        "color_identity": [
+          "B",
+          "G",
+          "R",
+          "U",
+          "W"
+        ],
+        "produced_mana": [],
+        "keywords": [
+          "Devoid"
+        ],
+        "edhrec_rank": 4691,
+        "price_usd": 0.9,
+        "price_eur": 0.47,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "m3c",
+        "collector_number": "4",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:05Z"
+      }
+    },
+    {
+      "name": "Dismember",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Dismember",
+      "card": {
+        "name": "Dismember",
+        "cmc": 3.0,
+        "mana_cost": "{1}{B/P}{B/P}",
+        "type_line": "Instant",
+        "oracle_text": "({B/P} can be paid with either {B} or 2 life.)\nTarget creature gets -5/-5 until end of turn.",
+        "power": null,
+        "toughness": null,
+        "colors": [
+          "B"
+        ],
+        "color_identity": [
+          "B"
+        ],
+        "produced_mana": [],
+        "keywords": [],
+        "edhrec_rank": 928,
+        "price_usd": 43.8,
+        "price_eur": 38.3,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "sld",
+        "collector_number": "1674",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:10Z"
+      }
+    },
+    {
+      "name": "Ancient Tomb",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Ancient Tomb",
+      "card": {
+        "name": "Ancient Tomb",
+        "cmc": 0.0,
+        "mana_cost": "",
+        "type_line": "Land",
+        "oracle_text": "{T}: Add {C}{C}. This land deals 2 damage to you.",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [],
+        "produced_mana": [
+          "C"
+        ],
+        "keywords": [],
+        "edhrec_rank": 66,
+        "price_usd": 135.19,
+        "price_eur": 104.9,
+        "commander_legal": true,
+        "game_changer": true,
+        "reserved": false,
+        "set_code": "uma",
+        "collector_number": "236",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:05Z"
+      }
+    },
+    {
+      "name": "Arcane Signet",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Arcane Signet",
+      "card": {
+        "name": "Arcane Signet",
+        "cmc": 2.0,
+        "mana_cost": "{2}",
+        "type_line": "Artifact",
+        "oracle_text": "{T}: Add one mana of any color in your commander's color identity.",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [],
+        "produced_mana": [
+          "B",
+          "G",
+          "R",
+          "U",
+          "W"
+        ],
+        "keywords": [],
+        "edhrec_rank": 3,
+        "price_usd": 0.57,
+        "price_eur": 0.52,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "msc",
+        "collector_number": "191",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:05Z"
+      }
+    },
+    {
+      "name": "Basalt Monolith",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Basalt Monolith",
+      "card": {
+        "name": "Basalt Monolith",
+        "cmc": 3.0,
+        "mana_cost": "{3}",
+        "type_line": "Artifact",
+        "oracle_text": "This artifact doesn't untap during your untap step.\n{T}: Add {C}{C}{C}.\n{3}: Untap this artifact.",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [],
+        "produced_mana": [
+          "C"
+        ],
+        "keywords": [],
+        "edhrec_rank": 565,
+        "price_usd": 4.77,
+        "price_eur": 3.31,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "2xm",
+        "collector_number": "232",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:05Z"
+      }
+    },
+    {
+      "name": "Boseiju, Who Endures",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Boseiju, Who Endures",
+      "card": {
+        "name": "Boseiju, Who Endures",
+        "cmc": 0.0,
+        "mana_cost": "",
+        "type_line": "Legendary Land",
+        "oracle_text": "{T}: Add {G}.\nChannel — {1}{G}, Discard this card: Destroy target artifact, enchantment, or nonbasic land an opponent controls. That player may search their library for a land card with a basic land type, put it onto the battlefield, then shuffle. This ability costs {1} less to activate for each legendary creature you control.",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [
+          "G"
+        ],
+        "produced_mana": [
+          "G"
+        ],
+        "keywords": [
+          "Channel"
+        ],
+        "edhrec_rank": 76,
+        "price_usd": 49.85,
+        "price_eur": 40.24,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "neo",
+        "collector_number": "266",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:05Z"
+      }
+    },
+    {
+      "name": "Candelabra of Tawnos",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Candelabra of Tawnos",
+      "card": {
+        "name": "Candelabra of Tawnos",
+        "cmc": 1.0,
+        "mana_cost": "{1}",
+        "type_line": "Artifact",
+        "oracle_text": "{X}, {T}: Untap X target lands.",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [],
+        "produced_mana": [],
+        "keywords": [],
+        "edhrec_rank": 6658,
+        "price_usd": null,
+        "price_eur": null,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": true,
+        "set_code": "me4",
+        "collector_number": "187",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Chain of Vapor",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Chain of Vapor",
+      "card": {
+        "name": "Chain of Vapor",
+        "cmc": 1.0,
+        "mana_cost": "{U}",
+        "type_line": "Instant",
+        "oracle_text": "Return target nonland permanent to its owner's hand. Then that permanent's controller may sacrifice a land of their choice. If the player does, they may copy this spell and may choose a new target for that copy.",
+        "power": null,
+        "toughness": null,
+        "colors": [
+          "U"
+        ],
+        "color_identity": [
+          "U"
+        ],
+        "produced_mana": [],
+        "keywords": [],
+        "edhrec_rank": 954,
+        "price_usd": 16.37,
+        "price_eur": 9.7,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "c16",
+        "collector_number": "84",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "City of Brass",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 City of Brass",
+      "card": {
+        "name": "City of Brass",
+        "cmc": 0.0,
+        "mana_cost": "",
+        "type_line": "Land",
+        "oracle_text": "Whenever this land becomes tapped, it deals 1 damage to you.\n{T}: Add one mana of any color.",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [],
+        "produced_mana": [
+          "B",
+          "G",
+          "R",
+          "U",
+          "W"
+        ],
+        "keywords": [],
+        "edhrec_rank": 96,
+        "price_usd": 12.05,
+        "price_eur": 8.43,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "tmc",
+        "collector_number": "62",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:05Z"
+      }
+    },
+    {
+      "name": "City of Traitors",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 City of Traitors",
+      "card": {
+        "name": "City of Traitors",
+        "cmc": 0.0,
+        "mana_cost": "",
+        "type_line": "Land",
+        "oracle_text": "When you play another land, sacrifice this land.\n{T}: Add {C}{C}.",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [],
+        "produced_mana": [
+          "C"
+        ],
+        "keywords": [],
+        "edhrec_rank": 1176,
+        "price_usd": null,
+        "price_eur": null,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": true,
+        "set_code": "tpr",
+        "collector_number": "237",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Clock of Omens",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Clock of Omens",
+      "card": {
+        "name": "Clock of Omens",
+        "cmc": 4.0,
+        "mana_cost": "{4}",
+        "type_line": "Artifact",
+        "oracle_text": "Tap two untapped artifacts you control: Untap target artifact.",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [],
+        "produced_mana": [],
+        "keywords": [],
+        "edhrec_rank": 1722,
+        "price_usd": 3.78,
+        "price_eur": 3.77,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "m13",
+        "collector_number": "202",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Command Tower",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Command Tower",
+      "card": {
+        "name": "Command Tower",
+        "cmc": 0.0,
+        "mana_cost": "",
+        "type_line": "Land",
+        "oracle_text": "{T}: Add one mana of any color in your commander's color identity.",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [],
+        "produced_mana": [
+          "B",
+          "G",
+          "R",
+          "U",
+          "W"
+        ],
+        "keywords": [],
+        "edhrec_rank": 2,
+        "price_usd": 0.27,
+        "price_eur": 0.33,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "msc",
+        "collector_number": "233",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:05Z"
+      }
+    },
+    {
+      "name": "Crop Rotation",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Crop Rotation",
+      "card": {
+        "name": "Crop Rotation",
+        "cmc": 1.0,
+        "mana_cost": "{G}",
+        "type_line": "Instant",
+        "oracle_text": "As an additional cost to cast this spell, sacrifice a land.\nSearch your library for a land card, put that card onto the battlefield, then shuffle.",
+        "power": null,
+        "toughness": null,
+        "colors": [
+          "G"
+        ],
+        "color_identity": [
+          "G"
+        ],
+        "produced_mana": [],
+        "keywords": [],
+        "edhrec_rank": 214,
+        "price_usd": 3.98,
+        "price_eur": 4.04,
+        "commander_legal": true,
+        "game_changer": true,
+        "reserved": false,
+        "set_code": "dmr",
+        "collector_number": "154",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:05Z"
+      }
+    },
+    {
+      "name": "Deathrite Shaman",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Deathrite Shaman",
+      "card": {
+        "name": "Deathrite Shaman",
+        "cmc": 1.0,
+        "mana_cost": "{B/G}",
+        "type_line": "Creature — Elf Shaman",
+        "oracle_text": "{T}: Exile target land card from a graveyard. Add one mana of any color. (Activate only as an instant.)\n{B}, {T}: Exile target instant or sorcery card from a graveyard. Each opponent loses 2 life.\n{G}, {T}: Exile target creature card from a graveyard. You gain 2 life.",
+        "power": "1",
+        "toughness": "2",
+        "colors": [
+          "B",
+          "G"
+        ],
+        "color_identity": [
+          "B",
+          "G"
+        ],
+        "produced_mana": [
+          "B",
+          "G",
+          "R",
+          "U",
+          "W"
+        ],
+        "keywords": [],
+        "edhrec_rank": 604,
+        "price_usd": 8.39,
+        "price_eur": 7.27,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "rvr",
+        "collector_number": "175",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Delighted Halfling",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Delighted Halfling",
+      "card": {
+        "name": "Delighted Halfling",
+        "cmc": 1.0,
+        "mana_cost": "{G}",
+        "type_line": "Creature — Halfling Citizen",
+        "oracle_text": "{T}: Add {C}.\n{T}: Add one mana of any color. Spend this mana only to cast a legendary spell, and that spell can't be countered.",
+        "power": "1",
+        "toughness": "2",
+        "colors": [
+          "G"
+        ],
+        "color_identity": [
+          "G"
+        ],
+        "produced_mana": [
+          "B",
+          "C",
+          "G",
+          "R",
+          "U",
+          "W"
+        ],
+        "keywords": [],
+        "edhrec_rank": 151,
+        "price_usd": 30.58,
+        "price_eur": 19.02,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "ltr",
+        "collector_number": "158",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Delney, Streetwise Lookout",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Delney, Streetwise Lookout",
+      "card": {
+        "name": "Delney, Streetwise Lookout",
+        "cmc": 3.0,
+        "mana_cost": "{2}{W}",
+        "type_line": "Legendary Creature — Human Scout",
+        "oracle_text": "Creatures you control with power 2 or less can't be blocked by creatures with power 3 or greater.\nIf a triggered ability of a creature you control with power 2 or less triggers, that ability triggers an additional time.",
+        "power": "2",
+        "toughness": "2",
+        "colors": [
+          "W"
+        ],
+        "color_identity": [
+          "W"
+        ],
+        "produced_mana": [],
+        "keywords": [],
+        "edhrec_rank": 838,
+        "price_usd": 34.92,
+        "price_eur": 30.71,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "mkm",
+        "collector_number": "12",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Demonic Tutor",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Demonic Tutor",
+      "card": {
+        "name": "Demonic Tutor",
+        "cmc": 2.0,
+        "mana_cost": "{1}{B}",
+        "type_line": "Sorcery",
+        "oracle_text": "Search your library for a card, put that card into your hand, then shuffle.",
+        "power": null,
+        "toughness": null,
+        "colors": [
+          "B"
+        ],
+        "color_identity": [
+          "B"
+        ],
+        "produced_mana": [],
+        "keywords": [],
+        "edhrec_rank": 62,
+        "price_usd": 66.24,
+        "price_eur": 49.22,
+        "commander_legal": true,
+        "game_changer": true,
+        "reserved": false,
+        "set_code": "cmm",
+        "collector_number": "150",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Dimensional Infiltrator",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Dimensional Infiltrator",
+      "card": {
+        "name": "Dimensional Infiltrator",
+        "cmc": 2.0,
+        "mana_cost": "{1}{U}",
+        "type_line": "Creature — Eldrazi",
+        "oracle_text": "Devoid (This card has no color.)\nFlash\nFlying\n{1}{C}: Target opponent exiles the top card of their library. If it's a land card, you may return this creature to its owner's hand. ({C} represents colorless mana.)",
+        "power": "2",
+        "toughness": "1",
+        "colors": [],
+        "color_identity": [
+          "U"
+        ],
+        "produced_mana": [],
+        "keywords": [
+          "Flying",
+          "Devoid",
+          "Flash"
+        ],
+        "edhrec_rank": 17629,
+        "price_usd": 0.25,
+        "price_eur": 0.13,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "ogw",
+        "collector_number": "44",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Eldrazi Temple",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Eldrazi Temple",
+      "card": {
+        "name": "Eldrazi Temple",
+        "cmc": 0.0,
+        "mana_cost": "",
+        "type_line": "Land",
+        "oracle_text": "{T}: Add {C}.\n{T}: Add {C}{C}. Spend this mana only to cast colorless Eldrazi spells or activate abilities of colorless Eldrazi.",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [],
+        "produced_mana": [
+          "C"
+        ],
+        "keywords": [],
+        "edhrec_rank": 1720,
+        "price_usd": 3.46,
+        "price_eur": 3.12,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "cmm",
+        "collector_number": "992",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:52:20Z"
+      }
+    },
+    {
+      "name": "Eldritch Immunity",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Eldritch Immunity",
+      "card": {
+        "name": "Eldritch Immunity",
+        "cmc": 1.0,
+        "mana_cost": "{C}",
+        "type_line": "Kindred Instant — Eldrazi",
+        "oracle_text": "Target creature you control gains protection from each color until end of turn.\nOverload {4}{C} (You may cast this spell for its overload cost. If you do, change \"target\" in its text to \"each.\")",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [],
+        "produced_mana": [],
+        "keywords": [
+          "Overload"
+        ],
+        "edhrec_rank": 1968,
+        "price_usd": 7.7,
+        "price_eur": 3.56,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "m3c",
+        "collector_number": "33",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:05Z"
+      }
+    },
+    {
+      "name": "Emergence Zone",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Emergence Zone",
+      "card": {
+        "name": "Emergence Zone",
+        "cmc": 0.0,
+        "mana_cost": "",
+        "type_line": "Land",
+        "oracle_text": "{T}: Add {C}.\n{1}, {T}, Sacrifice this land: You may cast spells this turn as though they had flash.",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [],
+        "produced_mana": [
+          "C"
+        ],
+        "keywords": [],
+        "edhrec_rank": 539,
+        "price_usd": 3.68,
+        "price_eur": 2.26,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "war",
+        "collector_number": "245",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:05Z"
+      }
+    },
+    {
+      "name": "Enlightened Tutor",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Enlightened Tutor",
+      "card": {
+        "name": "Enlightened Tutor",
+        "cmc": 1.0,
+        "mana_cost": "{W}",
+        "type_line": "Instant",
+        "oracle_text": "Search your library for an artifact or enchantment card, reveal it, then shuffle and put that card on top.",
+        "power": null,
+        "toughness": null,
+        "colors": [
+          "W"
+        ],
+        "color_identity": [
+          "W"
+        ],
+        "produced_mana": [],
+        "keywords": [],
+        "edhrec_rank": 123,
+        "price_usd": 36.3,
+        "price_eur": 27.61,
+        "commander_legal": true,
+        "game_changer": true,
+        "reserved": false,
+        "set_code": "dmr",
+        "collector_number": "6",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Esper Sentinel",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Esper Sentinel",
+      "card": {
+        "name": "Esper Sentinel",
+        "cmc": 1.0,
+        "mana_cost": "{W}",
+        "type_line": "Artifact Creature — Human Soldier",
+        "oracle_text": "Whenever an opponent casts their first noncreature spell each turn, draw a card unless that player pays {X}, where X is this creature's power.",
+        "power": "1",
+        "toughness": "1",
+        "colors": [
+          "W"
+        ],
+        "color_identity": [
+          "W"
+        ],
+        "produced_mana": [],
+        "keywords": [],
+        "edhrec_rank": 78,
+        "price_usd": 61.9,
+        "price_eur": 39.14,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "mh2",
+        "collector_number": "12",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Exotic Orchard",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Exotic Orchard",
+      "card": {
+        "name": "Exotic Orchard",
+        "cmc": 0.0,
+        "mana_cost": "",
+        "type_line": "Land",
+        "oracle_text": "{T}: Add one mana of any color that a land an opponent controls could produce.",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [],
+        "produced_mana": [
+          "B",
+          "G",
+          "R",
+          "U",
+          "W"
+        ],
+        "keywords": [],
+        "edhrec_rank": 9,
+        "price_usd": null,
+        "price_eur": null,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "mbc",
+        "collector_number": "79",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:05Z"
+      }
+    },
+    {
+      "name": "Eye of Ugin",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Eye of Ugin",
+      "card": {
+        "name": "Eye of Ugin",
+        "cmc": 0.0,
+        "mana_cost": "",
+        "type_line": "Legendary Land",
+        "oracle_text": "Colorless Eldrazi spells you cast cost {2} less to cast.\n{7}, {T}: Search your library for a colorless creature card, reveal it, put it into your hand, then shuffle.",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [],
+        "produced_mana": [],
+        "keywords": [],
+        "edhrec_rank": 2969,
+        "price_usd": 59.05,
+        "price_eur": 41.65,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "mm2",
+        "collector_number": "242",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:52:20Z"
+      }
+    },
+    {
+      "name": "Faerie Mastermind",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Faerie Mastermind",
+      "card": {
+        "name": "Faerie Mastermind",
+        "cmc": 2.0,
+        "mana_cost": "{1}{U}",
+        "type_line": "Creature — Faerie Rogue",
+        "oracle_text": "Flash\nFlying\nWhenever an opponent draws their second card each turn, you draw a card.\n{3}{U}: Each player draws a card.",
+        "power": "2",
+        "toughness": "1",
+        "colors": [
+          "U"
+        ],
+        "color_identity": [
+          "U"
+        ],
+        "produced_mana": [],
+        "keywords": [
+          "Flying",
+          "Flash"
+        ],
+        "edhrec_rank": 291,
+        "price_usd": 11.47,
+        "price_eur": 10.91,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "soc",
+        "collector_number": "114",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Flusterstorm",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Flusterstorm",
+      "card": {
+        "name": "Flusterstorm",
+        "cmc": 1.0,
+        "mana_cost": "{U}",
+        "type_line": "Instant",
+        "oracle_text": "Counter target instant or sorcery spell unless its controller pays {1}.\nStorm (When you cast this spell, copy it for each spell cast before it this turn. You may choose new targets for the copies.)",
+        "power": null,
+        "toughness": null,
+        "colors": [
+          "U"
+        ],
+        "color_identity": [
+          "U"
+        ],
+        "produced_mana": [],
+        "keywords": [
+          "Storm"
+        ],
+        "edhrec_rank": 307,
+        "price_usd": 8.9,
+        "price_eur": 5.74,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "ima",
+        "collector_number": "55",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Forbidden Orchard",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Forbidden Orchard",
+      "card": {
+        "name": "Forbidden Orchard",
+        "cmc": 0.0,
+        "mana_cost": "",
+        "type_line": "Land",
+        "oracle_text": "{T}: Add one mana of any color.\nWhenever you tap this land for mana, target opponent creates a 1/1 colorless Spirit creature token.",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [],
+        "produced_mana": [
+          "B",
+          "G",
+          "R",
+          "U",
+          "W"
+        ],
+        "keywords": [],
+        "edhrec_rank": 723,
+        "price_usd": 9.44,
+        "price_eur": 5.77,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "2x2",
+        "collector_number": "323",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Force of Negation",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Force of Negation",
+      "card": {
+        "name": "Force of Negation",
+        "cmc": 3.0,
+        "mana_cost": "{1}{U}{U}",
+        "type_line": "Instant",
+        "oracle_text": "If it's not your turn, you may exile a blue card from your hand rather than pay this spell's mana cost.\nCounter target noncreature spell. If that spell is countered this way, exile it instead of putting it into its owner's graveyard.",
+        "power": null,
+        "toughness": null,
+        "colors": [
+          "U"
+        ],
+        "color_identity": [
+          "U"
+        ],
+        "produced_mana": [],
+        "keywords": [],
+        "edhrec_rank": 266,
+        "price_usd": 52.98,
+        "price_eur": 50.83,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "2x2",
+        "collector_number": "50",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Force of Will",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Force of Will",
+      "card": {
+        "name": "Force of Will",
+        "cmc": 5.0,
+        "mana_cost": "{3}{U}{U}",
+        "type_line": "Instant",
+        "oracle_text": "You may pay 1 life and exile a blue card from your hand rather than pay this spell's mana cost.\nCounter target spell.",
+        "power": null,
+        "toughness": null,
+        "colors": [
+          "U"
+        ],
+        "color_identity": [
+          "U"
+        ],
+        "produced_mana": [],
+        "keywords": [],
+        "edhrec_rank": 193,
+        "price_usd": 60.25,
+        "price_eur": 52.21,
+        "commander_legal": true,
+        "game_changer": true,
+        "reserved": false,
+        "set_code": "dmr",
+        "collector_number": "50",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Gaea's Cradle",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Gaea's Cradle",
+      "card": {
+        "name": "Gaea's Cradle",
+        "cmc": 0.0,
+        "mana_cost": "",
+        "type_line": "Legendary Land",
+        "oracle_text": "{T}: Add {G} for each creature you control.",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [
+          "G"
+        ],
+        "produced_mana": [
+          "G"
+        ],
+        "keywords": [],
+        "edhrec_rank": 446,
+        "price_usd": 1638.96,
+        "price_eur": 1261.08,
+        "commander_legal": true,
+        "game_changer": true,
+        "reserved": true,
+        "set_code": "usg",
+        "collector_number": "321",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Glaring Fleshraker",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Glaring Fleshraker",
+      "card": {
+        "name": "Glaring Fleshraker",
+        "cmc": 3.0,
+        "mana_cost": "{2}{C}",
+        "type_line": "Creature — Eldrazi Drone",
+        "oracle_text": "Whenever you cast a colorless spell, create a 0/1 colorless Eldrazi Spawn creature token with \"Sacrifice this token: Add {C}.\"\nWhenever another colorless creature you control enters, this creature deals 1 damage to each opponent.",
+        "power": "2",
+        "toughness": "2",
+        "colors": [],
+        "color_identity": [],
+        "produced_mana": [
+          "C"
+        ],
+        "keywords": [],
+        "edhrec_rank": 1222,
+        "price_usd": 1.51,
+        "price_eur": 0.84,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "mh3",
+        "collector_number": "7",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Gleaming Splendor",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Gleaming Splendor",
+      "card": {
+        "name": "Gleaming Splendor",
+        "cmc": 2.0,
+        "mana_cost": "{1}{W}",
+        "type_line": "Enchantment",
+        "oracle_text": "Whenever an opponent draws their second card each turn, you create a Treasure token.\n{2}{W}: Two target players each draw a card.",
+        "power": null,
+        "toughness": null,
+        "colors": [
+          "W"
+        ],
+        "color_identity": [
+          "W"
+        ],
+        "produced_mana": [],
+        "keywords": [
+          "Treasure"
+        ],
+        "edhrec_rank": 3478,
+        "price_usd": 37.35,
+        "price_eur": 31.45,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "hob",
+        "collector_number": "15",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Gemstone Caverns",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Gemstone Caverns",
+      "card": {
+        "name": "Gemstone Caverns",
+        "cmc": 0.0,
+        "mana_cost": "",
+        "type_line": "Legendary Land",
+        "oracle_text": "If this card is in your opening hand and you're not the starting player, you may begin the game with Gemstone Caverns on the battlefield with a luck counter on it. If you do, exile a card from your hand.\n{T}: Add {C}. If Gemstone Caverns has a luck counter on it, instead add one mana of any color.",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [],
+        "produced_mana": [
+          "B",
+          "C",
+          "G",
+          "R",
+          "U",
+          "W"
+        ],
+        "keywords": [],
+        "edhrec_rank": 179,
+        "price_usd": 77.17,
+        "price_eur": 55.03,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "ltc",
+        "collector_number": "364",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:11Z"
+      }
+    },
+    {
+      "name": "Grim Monolith",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Grim Monolith",
+      "card": {
+        "name": "Grim Monolith",
+        "cmc": 2.0,
+        "mana_cost": "{2}",
+        "type_line": "Artifact",
+        "oracle_text": "This artifact doesn't untap during your untap step.\n{T}: Add {C}{C}{C}.\n{4}: Untap this artifact.",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [],
+        "produced_mana": [
+          "C"
+        ],
+        "keywords": [],
+        "edhrec_rank": 670,
+        "price_usd": 482.89,
+        "price_eur": 298.49,
+        "commander_legal": true,
+        "game_changer": true,
+        "reserved": true,
+        "set_code": "ulg",
+        "collector_number": "126",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Into the Flood Maw",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Into the Flood Maw",
+      "card": {
+        "name": "Into the Flood Maw",
+        "cmc": 1.0,
+        "mana_cost": "{U}",
+        "type_line": "Instant",
+        "oracle_text": "Gift a tapped Fish (You may promise an opponent a gift as you cast this spell. If you do, they create a tapped 1/1 blue Fish creature token before its other effects.)\nReturn target creature an opponent controls to its owner's hand. If the gift was promised, instead return target nonland permanent an opponent controls to its owner's hand.",
+        "power": null,
+        "toughness": null,
+        "colors": [
+          "U"
+        ],
+        "color_identity": [
+          "U"
+        ],
+        "produced_mana": [],
+        "keywords": [
+          "Gift"
+        ],
+        "edhrec_rank": 696,
+        "price_usd": 2.65,
+        "price_eur": 1.65,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "blb",
+        "collector_number": "52",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Inventors' Fair",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Inventors' Fair",
+      "card": {
+        "name": "Inventors' Fair",
+        "cmc": 0.0,
+        "mana_cost": "",
+        "type_line": "Legendary Land",
+        "oracle_text": "At the beginning of your upkeep, if you control three or more artifacts, you gain 1 life.\n{T}: Add {C}.\n{4}, {T}, Sacrifice Inventors' Fair: Search your library for an artifact card, reveal it, put it into your hand, then shuffle. Activate only if you control three or more artifacts.",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [],
+        "produced_mana": [
+          "C"
+        ],
+        "keywords": [],
+        "edhrec_rank": 270,
+        "price_usd": 18.61,
+        "price_eur": 10.15,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "kld",
+        "collector_number": "247",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "King T'Challa // Black Panther, Hope Enduring",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 King T'Challa",
+      "card": {
+        "name": "King T'Challa // Black Panther, Hope Enduring",
+        "cmc": 3.0,
+        "mana_cost": "{1}{W}{U}",
+        "type_line": "Legendary Creature — Human Noble Hero // Legendary Creature — Human Warrior Hero",
+        "oracle_text": "Flash\nWhenever a player draws their second card each turn, you draw a card.\n{4}{W}{U}: Transform King T'Challa. Activate only as a sorcery.\n//\nFlash\nDouble strike\nPrevent all damage that would be dealt to Black Panther.\nWhenever Black Panther deals combat damage to a player, draw a card.",
+        "power": "3",
+        "toughness": "2",
+        "colors": [
+          "U",
+          "W"
+        ],
+        "color_identity": [
+          "U",
+          "W"
+        ],
+        "produced_mana": [],
+        "keywords": [
+          "Transform",
+          "Double strike",
+          "Flash"
+        ],
+        "edhrec_rank": 6532,
+        "price_usd": 10.87,
+        "price_eur": 11.37,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "msh",
+        "collector_number": "219",
+        "layout": "modal_dfc",
+        "faces": [
+          {
+            "name": "King T'Challa",
+            "mana_cost": "{1}{W}{U}",
+            "type_line": "Legendary Creature — Human Noble Hero",
+            "oracle_text": "Flash\nWhenever a player draws their second card each turn, you draw a card.\n{4}{W}{U}: Transform King T'Challa. Activate only as a sorcery."
+          },
+          {
+            "name": "Black Panther, Hope Enduring",
+            "mana_cost": "{4}{W}{U}",
+            "type_line": "Legendary Creature — Human Warrior Hero",
+            "oracle_text": "Flash\nDouble strike\nPrevent all damage that would be dealt to Black Panther.\nWhenever Black Panther deals combat damage to a player, draw a card."
+          }
+        ],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Kinnan, Bonder Prodigy",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Kinnan, Bonder Prodigy",
+      "card": {
+        "name": "Kinnan, Bonder Prodigy",
+        "cmc": 2.0,
+        "mana_cost": "{G}{U}",
+        "type_line": "Legendary Creature — Human Druid",
+        "oracle_text": "Whenever you tap a nonland permanent for mana, add one mana of any type that permanent produced.\n{5}{G}{U}: Look at the top five cards of your library. You may put a non-Human creature card from among them onto the battlefield. Put the rest on the bottom of your library in a random order.",
+        "power": "2",
+        "toughness": "2",
+        "colors": [
+          "G",
+          "U"
+        ],
+        "color_identity": [
+          "G",
+          "U"
+        ],
+        "produced_mana": [
+          "B",
+          "G",
+          "R",
+          "U",
+          "W"
+        ],
+        "keywords": [],
+        "edhrec_rank": 1360,
+        "price_usd": 15.85,
+        "price_eur": 11.12,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "iko",
+        "collector_number": "192",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Kirol, Attentive First-Year",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Kirol, Attentive First-Year",
+      "card": {
+        "name": "Kirol, Attentive First-Year",
+        "cmc": 3.0,
+        "mana_cost": "{1}{R/W}{R/W}",
+        "type_line": "Legendary Creature — Vampire Cleric",
+        "oracle_text": "Tap two untapped creatures you control: Copy target triggered ability you control. You may choose new targets for the copy. Activate only once each turn.",
+        "power": "3",
+        "toughness": "3",
+        "colors": [
+          "R",
+          "W"
+        ],
+        "color_identity": [
+          "R",
+          "W"
+        ],
+        "produced_mana": [],
+        "keywords": [],
+        "edhrec_rank": 7542,
+        "price_usd": 0.28,
+        "price_eur": 0.31,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "ecl",
+        "collector_number": "231",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Kozilek's Command",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Kozilek's Command",
+      "card": {
+        "name": "Kozilek's Command",
+        "cmc": 2.0,
+        "mana_cost": "{X}{C}{C}",
+        "type_line": "Kindred Instant — Eldrazi",
+        "oracle_text": "Choose two —\n• Target player creates X 0/1 colorless Eldrazi Spawn creature tokens with \"Sacrifice this token: Add {C}.\"\n• Target player scries X, then draws a card.\n• Exile target creature with mana value X or less.\n• Exile up to X target cards from graveyards.",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [],
+        "produced_mana": [
+          "C"
+        ],
+        "keywords": [
+          "Scry"
+        ],
+        "edhrec_rank": 2142,
+        "price_usd": 7.65,
+        "price_eur": 7.45,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "mh3",
+        "collector_number": "11",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:52:20Z"
+      }
+    },
+    {
+      "name": "Liberator, Urza's Battlethopter",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Liberator, Urza's Battlethopter",
+      "card": {
+        "name": "Liberator, Urza's Battlethopter",
+        "cmc": 3.0,
+        "mana_cost": "{3}",
+        "type_line": "Legendary Artifact Creature — Thopter",
+        "oracle_text": "Flash\nFlying\nYou may cast colorless spells and artifact spells as though they had flash.\nWhenever you cast a spell, if the amount of mana spent to cast that spell is greater than Liberator's power, put a +1/+1 counter on Liberator.",
+        "power": "1",
+        "toughness": "2",
+        "colors": [],
+        "color_identity": [],
+        "produced_mana": [],
+        "keywords": [
+          "Flying",
+          "Flash"
+        ],
+        "edhrec_rank": 1253,
+        "price_usd": 7.13,
+        "price_eur": 4.58,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "bro",
+        "collector_number": "237",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:05Z"
+      }
+    },
+    {
+      "name": "Lotho, Corrupt Shirriff",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Lotho, Corrupt Shirriff",
+      "card": {
+        "name": "Lotho, Corrupt Shirriff",
+        "cmc": 2.0,
+        "mana_cost": "{W}{B}",
+        "type_line": "Legendary Creature — Halfling Rogue",
+        "oracle_text": "Whenever a player casts their second spell each turn, you lose 1 life and create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+        "power": "2",
+        "toughness": "1",
+        "colors": [
+          "B",
+          "W"
+        ],
+        "color_identity": [
+          "B",
+          "W"
+        ],
+        "produced_mana": [
+          "B",
+          "G",
+          "R",
+          "U",
+          "W"
+        ],
+        "keywords": [
+          "Treasure"
+        ],
+        "edhrec_rank": 407,
+        "price_usd": 11.05,
+        "price_eur": 9.22,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "ltr",
+        "collector_number": "213",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Lotus Petal",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Lotus Petal",
+      "card": {
+        "name": "Lotus Petal",
+        "cmc": 0.0,
+        "mana_cost": "{0}",
+        "type_line": "Artifact",
+        "oracle_text": "{T}, Sacrifice this artifact: Add one mana of any color.",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [],
+        "produced_mana": [
+          "B",
+          "G",
+          "R",
+          "U",
+          "W"
+        ],
+        "keywords": [],
+        "edhrec_rank": 120,
+        "price_usd": null,
+        "price_eur": null,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "tpr",
+        "collector_number": "225",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Magus of the Candelabra",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Magus of the Candelabra",
+      "card": {
+        "name": "Magus of the Candelabra",
+        "cmc": 1.0,
+        "mana_cost": "{G}",
+        "type_line": "Creature — Human Wizard",
+        "oracle_text": "{X}, {T}: Untap X target lands.",
+        "power": "1",
+        "toughness": "2",
+        "colors": [
+          "G"
+        ],
+        "color_identity": [
+          "G"
+        ],
+        "produced_mana": [],
+        "keywords": [],
+        "edhrec_rank": 3698,
+        "price_usd": 0.78,
+        "price_eur": 0.6,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "bbd",
+        "collector_number": "206",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Mana Confluence",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Mana Confluence",
+      "card": {
+        "name": "Mana Confluence",
+        "cmc": 0.0,
+        "mana_cost": "",
+        "type_line": "Land",
+        "oracle_text": "{T}, Pay 1 life: Add one mana of any color.",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [],
+        "produced_mana": [
+          "B",
+          "G",
+          "R",
+          "U",
+          "W"
+        ],
+        "keywords": [],
+        "edhrec_rank": 118,
+        "price_usd": 35.59,
+        "price_eur": 23.18,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "jou",
+        "collector_number": "163",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:05Z"
+      }
+    },
+    {
+      "name": "Mana Vault",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Mana Vault",
+      "card": {
+        "name": "Mana Vault",
+        "cmc": 1.0,
+        "mana_cost": "{1}",
+        "type_line": "Artifact",
+        "oracle_text": "This artifact doesn't untap during your untap step.\nAt the beginning of your upkeep, you may pay {4}. If you do, untap this artifact.\nAt the beginning of your draw step, if this artifact is tapped, it deals 1 damage to you.\n{T}: Add {C}{C}{C}.",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [],
+        "produced_mana": [
+          "C"
+        ],
+        "keywords": [],
+        "edhrec_rank": 147,
+        "price_usd": 119.54,
+        "price_eur": 74.53,
+        "commander_legal": true,
+        "game_changer": true,
+        "reserved": false,
+        "set_code": "2x2",
+        "collector_number": "308",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:52:20Z"
+      }
+    },
+    {
+      "name": "Manifold Key",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Manifold Key",
+      "card": {
+        "name": "Manifold Key",
+        "cmc": 1.0,
+        "mana_cost": "{1}",
+        "type_line": "Artifact",
+        "oracle_text": "{1}, {T}: Untap another target artifact.\n{3}, {T}: Target creature can't be blocked this turn.",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [],
+        "produced_mana": [],
+        "keywords": [],
+        "edhrec_rank": 1028,
+        "price_usd": 1.56,
+        "price_eur": 1.97,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "clb",
+        "collector_number": "319",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Mental Misstep",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Mental Misstep",
+      "card": {
+        "name": "Mental Misstep",
+        "cmc": 1.0,
+        "mana_cost": "{U/P}",
+        "type_line": "Instant",
+        "oracle_text": "({U/P} can be paid with either {U} or 2 life.)\nCounter target spell with mana value 1.",
+        "power": null,
+        "toughness": null,
+        "colors": [
+          "U"
+        ],
+        "color_identity": [
+          "U"
+        ],
+        "produced_mana": [],
+        "keywords": [],
+        "edhrec_rank": 462,
+        "price_usd": 8.76,
+        "price_eur": 6.34,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "nph",
+        "collector_number": "38",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Mindbreak Trap",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Mindbreak Trap",
+      "card": {
+        "name": "Mindbreak Trap",
+        "cmc": 4.0,
+        "mana_cost": "{2}{U}{U}",
+        "type_line": "Instant — Trap",
+        "oracle_text": "If an opponent cast three or more spells this turn, you may pay {0} rather than pay this spell's mana cost.\nExile any number of target spells.",
+        "power": null,
+        "toughness": null,
+        "colors": [
+          "U"
+        ],
+        "color_identity": [
+          "U"
+        ],
+        "produced_mana": [],
+        "keywords": [],
+        "edhrec_rank": 544,
+        "price_usd": 15.37,
+        "price_eur": 10.1,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "zen",
+        "collector_number": "57",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Misdirection",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Misdirection",
+      "card": {
+        "name": "Misdirection",
+        "cmc": 5.0,
+        "mana_cost": "{3}{U}{U}",
+        "type_line": "Instant",
+        "oracle_text": "You may exile a blue card from your hand rather than pay this spell's mana cost.\nChange the target of target spell with a single target.",
+        "power": null,
+        "toughness": null,
+        "colors": [
+          "U"
+        ],
+        "color_identity": [
+          "U"
+        ],
+        "produced_mana": [],
+        "keywords": [],
+        "edhrec_rank": 1530,
+        "price_usd": 12.42,
+        "price_eur": 10.15,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "ddt",
+        "collector_number": "15",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Mishra's Workshop",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Mishra's Workshop",
+      "card": {
+        "name": "Mishra's Workshop",
+        "cmc": 0.0,
+        "mana_cost": "",
+        "type_line": "Land",
+        "oracle_text": "{T}: Add {C}{C}{C}. Spend this mana only to cast artifact spells.",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [],
+        "produced_mana": [
+          "C"
+        ],
+        "keywords": [],
+        "edhrec_rank": 3796,
+        "price_usd": null,
+        "price_eur": null,
+        "commander_legal": true,
+        "game_changer": true,
+        "reserved": true,
+        "set_code": "vma",
+        "collector_number": "305",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Mockingbird",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Mockingbird",
+      "card": {
+        "name": "Mockingbird",
+        "cmc": 1.0,
+        "mana_cost": "{X}{U}",
+        "type_line": "Creature — Bird Bard",
+        "oracle_text": "Flying\nYou may have this creature enter as a copy of any creature on the battlefield with mana value less than or equal to the amount of mana spent to cast this creature, except it's a Bird in addition to its other types and it has flying.",
+        "power": "1",
+        "toughness": "1",
+        "colors": [
+          "U"
+        ],
+        "color_identity": [
+          "U"
+        ],
+        "produced_mana": [],
+        "keywords": [
+          "Flying"
+        ],
+        "edhrec_rank": 730,
+        "price_usd": 4.29,
+        "price_eur": 3.13,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "blb",
+        "collector_number": "61",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Mox Diamond",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Mox Diamond",
+      "card": {
+        "name": "Mox Diamond",
+        "cmc": 0.0,
+        "mana_cost": "{0}",
+        "type_line": "Artifact",
+        "oracle_text": "If this artifact would enter, you may discard a land card instead. If you do, put this artifact onto the battlefield. If you don't, put it into its owner's graveyard.\n{T}: Add one mana of any color.",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [],
+        "produced_mana": [
+          "B",
+          "G",
+          "R",
+          "U",
+          "W"
+        ],
+        "keywords": [],
+        "edhrec_rank": 246,
+        "price_usd": null,
+        "price_eur": null,
+        "commander_legal": true,
+        "game_changer": true,
+        "reserved": true,
+        "set_code": "tpr",
+        "collector_number": "228",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Mox Opal",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Mox Opal",
+      "card": {
+        "name": "Mox Opal",
+        "cmc": 0.0,
+        "mana_cost": "{0}",
+        "type_line": "Legendary Artifact",
+        "oracle_text": "Metalcraft — {T}: Add one mana of any color. Activate only if you control three or more artifacts.",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [],
+        "produced_mana": [
+          "B",
+          "G",
+          "R",
+          "U",
+          "W"
+        ],
+        "keywords": [
+          "Metalcraft"
+        ],
+        "edhrec_rank": 242,
+        "price_usd": 240.21,
+        "price_eur": 166.54,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "2xm",
+        "collector_number": "275",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Mystic Remora",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Mystic Remora",
+      "card": {
+        "name": "Mystic Remora",
+        "cmc": 1.0,
+        "mana_cost": "{U}",
+        "type_line": "Enchantment",
+        "oracle_text": "Cumulative upkeep {1} (At the beginning of your upkeep, put an age counter on this permanent, then sacrifice it unless you pay its upkeep cost for each age counter on it.)\nWhenever an opponent casts a noncreature spell, you may draw a card unless that player pays {4}.",
+        "power": null,
+        "toughness": null,
+        "colors": [
+          "U"
+        ],
+        "color_identity": [
+          "U"
+        ],
+        "produced_mana": [],
+        "keywords": [
+          "Cumulative upkeep"
+        ],
+        "edhrec_rank": 99,
+        "price_usd": 12.53,
+        "price_eur": 12.06,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "dmr",
+        "collector_number": "59",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Nameless Inversion",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Nameless Inversion",
+      "card": {
+        "name": "Nameless Inversion",
+        "cmc": 2.0,
+        "mana_cost": "{1}{B}",
+        "type_line": "Kindred Instant — Shapeshifter",
+        "oracle_text": "Changeling (This card is every creature type.)\nTarget creature gets +3/-3 and loses all creature types until end of turn.",
+        "power": null,
+        "toughness": null,
+        "colors": [
+          "B"
+        ],
+        "color_identity": [
+          "B"
+        ],
+        "produced_mana": [],
+        "keywords": [
+          "Changeling"
+        ],
+        "edhrec_rank": 8090,
+        "price_usd": 0.26,
+        "price_eur": 0.09,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "ecl",
+        "collector_number": "113",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Noxious Revival",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Noxious Revival",
+      "card": {
+        "name": "Noxious Revival",
+        "cmc": 1.0,
+        "mana_cost": "{G/P}",
+        "type_line": "Instant",
+        "oracle_text": "({G/P} can be paid with either {G} or 2 life.)\nPut target card from a graveyard on top of its owner's library.",
+        "power": null,
+        "toughness": null,
+        "colors": [
+          "G"
+        ],
+        "color_identity": [
+          "G"
+        ],
+        "produced_mana": [],
+        "keywords": [],
+        "edhrec_rank": 620,
+        "price_usd": 7.65,
+        "price_eur": 5.58,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "nph",
+        "collector_number": "118",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Omni-Changeling",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Omni-Changeling",
+      "card": {
+        "name": "Omni-Changeling",
+        "cmc": 5.0,
+        "mana_cost": "{3}{U}{U}",
+        "type_line": "Creature — Shapeshifter",
+        "oracle_text": "Changeling (This card is every creature type.)\nConvoke (Your creatures can help cast this spell. Each creature you tap while casting this spell pays for {1} or one mana of that creature's color.)\nYou may have this creature enter as a copy of any creature on the battlefield, except it has changeling.",
+        "power": "0",
+        "toughness": "0",
+        "colors": [
+          "U"
+        ],
+        "color_identity": [
+          "U"
+        ],
+        "produced_mana": [],
+        "keywords": [
+          "Convoke",
+          "Changeling"
+        ],
+        "edhrec_rank": 5677,
+        "price_usd": 0.29,
+        "price_eur": 0.26,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "ecl",
+        "collector_number": "62",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Orim's Chant",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Orim's Chant",
+      "card": {
+        "name": "Orim's Chant",
+        "cmc": 1.0,
+        "mana_cost": "{W}",
+        "type_line": "Instant",
+        "oracle_text": "Kicker {W} (You may pay an additional {W} as you cast this spell.)\nTarget player can't cast spells this turn. If this spell was kicked, creatures can't attack this turn.",
+        "power": null,
+        "toughness": null,
+        "colors": [
+          "W"
+        ],
+        "color_identity": [
+          "W"
+        ],
+        "produced_mana": [],
+        "keywords": [
+          "Kicker"
+        ],
+        "edhrec_rank": 1844,
+        "price_usd": 6.55,
+        "price_eur": 6.52,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "mh3",
+        "collector_number": "265",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Otawara, Soaring City",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Otawara, Soaring City",
+      "card": {
+        "name": "Otawara, Soaring City",
+        "cmc": 0.0,
+        "mana_cost": "",
+        "type_line": "Legendary Land",
+        "oracle_text": "{T}: Add {U}.\nChannel — {3}{U}, Discard this card: Return target artifact, creature, enchantment, or planeswalker to its owner's hand. This ability costs {1} less to activate for each legendary creature you control.",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [
+          "U"
+        ],
+        "produced_mana": [
+          "U"
+        ],
+        "keywords": [
+          "Channel"
+        ],
+        "edhrec_rank": 88,
+        "price_usd": 29.67,
+        "price_eur": 23.58,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "neo",
+        "collector_number": "271",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Pact of Negation",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Pact of Negation",
+      "card": {
+        "name": "Pact of Negation",
+        "cmc": 0.0,
+        "mana_cost": "{0}",
+        "type_line": "Instant",
+        "oracle_text": "Counter target spell.\nAt the beginning of your next upkeep, pay {3}{U}{U}. If you don't, you lose the game.",
+        "power": null,
+        "toughness": null,
+        "colors": [
+          "U"
+        ],
+        "color_identity": [
+          "U"
+        ],
+        "produced_mana": [],
+        "keywords": [],
+        "edhrec_rank": 365,
+        "price_usd": 17.96,
+        "price_eur": 14.97,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "tsr",
+        "collector_number": "77",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Peter Parker's Camera",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Peter Parker's Camera",
+      "card": {
+        "name": "Peter Parker's Camera",
+        "cmc": 1.0,
+        "mana_cost": "{1}",
+        "type_line": "Artifact",
+        "oracle_text": "This artifact enters with three film counters on it.\n{2}, {T}, Remove a film counter from this artifact: Copy target activated or triggered ability you control. You may choose new targets for the copy.",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [],
+        "produced_mana": [],
+        "keywords": [],
+        "edhrec_rank": 3409,
+        "price_usd": 1.29,
+        "price_eur": 1.2,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "spm",
+        "collector_number": "171",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:59:01Z"
+      }
+    },
+    {
+      "name": "Phyrexian Metamorph",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Phyrexian Metamorph",
+      "card": {
+        "name": "Phyrexian Metamorph",
+        "cmc": 4.0,
+        "mana_cost": "{3}{U/P}",
+        "type_line": "Artifact Creature — Phyrexian Shapeshifter",
+        "oracle_text": "({U/P} can be paid with either {U} or 2 life.)\nYou may have this creature enter as a copy of any artifact or creature on the battlefield, except it's an artifact in addition to its other types.",
+        "power": "0",
+        "toughness": "0",
+        "colors": [
+          "U"
+        ],
+        "color_identity": [
+          "U"
+        ],
+        "produced_mana": [],
+        "keywords": [],
+        "edhrec_rank": 314,
+        "price_usd": 2.34,
+        "price_eur": 2.35,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "eoc",
+        "collector_number": "75",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Planar Nexus",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Planar Nexus",
+      "card": {
+        "name": "Planar Nexus",
+        "cmc": 0.0,
+        "mana_cost": "",
+        "type_line": "Land",
+        "oracle_text": "This land is every nonbasic land type. (Nonbasic land types include Cave, Desert, Gate, Lair, Locus, Mine, Power-Plant, Sphere, Tower, and Urza's.)\n{T}: Add {C}.\n{1}, {T}: Add one mana of any color.",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [],
+        "produced_mana": [
+          "B",
+          "C",
+          "G",
+          "R",
+          "U",
+          "W"
+        ],
+        "keywords": [],
+        "edhrec_rank": 2648,
+        "price_usd": 9.5,
+        "price_eur": 7.97,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "m3c",
+        "collector_number": "80",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:05Z"
+      }
+    },
+    {
+      "name": "Ragavan, Nimble Pilferer",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Ragavan, Nimble Pilferer",
+      "card": {
+        "name": "Ragavan, Nimble Pilferer",
+        "cmc": 1.0,
+        "mana_cost": "{R}",
+        "type_line": "Legendary Creature — Monkey Pirate",
+        "oracle_text": "Whenever Ragavan deals combat damage to a player, create a Treasure token and exile the top card of that player's library. Until end of turn, you may cast that card.\nDash {1}{R} (You may cast this spell for its dash cost. If you do, it gains haste, and it's returned from the battlefield to its owner's hand at the beginning of the next end step.)",
+        "power": "2",
+        "toughness": "1",
+        "colors": [
+          "R"
+        ],
+        "color_identity": [
+          "R"
+        ],
+        "produced_mana": [],
+        "keywords": [
+          "Treasure",
+          "Dash"
+        ],
+        "edhrec_rank": 279,
+        "price_usd": 41.79,
+        "price_eur": 32.6,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "mh2",
+        "collector_number": "138",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Ranger-Captain of Eos",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Ranger-Captain of Eos",
+      "card": {
+        "name": "Ranger-Captain of Eos",
+        "cmc": 3.0,
+        "mana_cost": "{1}{W}{W}",
+        "type_line": "Creature — Human Soldier Ranger",
+        "oracle_text": "When this creature enters, you may search your library for a creature card with mana value 1 or less, reveal it, put it into your hand, then shuffle.\nSacrifice this creature: Your opponents can't cast noncreature spells this turn.",
+        "power": "3",
+        "toughness": "3",
+        "colors": [
+          "W"
+        ],
+        "color_identity": [
+          "W"
+        ],
+        "produced_mana": [],
+        "keywords": [],
+        "edhrec_rank": 786,
+        "price_usd": 40.31,
+        "price_eur": 33.44,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "mh1",
+        "collector_number": "21",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Relic of Legends",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Relic of Legends",
+      "card": {
+        "name": "Relic of Legends",
+        "cmc": 3.0,
+        "mana_cost": "{3}",
+        "type_line": "Artifact",
+        "oracle_text": "{T}: Add one mana of any color.\nTap an untapped legendary creature you control: Add one mana of any color.",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [],
+        "produced_mana": [
+          "B",
+          "G",
+          "R",
+          "U",
+          "W"
+        ],
+        "keywords": [],
+        "edhrec_rank": 538,
+        "price_usd": 1.02,
+        "price_eur": 1.07,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "msc",
+        "collector_number": "209",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Rhystic Study",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Rhystic Study",
+      "card": {
+        "name": "Rhystic Study",
+        "cmc": 3.0,
+        "mana_cost": "{2}{U}",
+        "type_line": "Enchantment",
+        "oracle_text": "Whenever an opponent casts a spell, you may draw a card unless that player pays {1}.",
+        "power": null,
+        "toughness": null,
+        "colors": [
+          "U"
+        ],
+        "color_identity": [
+          "U"
+        ],
+        "produced_mana": [],
+        "keywords": [],
+        "edhrec_rank": 44,
+        "price_usd": 71.9,
+        "price_eur": 41.99,
+        "commander_legal": true,
+        "game_changer": true,
+        "reserved": false,
+        "set_code": "j22",
+        "collector_number": "114",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Seedborn Muse",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Seedborn Muse",
+      "card": {
+        "name": "Seedborn Muse",
+        "cmc": 5.0,
+        "mana_cost": "{3}{G}{G}",
+        "type_line": "Creature — Spirit",
+        "oracle_text": "Untap all permanents you control during each other player's untap step.",
+        "power": "2",
+        "toughness": "4",
+        "colors": [
+          "G"
+        ],
+        "color_identity": [
+          "G"
+        ],
+        "produced_mana": [],
+        "keywords": [],
+        "edhrec_rank": 285,
+        "price_usd": 17.13,
+        "price_eur": 10.71,
+        "commander_legal": true,
+        "game_changer": true,
+        "reserved": false,
+        "set_code": "tdc",
+        "collector_number": "268",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Shields of Velis Vel",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Shields of Velis Vel",
+      "card": {
+        "name": "Shields of Velis Vel",
+        "cmc": 1.0,
+        "mana_cost": "{W}",
+        "type_line": "Kindred Instant — Shapeshifter",
+        "oracle_text": "Changeling (This card is every creature type.)\nCreatures target player controls get +0/+1 and gain all creature types until end of turn.",
+        "power": null,
+        "toughness": null,
+        "colors": [
+          "W"
+        ],
+        "color_identity": [
+          "W"
+        ],
+        "produced_mana": [],
+        "keywords": [
+          "Changeling"
+        ],
+        "edhrec_rank": 10255,
+        "price_usd": 1.28,
+        "price_eur": 0.59,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "lrw",
+        "collector_number": "39",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Fellwar Stone",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Fellwar Stone",
+      "card": {
+        "name": "Fellwar Stone",
+        "cmc": 2.0,
+        "mana_cost": "{2}",
+        "type_line": "Artifact",
+        "oracle_text": "{T}: Add one mana of any color that a land an opponent controls could produce.",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [],
+        "produced_mana": [
+          "B",
+          "G",
+          "R",
+          "U",
+          "W"
+        ],
+        "keywords": [],
+        "edhrec_rank": 17,
+        "price_usd": null,
+        "price_eur": null,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "sld",
+        "collector_number": "7062",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:13Z"
+      }
+    },
+    {
+      "name": "Silence",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Silence",
+      "card": {
+        "name": "Silence",
+        "cmc": 1.0,
+        "mana_cost": "{W}",
+        "type_line": "Instant",
+        "oracle_text": "Your opponents can't cast spells this turn.",
+        "power": null,
+        "toughness": null,
+        "colors": [
+          "W"
+        ],
+        "color_identity": [
+          "W"
+        ],
+        "produced_mana": [],
+        "keywords": [],
+        "edhrec_rank": 406,
+        "price_usd": 9.0,
+        "price_eur": 6.45,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "m14",
+        "collector_number": "35",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Smothering Tithe",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Smothering Tithe",
+      "card": {
+        "name": "Smothering Tithe",
+        "cmc": 4.0,
+        "mana_cost": "{3}{W}",
+        "type_line": "Enchantment",
+        "oracle_text": "Whenever an opponent draws a card, that player may pay {2}. If the player doesn't, you create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+        "power": null,
+        "toughness": null,
+        "colors": [
+          "W"
+        ],
+        "color_identity": [
+          "W"
+        ],
+        "produced_mana": [
+          "B",
+          "G",
+          "R",
+          "U",
+          "W"
+        ],
+        "keywords": [
+          "Treasure"
+        ],
+        "edhrec_rank": 65,
+        "price_usd": 59.94,
+        "price_eur": 36.8,
+        "commander_legal": true,
+        "game_changer": true,
+        "reserved": false,
+        "set_code": "cmm",
+        "collector_number": "57",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Snapback",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Snapback",
+      "card": {
+        "name": "Snapback",
+        "cmc": 2.0,
+        "mana_cost": "{1}{U}",
+        "type_line": "Instant",
+        "oracle_text": "You may exile a blue card from your hand rather than pay this spell's mana cost.\nReturn target creature to its owner's hand.",
+        "power": null,
+        "toughness": null,
+        "colors": [
+          "U"
+        ],
+        "color_identity": [
+          "U"
+        ],
+        "produced_mana": [],
+        "keywords": [],
+        "edhrec_rank": 4341,
+        "price_usd": 0.41,
+        "price_eur": 0.18,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "tsr",
+        "collector_number": "87",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Sol Ring",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Sol Ring",
+      "card": {
+        "name": "Sol Ring",
+        "cmc": 1.0,
+        "mana_cost": "{1}",
+        "type_line": "Artifact",
+        "oracle_text": "{T}: Add {C}{C}.",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [],
+        "produced_mana": [
+          "C"
+        ],
+        "keywords": [],
+        "edhrec_rank": 1,
+        "price_usd": 1.53,
+        "price_eur": 1.63,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "msc",
+        "collector_number": "211",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:52:20Z"
+      }
+    },
+    {
+      "name": "Sowing Mycospawn",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Sowing Mycospawn",
+      "card": {
+        "name": "Sowing Mycospawn",
+        "cmc": 4.0,
+        "mana_cost": "{3}{G}",
+        "type_line": "Creature — Eldrazi Fungus",
+        "oracle_text": "Devoid (This card has no color.)\nKicker {1}{C} (You may pay an additional {1}{C} as you cast this spell.)\nWhen you cast this spell, search your library for a land card, put it onto the battlefield, then shuffle.\nWhen you cast this spell, if it was kicked, exile target land.",
+        "power": "3",
+        "toughness": "3",
+        "colors": [],
+        "color_identity": [
+          "G"
+        ],
+        "produced_mana": [],
+        "keywords": [
+          "Devoid",
+          "Kicker"
+        ],
+        "edhrec_rank": 2096,
+        "price_usd": 2.07,
+        "price_eur": 1.77,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "mh3",
+        "collector_number": "170",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:05Z"
+      }
+    },
+    {
+      "name": "Spawn-Gang Commander",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Spawn-Gang Commander",
+      "card": {
+        "name": "Spawn-Gang Commander",
+        "cmc": 5.0,
+        "mana_cost": "{3}{R}{R}",
+        "type_line": "Creature — Eldrazi Goblin",
+        "oracle_text": "Devoid (This card has no color.)\nWhen you cast this spell, create three 0/1 colorless Eldrazi Spawn creature tokens with \"Sacrifice this token: Add {C}.\"\n{1}{C}, Sacrifice an Eldrazi: This creature deals 2 damage to any target.",
+        "power": "2",
+        "toughness": "2",
+        "colors": [],
+        "color_identity": [
+          "R"
+        ],
+        "produced_mana": [
+          "C"
+        ],
+        "keywords": [
+          "Devoid"
+        ],
+        "edhrec_rank": 7649,
+        "price_usd": 0.23,
+        "price_eur": 0.17,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "mh3",
+        "collector_number": "140",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Spire of Industry",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Spire of Industry",
+      "card": {
+        "name": "Spire of Industry",
+        "cmc": 0.0,
+        "mana_cost": "",
+        "type_line": "Land",
+        "oracle_text": "{T}: Add {C}.\n{T}, Pay 1 life: Add one mana of any color. Activate only if you control an artifact.",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [],
+        "produced_mana": [
+          "B",
+          "C",
+          "G",
+          "R",
+          "U",
+          "W"
+        ],
+        "keywords": [],
+        "edhrec_rank": 394,
+        "price_usd": 0.31,
+        "price_eur": 0.25,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "eoc",
+        "collector_number": "183",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Starting Town",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Starting Town",
+      "card": {
+        "name": "Starting Town",
+        "cmc": 0.0,
+        "mana_cost": "",
+        "type_line": "Land — Town",
+        "oracle_text": "This land enters tapped unless it's your first, second, or third turn of the game.\n{T}: Add {C}.\n{T}, Pay 1 life: Add one mana of any color.",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [],
+        "produced_mana": [
+          "B",
+          "C",
+          "G",
+          "R",
+          "U",
+          "W"
+        ],
+        "keywords": [],
+        "edhrec_rank": 744,
+        "price_usd": 10.08,
+        "price_eur": 9.96,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "fin",
+        "collector_number": "289",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Strionic Resonator",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Strionic Resonator",
+      "card": {
+        "name": "Strionic Resonator",
+        "cmc": 2.0,
+        "mana_cost": "{2}",
+        "type_line": "Artifact",
+        "oracle_text": "{2}, {T}: Copy target triggered ability you control. You may choose new targets for the copy. (A triggered ability uses the words \"when,\" \"whenever,\" or \"at.\")",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [],
+        "produced_mana": [],
+        "keywords": [],
+        "edhrec_rank": 592,
+        "price_usd": 8.66,
+        "price_eur": 7.52,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "moc",
+        "collector_number": "384",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Swan Song",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Swan Song",
+      "card": {
+        "name": "Swan Song",
+        "cmc": 1.0,
+        "mana_cost": "{U}",
+        "type_line": "Instant",
+        "oracle_text": "Counter target enchantment, instant, or sorcery spell. Its controller creates a 2/2 blue Bird creature token with flying.",
+        "power": null,
+        "toughness": null,
+        "colors": [
+          "U"
+        ],
+        "color_identity": [
+          "U"
+        ],
+        "produced_mana": [],
+        "keywords": [],
+        "edhrec_rank": 68,
+        "price_usd": 10.37,
+        "price_eur": 9.59,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "eoc",
+        "collector_number": "46",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Swords to Plowshares",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Swords to Plowshares",
+      "card": {
+        "name": "Swords to Plowshares",
+        "cmc": 1.0,
+        "mana_cost": "{W}",
+        "type_line": "Instant",
+        "oracle_text": "Exile target creature. Its controller gains life equal to its power.",
+        "power": null,
+        "toughness": null,
+        "colors": [
+          "W"
+        ],
+        "color_identity": [
+          "W"
+        ],
+        "produced_mana": [],
+        "keywords": [],
+        "edhrec_rank": 11,
+        "price_usd": 1.56,
+        "price_eur": 2.05,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "msc",
+        "collector_number": "143",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Talon Gates of Madara",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Talon Gates of Madara",
+      "card": {
+        "name": "Talon Gates of Madara",
+        "cmc": 0.0,
+        "mana_cost": "",
+        "type_line": "Land — Gate",
+        "oracle_text": "When this land enters, up to one target creature phases out.\n{T}: Add {C}.\n{1}, {T}: Add one mana of any color.\n{4}: Put this card from your hand onto the battlefield.",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [],
+        "produced_mana": [
+          "B",
+          "C",
+          "G",
+          "R",
+          "U",
+          "W"
+        ],
+        "keywords": [],
+        "edhrec_rank": 574,
+        "price_usd": 40.28,
+        "price_eur": null,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "m3c",
+        "collector_number": "82",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Tarnished Citadel",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Tarnished Citadel",
+      "card": {
+        "name": "Tarnished Citadel",
+        "cmc": 0.0,
+        "mana_cost": "",
+        "type_line": "Land",
+        "oracle_text": "{T}: Add {C}.\n{T}: Add one mana of any color. This land deals 3 damage to you.",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [],
+        "produced_mana": [
+          "B",
+          "C",
+          "G",
+          "R",
+          "U",
+          "W"
+        ],
+        "keywords": [],
+        "edhrec_rank": 2352,
+        "price_usd": 20.11,
+        "price_eur": 10.96,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "ody",
+        "collector_number": "329",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Tezzeret, Cruel Captain",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Tezzeret, Cruel Captain",
+      "card": {
+        "name": "Tezzeret, Cruel Captain",
+        "cmc": 3.0,
+        "mana_cost": "{3}",
+        "type_line": "Legendary Planeswalker — Tezzeret",
+        "oracle_text": "Whenever an artifact you control enters, put a loyalty counter on Tezzeret.\n0: Untap target artifact or creature. If it's an artifact creature, put a +1/+1 counter on it.\n−3: Search your library for an artifact card with mana value 1 or less, reveal it, put it into your hand, then shuffle.\n−7: You get an emblem with \"At the beginning of combat on your turn, put three +1/+1 counters on target artifact you control. If it's not a creature, it becomes a 0/0 Robot artifact creature.\"",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [],
+        "produced_mana": [],
+        "keywords": [],
+        "edhrec_rank": 1244,
+        "price_usd": 22.32,
+        "price_eur": 22.18,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "eoe",
+        "collector_number": "2",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "The Cabbage Merchant",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 The Cabbage Merchant",
+      "card": {
+        "name": "The Cabbage Merchant",
+        "cmc": 3.0,
+        "mana_cost": "{2}{G}",
+        "type_line": "Legendary Creature — Human Citizen",
+        "oracle_text": "Whenever an opponent casts a noncreature spell, create a Food token. (It's an artifact with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")\nWhenever a creature deals combat damage to you, sacrifice a Food token.\nTap two untapped Foods you control: Add one mana of any color.",
+        "power": "2",
+        "toughness": "2",
+        "colors": [
+          "G"
+        ],
+        "color_identity": [
+          "G"
+        ],
+        "produced_mana": [
+          "B",
+          "G",
+          "R",
+          "U",
+          "W"
+        ],
+        "keywords": [
+          "Food"
+        ],
+        "edhrec_rank": 2363,
+        "price_usd": 29.36,
+        "price_eur": 26.46,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "tle",
+        "collector_number": "134",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "The One Ring",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 The One Ring",
+      "card": {
+        "name": "The One Ring",
+        "cmc": 4.0,
+        "mana_cost": "{4}",
+        "type_line": "Legendary Artifact",
+        "oracle_text": "Indestructible\nWhen The One Ring enters, if you cast it, you gain protection from everything until your next turn.\nAt the beginning of your upkeep, you lose 1 life for each burden counter on The One Ring.\n{T}: Put a burden counter on The One Ring, then draw a card for each burden counter on The One Ring.",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [],
+        "produced_mana": [],
+        "keywords": [
+          "Indestructible"
+        ],
+        "edhrec_rank": 91,
+        "price_usd": 121.53,
+        "price_eur": 90.1,
+        "commander_legal": true,
+        "game_changer": true,
+        "reserved": false,
+        "set_code": "ltr",
+        "collector_number": "246",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Thran Dynamo",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Thran Dynamo",
+      "card": {
+        "name": "Thran Dynamo",
+        "cmc": 4.0,
+        "mana_cost": "{4}",
+        "type_line": "Artifact",
+        "oracle_text": "{T}: Add {C}{C}{C}.",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [],
+        "produced_mana": [
+          "C"
+        ],
+        "keywords": [],
+        "edhrec_rank": 201,
+        "price_usd": 4.69,
+        "price_eur": 2.36,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "cmm",
+        "collector_number": "415",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:52:20Z"
+      }
+    },
+    {
+      "name": "Unwinding Clock",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Unwinding Clock",
+      "card": {
+        "name": "Unwinding Clock",
+        "cmc": 4.0,
+        "mana_cost": "{4}",
+        "type_line": "Artifact",
+        "oracle_text": "Untap all artifacts you control during each other player's untap step.",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [],
+        "produced_mana": [],
+        "keywords": [],
+        "edhrec_rank": 548,
+        "price_usd": 19.9,
+        "price_eur": 16.92,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "c18",
+        "collector_number": "228",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Urza's Mine",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Urza's Mine",
+      "card": {
+        "name": "Urza's Mine",
+        "cmc": 0.0,
+        "mana_cost": "",
+        "type_line": "Land — Urza's Mine",
+        "oracle_text": "{T}: Add {C}. If you control an Urza's Power-Plant and an Urza's Tower, add {C}{C} instead.",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [],
+        "produced_mana": [
+          "C"
+        ],
+        "keywords": [],
+        "edhrec_rank": 852,
+        "price_usd": 1.16,
+        "price_eur": 1.05,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "cmm",
+        "collector_number": "1051",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:52:20Z"
+      }
+    },
+    {
+      "name": "Urza's Power Plant",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Urza's Power Plant",
+      "card": {
+        "name": "Urza's Power Plant",
+        "cmc": 0.0,
+        "mana_cost": "",
+        "type_line": "Land — Urza's Power-Plant",
+        "oracle_text": "{T}: Add {C}. If you control an Urza's Mine and an Urza's Tower, add {C}{C} instead.",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [],
+        "produced_mana": [
+          "C"
+        ],
+        "keywords": [],
+        "edhrec_rank": 856,
+        "price_usd": 2.04,
+        "price_eur": 0.79,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "cmm",
+        "collector_number": "1052",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:52:20Z"
+      }
+    },
+    {
+      "name": "Urza's Saga",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Urza's Saga",
+      "card": {
+        "name": "Urza's Saga",
+        "cmc": 0.0,
+        "mana_cost": "",
+        "type_line": "Enchantment Land — Urza's Saga",
+        "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)\nI — This Saga gains \"{T}: Add {C}.\"\nII — This Saga gains \"{2}, {T}: Create a 0/0 colorless Construct artifact creature token with 'This token gets +1/+1 for each artifact you control.'\"\nIII — Search your library for an artifact card with mana cost {0} or {1}, put it onto the battlefield, then shuffle.",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [],
+        "produced_mana": [
+          "C"
+        ],
+        "keywords": [],
+        "edhrec_rank": 119,
+        "price_usd": 39.83,
+        "price_eur": 39.39,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "mh2",
+        "collector_number": "259",
+        "layout": "saga",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Urza's Tower",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Urza's Tower",
+      "card": {
+        "name": "Urza's Tower",
+        "cmc": 0.0,
+        "mana_cost": "",
+        "type_line": "Land — Urza's Tower",
+        "oracle_text": "{T}: Add {C}. If you control an Urza's Mine and an Urza's Power-Plant, add {C}{C}{C} instead.",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [],
+        "produced_mana": [
+          "C"
+        ],
+        "keywords": [],
+        "edhrec_rank": 840,
+        "price_usd": 0.88,
+        "price_eur": 0.96,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "cmm",
+        "collector_number": "1053",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:52:20Z"
+      }
+    },
+    {
+      "name": "Urza's Workshop",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Urza's Workshop",
+      "card": {
+        "name": "Urza's Workshop",
+        "cmc": 0.0,
+        "mana_cost": "",
+        "type_line": "Land — Urza's",
+        "oracle_text": "{T}: Add {C}.\nMetalcraft — {T}: Add {C} for each Urza's land you control. Activate only if you control three or more artifacts.",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [],
+        "produced_mana": [
+          "C"
+        ],
+        "keywords": [
+          "Metalcraft"
+        ],
+        "edhrec_rank": 2329,
+        "price_usd": 19.83,
+        "price_eur": 19.57,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "brc",
+        "collector_number": "28",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Vampiric Tutor",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Vampiric Tutor",
+      "card": {
+        "name": "Vampiric Tutor",
+        "cmc": 1.0,
+        "mana_cost": "{B}",
+        "type_line": "Instant",
+        "oracle_text": "Search your library for a card, then shuffle and put that card on top. You lose 2 life.",
+        "power": null,
+        "toughness": null,
+        "colors": [
+          "B"
+        ],
+        "color_identity": [
+          "B"
+        ],
+        "produced_mana": [],
+        "keywords": [],
+        "edhrec_rank": 113,
+        "price_usd": 54.34,
+        "price_eur": 41.78,
+        "commander_legal": true,
+        "game_changer": true,
+        "reserved": false,
+        "set_code": "dmr",
+        "collector_number": "108",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Voltaic Key",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Voltaic Key",
+      "card": {
+        "name": "Voltaic Key",
+        "cmc": 1.0,
+        "mana_cost": "{1}",
+        "type_line": "Artifact",
+        "oracle_text": "{1}, {T}: Untap target artifact.",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [],
+        "produced_mana": [],
+        "keywords": [],
+        "edhrec_rank": 1753,
+        "price_usd": 5.87,
+        "price_eur": 1.99,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "m11",
+        "collector_number": "219",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Wan Shi Tong, Librarian",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Wan Shi Tong, Librarian",
+      "card": {
+        "name": "Wan Shi Tong, Librarian",
+        "cmc": 2.0,
+        "mana_cost": "{X}{U}{U}",
+        "type_line": "Legendary Creature — Bird Spirit",
+        "oracle_text": "Flash\nFlying, vigilance\nWhen Wan Shi Tong enters, put X +1/+1 counters on him. Then draw half X cards, rounded down.\nWhenever an opponent searches their library, put a +1/+1 counter on Wan Shi Tong and draw a card.",
+        "power": "1",
+        "toughness": "1",
+        "colors": [
+          "U"
+        ],
+        "color_identity": [
+          "U"
+        ],
+        "produced_mana": [],
+        "keywords": [
+          "Flying",
+          "Vigilance",
+          "Flash"
+        ],
+        "edhrec_rank": 1286,
+        "price_usd": 37.18,
+        "price_eur": 40.85,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "tla",
+        "collector_number": "78",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    },
+    {
+      "name": "Deserted Temple",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Deserted Temple",
+      "card": {
+        "name": "Deserted Temple",
+        "cmc": 0.0,
+        "mana_cost": "",
+        "type_line": "Land",
+        "oracle_text": "{T}: Add {C}.\n{1}, {T}: Untap target land.",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": [],
+        "produced_mana": [
+          "C"
+        ],
+        "keywords": [],
+        "edhrec_rank": 1606,
+        "price_usd": 8.84,
+        "price_eur": 9.07,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "ltc",
+        "collector_number": "363",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:14Z"
+      }
+    },
+    {
+      "name": "Wishclaw Talisman",
+      "count": 1,
+      "is_commander": false,
+      "as_written": "1 Wishclaw Talisman",
+      "card": {
+        "name": "Wishclaw Talisman",
+        "cmc": 2.0,
+        "mana_cost": "{1}{B}",
+        "type_line": "Artifact",
+        "oracle_text": "This artifact enters with three wish counters on it.\n{1}, {T}, Remove a wish counter from this artifact: Search your library for a card, put it into your hand, then shuffle. An opponent gains control of this artifact. Activate only during your turn.",
+        "power": null,
+        "toughness": null,
+        "colors": [
+          "B"
+        ],
+        "color_identity": [
+          "B"
+        ],
+        "produced_mana": [],
+        "keywords": [],
+        "edhrec_rank": 517,
+        "price_usd": 1.87,
+        "price_eur": 2.16,
+        "commander_legal": true,
+        "game_changer": false,
+        "reserved": false,
+        "set_code": "fdn",
+        "collector_number": "617",
+        "layout": "normal",
+        "faces": [],
+        "fetched_at": "2026-09-10T16:57:09Z"
+      }
+    }
+  ],
+  "unresolved": [],
+  "parse_warnings": [
+    "commander taken from line 1 ('Ulalek, Fused Atrocity') because it is followed by a blank line; pass --commander to override"
+  ],
+  "parse_errors": [],
+  "curve": {
+    "buckets": {
+      "0": 4,
+      "1": 27,
+      "2": 15,
+      "3": 13,
+      "4": 8,
+      "5": 6,
+      "6": 0,
+      "7+": 0
+    },
+    "nonland_count": 73,
+    "land_count": 27,
+    "avg_cmc_nonland": 2.164,
+    "median_cmc_nonland": 2.0
+  },
+  "pips": {
+    "W": 13,
+    "U": 26,
+    "B": 7,
+    "R": 3,
+    "G": 9,
+    "C": 4,
+    "hybrid": 8
+  },
+  "prices": {
+    "usd": 4273.19,
+    "eur": 3160.38,
+    "missing_usd": 7,
+    "missing_eur": 8,
+    "missing_edhrec": 0
+  },
+  "game_changers": [
+    "Ancient Tomb",
+    "Crop Rotation",
+    "Demonic Tutor",
+    "Enlightened Tutor",
+    "Force of Will",
+    "Gaea's Cradle",
+    "Grim Monolith",
+    "Mana Vault",
+    "Mishra's Workshop",
+    "Mox Diamond",
+    "Rhystic Study",
+    "Seedborn Muse",
+    "Smothering Tithe",
+    "The One Ring",
+    "Vampiric Tutor"
+  ],
+  "identity_violations": [],
+  "commander_identity": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ],
+  "combos": {
+    "identity": "WUBRG",
+    "included": [
+      {
+        "id": "129-4131",
+        "pieces": [
+          {
+            "name": "Kinnan, Bonder Prodigy",
+            "zones": [
+              "B"
+            ],
+            "must_be_commander": false
+          },
+          {
+            "name": "Basalt Monolith",
+            "zones": [
+              "B"
+            ],
+            "must_be_commander": false
+          }
+        ],
+        "templates": [],
+        "produces": [
+          "Infinite colorless mana"
+        ],
+        "mana_needed": "",
+        "mana_value_needed": 0,
+        "bracket_tag": "R",
+        "popularity": 46915,
+        "notable_prerequisites": "",
+        "description": "Activate Basalt Monolith's first ability by tapping it, adding {4}.\nActivate Basalt Monolith's last ability by paying {3}, untapping it.\nRepeat."
+      },
+      {
+        "id": "129-184-4682",
+        "pieces": [
+          {
+            "name": "Faerie Mastermind",
+            "zones": [
+              "B"
+            ],
+            "must_be_commander": false
+          },
+          {
+            "name": "Smothering Tithe",
+            "zones": [
+              "B"
+            ],
+            "must_be_commander": false
+          },
+          {
+            "name": "Kinnan, Bonder Prodigy",
+            "zones": [
+              "B"
+            ],
+            "must_be_commander": false
+          }
+        ],
+        "templates": [],
+        "produces": [
+          "Infinite card draw for all players",
+          "Infinite draw triggers for all players",
+          "Near-infinite Treasure tokens",
+          "Near-infinite colored mana",
+          "Near-infinite colorless mana"
+        ],
+        "mana_needed": "{3}{U}",
+        "mana_value_needed": 4,
+        "bracket_tag": "P",
+        "popularity": 12247,
+        "notable_prerequisites": "You have at least three opponents.\nOpponents are unable to pay for Smothering Tithe's trigger.",
+        "description": "Activate Faerie Mastermind by paying {3}{U}, causing each player to draw a card.\nSmothering Tithe triggers for each opponent you have, creating at least three Treasure tokens.\nActivate two Treasures by tapping and sacrificing them, adding {1}{U}.\nKinnan triggers twice, adding {1}{U}.\nRepeat."
+      },
+      {
+        "id": "2751-5657-5665",
+        "pieces": [
+          {
+            "name": "Ulalek, Fused Atrocity",
+            "zones": [
+              "B"
+            ],
+            "must_be_commander": false
+          },
+          {
+            "name": "Strionic Resonator",
+            "zones": [
+              "B"
+            ],
+            "must_be_commander": false
+          },
+          {
+            "name": "Spawn-Gang Commander",
+            "zones": [
+              "H"
+            ],
+            "must_be_commander": false
+          }
+        ],
+        "templates": [],
+        "produces": [
+          "Infinite colorless mana",
+          "Infinite copies of abilities you control on the stack",
+          "Infinite creature tokens",
+          "Infinite damage",
+          "Infinite death triggers",
+          "Infinite creature ETB",
+          "Infinite creature LTB",
+          "Infinite creature sacrifice triggers"
+        ],
+        "mana_needed": "{5}{C}{C}{R}{R}",
+        "mana_value_needed": 9,
+        "bracket_tag": "E",
+        "popularity": 793,
+        "notable_prerequisites": "",
+        "description": "Cast Spawn-Gang Commander by paying {3}{R}{R}.\nUlalek and Spawn-Gang Commander trigger.\nHolding priority, activate Strionic Resonator by paying {2} and tapping it, copying Ulalek's trigger.\nResolve the copy of Ulalek's trigger, causing you to pay {C}{C} to copy the Spawn-Gang Commander spell, then Ulalek's trigger and Spawn-Gang Commander's trigger.\nResolve the copy of Spawn-Gang Commander's trigger, creating three 0/1 Eldrazi Spawn creature tokens.\nActivate two Eldrazi Spawn creature tokens by sacrificing them, adding {C}{C}.\nRepeat from step 4 any number of times.\nOnce you have infinite {C} and Eldrazi Spawn tokens, you may sacrifice them to Spawn-Gang Commander to deal infinite damage to any target(s), and you may resolve all copies of the Spawn-Gang Commander spell."
+      }
+    ],
+    "almost_included_count": 132,
+    "card_flags": {
+      "Ancient Tomb": {
+        "name": "Ancient Tomb",
+        "game_changer": true,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Arcane Signet": {
+        "name": "Arcane Signet",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Basalt Monolith": {
+        "name": "Basalt Monolith",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Candelabra of Tawnos": {
+        "name": "Candelabra of Tawnos",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Chain of Vapor": {
+        "name": "Chain of Vapor",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "City of Traitors": {
+        "name": "City of Traitors",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Clock of Omens": {
+        "name": "Clock of Omens",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Command Tower": {
+        "name": "Command Tower",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Crop Rotation": {
+        "name": "Crop Rotation",
+        "game_changer": true,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Deathrite Shaman": {
+        "name": "Deathrite Shaman",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Delighted Halfling": {
+        "name": "Delighted Halfling",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Delney, Streetwise Lookout": {
+        "name": "Delney, Streetwise Lookout",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Demonic Tutor": {
+        "name": "Demonic Tutor",
+        "game_changer": true,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Deserted Temple": {
+        "name": "Deserted Temple",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Eldritch Immunity": {
+        "name": "Eldritch Immunity",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Emergence Zone": {
+        "name": "Emergence Zone",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Enlightened Tutor": {
+        "name": "Enlightened Tutor",
+        "game_changer": true,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Eye of Ugin": {
+        "name": "Eye of Ugin",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Faerie Mastermind": {
+        "name": "Faerie Mastermind",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Flusterstorm": {
+        "name": "Flusterstorm",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Forbidden Orchard": {
+        "name": "Forbidden Orchard",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Force of Will": {
+        "name": "Force of Will",
+        "game_changer": true,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Gaea's Cradle": {
+        "name": "Gaea's Cradle",
+        "game_changer": true,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Glaring Fleshraker": {
+        "name": "Glaring Fleshraker",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Gleaming Splendor": {
+        "name": "Gleaming Splendor",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Grim Monolith": {
+        "name": "Grim Monolith",
+        "game_changer": true,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Kinnan, Bonder Prodigy": {
+        "name": "Kinnan, Bonder Prodigy",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Kirol, Attentive First-Year": {
+        "name": "Kirol, Attentive First-Year",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Kozilek's Command": {
+        "name": "Kozilek's Command",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Liberator, Urza's Battlethopter": {
+        "name": "Liberator, Urza's Battlethopter",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Lotus Petal": {
+        "name": "Lotus Petal",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Magus of the Candelabra": {
+        "name": "Magus of the Candelabra",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Mana Vault": {
+        "name": "Mana Vault",
+        "game_changer": true,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Manifold Key": {
+        "name": "Manifold Key",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Mishra's Workshop": {
+        "name": "Mishra's Workshop",
+        "game_changer": true,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Mox Diamond": {
+        "name": "Mox Diamond",
+        "game_changer": true,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Mox Opal": {
+        "name": "Mox Opal",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Nameless Inversion": {
+        "name": "Nameless Inversion",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Noxious Revival": {
+        "name": "Noxious Revival",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Omni-Changeling": {
+        "name": "Omni-Changeling",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Orim's Chant": {
+        "name": "Orim's Chant",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Pact of Negation": {
+        "name": "Pact of Negation",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Peter Parker's Camera": {
+        "name": "Peter Parker's Camera",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Phyrexian Metamorph": {
+        "name": "Phyrexian Metamorph",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Ragavan, Nimble Pilferer": {
+        "name": "Ragavan, Nimble Pilferer",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Relic of Legends": {
+        "name": "Relic of Legends",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Rhystic Study": {
+        "name": "Rhystic Study",
+        "game_changer": true,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Seedborn Muse": {
+        "name": "Seedborn Muse",
+        "game_changer": true,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Shields of Velis Vel": {
+        "name": "Shields of Velis Vel",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Silence": {
+        "name": "Silence",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Smothering Tithe": {
+        "name": "Smothering Tithe",
+        "game_changer": true,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Sol Ring": {
+        "name": "Sol Ring",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Spawn-Gang Commander": {
+        "name": "Spawn-Gang Commander",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Strionic Resonator": {
+        "name": "Strionic Resonator",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Swords to Plowshares": {
+        "name": "Swords to Plowshares",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Talon Gates of Madara": {
+        "name": "Talon Gates of Madara",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Tezzeret, Cruel Captain": {
+        "name": "Tezzeret, Cruel Captain",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "The One Ring": {
+        "name": "The One Ring",
+        "game_changer": true,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Thran Dynamo": {
+        "name": "Thran Dynamo",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Ulalek, Fused Atrocity": {
+        "name": "Ulalek, Fused Atrocity",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Unwinding Clock": {
+        "name": "Unwinding Clock",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Urza's Mine": {
+        "name": "Urza's Mine",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Urza's Power Plant": {
+        "name": "Urza's Power Plant",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Urza's Saga": {
+        "name": "Urza's Saga",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Urza's Tower": {
+        "name": "Urza's Tower",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Vampiric Tutor": {
+        "name": "Vampiric Tutor",
+        "game_changer": true,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      },
+      "Voltaic Key": {
+        "name": "Voltaic Key",
+        "game_changer": false,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "banned": false
+      }
+    },
+    "combo_flags": {
+      "129-184-4682": {
+        "combo_id": "129-184-4682",
+        "definitely_two_card": false,
+        "arguably_two_card": false,
+        "speed": 5,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "lock": false,
+        "skip_turns": false,
+        "relevant": true
+      },
+      "2751-5657-5665": {
+        "combo_id": "2751-5657-5665",
+        "definitely_two_card": true,
+        "arguably_two_card": true,
+        "speed": 2,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "lock": false,
+        "skip_turns": false,
+        "relevant": true
+      },
+      "129-4131": {
+        "combo_id": "129-4131",
+        "definitely_two_card": true,
+        "arguably_two_card": true,
+        "speed": 5,
+        "mass_land_denial": false,
+        "extra_turn": false,
+        "lock": false,
+        "skip_turns": false,
+        "relevant": true
+      }
+    },
+    "spellbook_bracket_tag": "R",
+    "fetched_at": "2026-09-10T16:59:05Z",
+    "schema_version": 1,
+    "api_version": "6.4.0"
+  },
+  "combos_unavailable_reason": null,
+  "profiles": {
+    "Ulalek, Fused Atrocity": {
+      "name": "Ulalek, Fused Atrocity",
+      "tags": [
+        "copy-spell"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": true,
+      "is_eldrazi": true,
+      "cmc": 5.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Dismember": {
+      "name": "Dismember",
+      "tags": [
+        "removal"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 3.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Ancient Tomb": {
+      "name": "Ancient Tomb",
+      "tags": [
+        "ramp"
+      ],
+      "is_land": true,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 0.0,
+      "mana_per_activation": 2,
+      "mana_colors": [
+        "C"
+      ],
+      "repeatable_mana": true,
+      "board_dependent_mana": false,
+      "land_mana": 2,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": "land",
+      "untagged": false
+    },
+    "Arcane Signet": {
+      "name": "Arcane Signet",
+      "tags": [
+        "mana-rock",
+        "ramp"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 2.0,
+      "mana_per_activation": 1,
+      "mana_colors": [
+        "any"
+      ],
+      "repeatable_mana": true,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Basalt Monolith": {
+      "name": "Basalt Monolith",
+      "tags": [
+        "mana-rock",
+        "ramp"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 3.0,
+      "mana_per_activation": 3,
+      "mana_colors": [
+        "C"
+      ],
+      "repeatable_mana": true,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": "rock",
+      "untagged": false
+    },
+    "Boseiju, Who Endures": {
+      "name": "Boseiju, Who Endures",
+      "tags": [
+        "removal"
+      ],
+      "is_land": true,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 0.0,
+      "mana_per_activation": 1,
+      "mana_colors": [
+        "G"
+      ],
+      "repeatable_mana": true,
+      "board_dependent_mana": false,
+      "land_mana": 1,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Candelabra of Tawnos": {
+      "name": "Candelabra of Tawnos",
+      "tags": [
+        "ramp"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 1.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Chain of Vapor": {
+      "name": "Chain of Vapor",
+      "tags": [
+        "removal"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 1.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "City of Brass": {
+      "name": "City of Brass",
+      "tags": [],
+      "is_land": true,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 0.0,
+      "mana_per_activation": 1,
+      "mana_colors": [
+        "any"
+      ],
+      "repeatable_mana": true,
+      "board_dependent_mana": false,
+      "land_mana": 1,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "City of Traitors": {
+      "name": "City of Traitors",
+      "tags": [
+        "ramp"
+      ],
+      "is_land": true,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 0.0,
+      "mana_per_activation": 2,
+      "mana_colors": [
+        "C"
+      ],
+      "repeatable_mana": true,
+      "board_dependent_mana": false,
+      "land_mana": 2,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": "land",
+      "untagged": false
+    },
+    "Clock of Omens": {
+      "name": "Clock of Omens",
+      "tags": [],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 4.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": true
+    },
+    "Command Tower": {
+      "name": "Command Tower",
+      "tags": [],
+      "is_land": true,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 0.0,
+      "mana_per_activation": 1,
+      "mana_colors": [
+        "any"
+      ],
+      "repeatable_mana": true,
+      "board_dependent_mana": false,
+      "land_mana": 1,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Crop Rotation": {
+      "name": "Crop Rotation",
+      "tags": [
+        "tutor"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 1.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Deathrite Shaman": {
+      "name": "Deathrite Shaman",
+      "tags": [
+        "mana-dork",
+        "ramp"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": true,
+      "is_eldrazi": false,
+      "cmc": 1.0,
+      "mana_per_activation": 1,
+      "mana_colors": [
+        "any"
+      ],
+      "repeatable_mana": true,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Delighted Halfling": {
+      "name": "Delighted Halfling",
+      "tags": [
+        "mana-dork",
+        "ramp"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": true,
+      "is_eldrazi": false,
+      "cmc": 1.0,
+      "mana_per_activation": 1,
+      "mana_colors": [
+        "C"
+      ],
+      "repeatable_mana": true,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Delney, Streetwise Lookout": {
+      "name": "Delney, Streetwise Lookout",
+      "tags": [],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": true,
+      "is_eldrazi": false,
+      "cmc": 3.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": true
+    },
+    "Demonic Tutor": {
+      "name": "Demonic Tutor",
+      "tags": [
+        "tutor"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 2.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Dimensional Infiltrator": {
+      "name": "Dimensional Infiltrator",
+      "tags": [],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": true,
+      "is_eldrazi": true,
+      "cmc": 2.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": true
+    },
+    "Eldrazi Temple": {
+      "name": "Eldrazi Temple",
+      "tags": [
+        "ramp"
+      ],
+      "is_land": true,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 0.0,
+      "mana_per_activation": 2,
+      "mana_colors": [
+        "C"
+      ],
+      "repeatable_mana": true,
+      "board_dependent_mana": false,
+      "land_mana": 2,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": "land",
+      "untagged": false
+    },
+    "Eldritch Immunity": {
+      "name": "Eldritch Immunity",
+      "tags": [],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": true,
+      "cmc": 1.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": true
+    },
+    "Emergence Zone": {
+      "name": "Emergence Zone",
+      "tags": [],
+      "is_land": true,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 0.0,
+      "mana_per_activation": 1,
+      "mana_colors": [
+        "C"
+      ],
+      "repeatable_mana": true,
+      "board_dependent_mana": false,
+      "land_mana": 1,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Enlightened Tutor": {
+      "name": "Enlightened Tutor",
+      "tags": [
+        "tutor"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 1.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Esper Sentinel": {
+      "name": "Esper Sentinel",
+      "tags": [
+        "card-advantage",
+        "hatebear",
+        "tax"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": true,
+      "is_eldrazi": false,
+      "cmc": 1.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Exotic Orchard": {
+      "name": "Exotic Orchard",
+      "tags": [],
+      "is_land": true,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 0.0,
+      "mana_per_activation": 1,
+      "mana_colors": [
+        "any"
+      ],
+      "repeatable_mana": true,
+      "board_dependent_mana": false,
+      "land_mana": 1,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Eye of Ugin": {
+      "name": "Eye of Ugin",
+      "tags": [
+        "cost-reducer",
+        "tutor"
+      ],
+      "is_land": true,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 0.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 2,
+      "cost_reduction_scope": "colorless eldrazi spells you cast",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": "land",
+      "untagged": false
+    },
+    "Faerie Mastermind": {
+      "name": "Faerie Mastermind",
+      "tags": [
+        "card-advantage",
+        "tax"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": true,
+      "is_eldrazi": false,
+      "cmc": 2.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 2,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Flusterstorm": {
+      "name": "Flusterstorm",
+      "tags": [
+        "counterspell"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 1.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Forbidden Orchard": {
+      "name": "Forbidden Orchard",
+      "tags": [],
+      "is_land": true,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 0.0,
+      "mana_per_activation": 1,
+      "mana_colors": [
+        "any"
+      ],
+      "repeatable_mana": true,
+      "board_dependent_mana": false,
+      "land_mana": 1,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Force of Negation": {
+      "name": "Force of Negation",
+      "tags": [
+        "counterspell",
+        "pitch-spell"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 3.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Force of Will": {
+      "name": "Force of Will",
+      "tags": [
+        "counterspell",
+        "pitch-spell"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 5.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Gaea's Cradle": {
+      "name": "Gaea's Cradle",
+      "tags": [
+        "ramp"
+      ],
+      "is_land": true,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 0.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": true,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": "land",
+      "untagged": false
+    },
+    "Glaring Fleshraker": {
+      "name": "Glaring Fleshraker",
+      "tags": [
+        "ramp"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": true,
+      "is_eldrazi": true,
+      "cmc": 3.0,
+      "mana_per_activation": 1,
+      "mana_colors": [
+        "C"
+      ],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Gleaming Splendor": {
+      "name": "Gleaming Splendor",
+      "tags": [
+        "card-advantage",
+        "ramp",
+        "tax"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 2.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 1,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Gemstone Caverns": {
+      "name": "Gemstone Caverns",
+      "tags": [
+        "ramp"
+      ],
+      "is_land": true,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 0.0,
+      "mana_per_activation": 1,
+      "mana_colors": [
+        "C"
+      ],
+      "repeatable_mana": true,
+      "board_dependent_mana": false,
+      "land_mana": 1,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Grim Monolith": {
+      "name": "Grim Monolith",
+      "tags": [
+        "mana-rock",
+        "ramp"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 2.0,
+      "mana_per_activation": 3,
+      "mana_colors": [
+        "C"
+      ],
+      "repeatable_mana": true,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": true,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": "rock",
+      "untagged": false
+    },
+    "Into the Flood Maw": {
+      "name": "Into the Flood Maw",
+      "tags": [
+        "removal"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 1.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Inventors' Fair": {
+      "name": "Inventors' Fair",
+      "tags": [
+        "tutor"
+      ],
+      "is_land": true,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 0.0,
+      "mana_per_activation": 1,
+      "mana_colors": [
+        "C"
+      ],
+      "repeatable_mana": true,
+      "board_dependent_mana": false,
+      "land_mana": 1,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "King T'Challa // Black Panther, Hope Enduring": {
+      "name": "King T'Challa // Black Panther, Hope Enduring",
+      "tags": [
+        "card-advantage"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": true,
+      "is_eldrazi": false,
+      "cmc": 3.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 2,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Kinnan, Bonder Prodigy": {
+      "name": "Kinnan, Bonder Prodigy",
+      "tags": [
+        "card-advantage",
+        "ramp"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": true,
+      "is_eldrazi": false,
+      "cmc": 2.0,
+      "mana_per_activation": 1,
+      "mana_colors": [
+        "any"
+      ],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Kirol, Attentive First-Year": {
+      "name": "Kirol, Attentive First-Year",
+      "tags": [],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": true,
+      "is_eldrazi": false,
+      "cmc": 3.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": true
+    },
+    "Kozilek's Command": {
+      "name": "Kozilek's Command",
+      "tags": [
+        "cantrip",
+        "card-advantage",
+        "ramp",
+        "removal"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": true,
+      "cmc": 2.0,
+      "mana_per_activation": 1,
+      "mana_colors": [
+        "C"
+      ],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 1,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Liberator, Urza's Battlethopter": {
+      "name": "Liberator, Urza's Battlethopter",
+      "tags": [],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": true,
+      "is_eldrazi": false,
+      "cmc": 3.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": true
+    },
+    "Lotho, Corrupt Shirriff": {
+      "name": "Lotho, Corrupt Shirriff",
+      "tags": [
+        "ramp",
+        "tax"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": true,
+      "is_eldrazi": false,
+      "cmc": 2.0,
+      "mana_per_activation": 1,
+      "mana_colors": [
+        "any"
+      ],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Lotus Petal": {
+      "name": "Lotus Petal",
+      "tags": [
+        "ramp"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 0.0,
+      "mana_per_activation": 1,
+      "mana_colors": [
+        "any"
+      ],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": true,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Magus of the Candelabra": {
+      "name": "Magus of the Candelabra",
+      "tags": [
+        "ramp"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": true,
+      "is_eldrazi": false,
+      "cmc": 1.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Mana Confluence": {
+      "name": "Mana Confluence",
+      "tags": [],
+      "is_land": true,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 0.0,
+      "mana_per_activation": 1,
+      "mana_colors": [
+        "any"
+      ],
+      "repeatable_mana": true,
+      "board_dependent_mana": false,
+      "land_mana": 1,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Mana Vault": {
+      "name": "Mana Vault",
+      "tags": [
+        "mana-rock",
+        "ramp"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 1.0,
+      "mana_per_activation": 3,
+      "mana_colors": [
+        "C"
+      ],
+      "repeatable_mana": true,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": true,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": "rock",
+      "untagged": false
+    },
+    "Manifold Key": {
+      "name": "Manifold Key",
+      "tags": [],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 1.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": "untap",
+      "untagged": true
+    },
+    "Mental Misstep": {
+      "name": "Mental Misstep",
+      "tags": [
+        "counterspell"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 1.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Mindbreak Trap": {
+      "name": "Mindbreak Trap",
+      "tags": [
+        "counterspell"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 4.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Misdirection": {
+      "name": "Misdirection",
+      "tags": [
+        "pitch-spell"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 5.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Mishra's Workshop": {
+      "name": "Mishra's Workshop",
+      "tags": [
+        "ramp"
+      ],
+      "is_land": true,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 0.0,
+      "mana_per_activation": 3,
+      "mana_colors": [
+        "C"
+      ],
+      "repeatable_mana": true,
+      "board_dependent_mana": false,
+      "land_mana": 2,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Mockingbird": {
+      "name": "Mockingbird",
+      "tags": [],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": true,
+      "is_eldrazi": false,
+      "cmc": 1.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": true
+    },
+    "Mox Diamond": {
+      "name": "Mox Diamond",
+      "tags": [
+        "mana-rock",
+        "ramp"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 0.0,
+      "mana_per_activation": 1,
+      "mana_colors": [
+        "any"
+      ],
+      "repeatable_mana": true,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": true,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Mox Opal": {
+      "name": "Mox Opal",
+      "tags": [
+        "mana-rock",
+        "ramp"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 0.0,
+      "mana_per_activation": 1,
+      "mana_colors": [
+        "any"
+      ],
+      "repeatable_mana": true,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": true,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": "rock",
+      "untagged": false
+    },
+    "Mystic Remora": {
+      "name": "Mystic Remora",
+      "tags": [
+        "card-advantage",
+        "tax"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 1.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 1,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Nameless Inversion": {
+      "name": "Nameless Inversion",
+      "tags": [
+        "removal"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 2.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Noxious Revival": {
+      "name": "Noxious Revival",
+      "tags": [],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 1.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": true
+    },
+    "Omni-Changeling": {
+      "name": "Omni-Changeling",
+      "tags": [],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": true,
+      "is_eldrazi": false,
+      "cmc": 5.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": true
+    },
+    "Orim's Chant": {
+      "name": "Orim's Chant",
+      "tags": [],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 1.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": true
+    },
+    "Otawara, Soaring City": {
+      "name": "Otawara, Soaring City",
+      "tags": [
+        "removal"
+      ],
+      "is_land": true,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 0.0,
+      "mana_per_activation": 1,
+      "mana_colors": [
+        "U"
+      ],
+      "repeatable_mana": true,
+      "board_dependent_mana": false,
+      "land_mana": 1,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Pact of Negation": {
+      "name": "Pact of Negation",
+      "tags": [
+        "counterspell"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 0.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Peter Parker's Camera": {
+      "name": "Peter Parker's Camera",
+      "tags": [],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 1.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": true
+    },
+    "Phyrexian Metamorph": {
+      "name": "Phyrexian Metamorph",
+      "tags": [],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": true,
+      "is_eldrazi": false,
+      "cmc": 4.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": true
+    },
+    "Planar Nexus": {
+      "name": "Planar Nexus",
+      "tags": [],
+      "is_land": true,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 0.0,
+      "mana_per_activation": 1,
+      "mana_colors": [
+        "C"
+      ],
+      "repeatable_mana": true,
+      "board_dependent_mana": false,
+      "land_mana": 1,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Ragavan, Nimble Pilferer": {
+      "name": "Ragavan, Nimble Pilferer",
+      "tags": [
+        "card-advantage",
+        "ramp"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": true,
+      "is_eldrazi": false,
+      "cmc": 1.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Ranger-Captain of Eos": {
+      "name": "Ranger-Captain of Eos",
+      "tags": [
+        "tutor"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": true,
+      "is_eldrazi": false,
+      "cmc": 3.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Relic of Legends": {
+      "name": "Relic of Legends",
+      "tags": [
+        "mana-rock",
+        "ramp"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 3.0,
+      "mana_per_activation": 1,
+      "mana_colors": [
+        "any"
+      ],
+      "repeatable_mana": true,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Rhystic Study": {
+      "name": "Rhystic Study",
+      "tags": [
+        "card-advantage",
+        "tax"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 3.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 1,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Seedborn Muse": {
+      "name": "Seedborn Muse",
+      "tags": [],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": true,
+      "is_eldrazi": false,
+      "cmc": 5.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": "untap",
+      "untagged": true
+    },
+    "Shields of Velis Vel": {
+      "name": "Shields of Velis Vel",
+      "tags": [],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 1.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": true
+    },
+    "Fellwar Stone": {
+      "name": "Fellwar Stone",
+      "tags": [
+        "mana-rock",
+        "ramp"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 2.0,
+      "mana_per_activation": 1,
+      "mana_colors": [
+        "any"
+      ],
+      "repeatable_mana": true,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Silence": {
+      "name": "Silence",
+      "tags": [],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 1.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": true
+    },
+    "Smothering Tithe": {
+      "name": "Smothering Tithe",
+      "tags": [
+        "ramp",
+        "tax"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 4.0,
+      "mana_per_activation": 1,
+      "mana_colors": [
+        "any"
+      ],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 1,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Snapback": {
+      "name": "Snapback",
+      "tags": [
+        "pitch-spell",
+        "removal"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 2.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Sol Ring": {
+      "name": "Sol Ring",
+      "tags": [
+        "mana-rock",
+        "ramp"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 1.0,
+      "mana_per_activation": 2,
+      "mana_colors": [
+        "C"
+      ],
+      "repeatable_mana": true,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": true,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Sowing Mycospawn": {
+      "name": "Sowing Mycospawn",
+      "tags": [
+        "land-ramp",
+        "ramp",
+        "removal",
+        "tutor"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": true,
+      "is_eldrazi": true,
+      "cmc": 4.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Spawn-Gang Commander": {
+      "name": "Spawn-Gang Commander",
+      "tags": [
+        "ramp",
+        "removal"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": true,
+      "is_eldrazi": true,
+      "cmc": 5.0,
+      "mana_per_activation": 1,
+      "mana_colors": [
+        "C"
+      ],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Spire of Industry": {
+      "name": "Spire of Industry",
+      "tags": [],
+      "is_land": true,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 0.0,
+      "mana_per_activation": 1,
+      "mana_colors": [
+        "C"
+      ],
+      "repeatable_mana": true,
+      "board_dependent_mana": false,
+      "land_mana": 1,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Starting Town": {
+      "name": "Starting Town",
+      "tags": [],
+      "is_land": true,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 0.0,
+      "mana_per_activation": 1,
+      "mana_colors": [
+        "C"
+      ],
+      "repeatable_mana": true,
+      "board_dependent_mana": false,
+      "land_mana": 1,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Strionic Resonator": {
+      "name": "Strionic Resonator",
+      "tags": [],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 2.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": true
+    },
+    "Swan Song": {
+      "name": "Swan Song",
+      "tags": [
+        "counterspell"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 1.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Swords to Plowshares": {
+      "name": "Swords to Plowshares",
+      "tags": [
+        "removal"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 1.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Talon Gates of Madara": {
+      "name": "Talon Gates of Madara",
+      "tags": [
+        "cheat-into-play",
+        "land-ramp",
+        "ramp"
+      ],
+      "is_land": true,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 0.0,
+      "mana_per_activation": 1,
+      "mana_colors": [
+        "C"
+      ],
+      "repeatable_mana": true,
+      "board_dependent_mana": false,
+      "land_mana": 1,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Tarnished Citadel": {
+      "name": "Tarnished Citadel",
+      "tags": [],
+      "is_land": true,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 0.0,
+      "mana_per_activation": 1,
+      "mana_colors": [
+        "C"
+      ],
+      "repeatable_mana": true,
+      "board_dependent_mana": false,
+      "land_mana": 1,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Tezzeret, Cruel Captain": {
+      "name": "Tezzeret, Cruel Captain",
+      "tags": [
+        "tutor"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 3.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "The Cabbage Merchant": {
+      "name": "The Cabbage Merchant",
+      "tags": [
+        "ramp",
+        "tax"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": true,
+      "is_eldrazi": false,
+      "cmc": 3.0,
+      "mana_per_activation": 1,
+      "mana_colors": [
+        "any"
+      ],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "The One Ring": {
+      "name": "The One Ring",
+      "tags": [
+        "card-advantage"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 4.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Thran Dynamo": {
+      "name": "Thran Dynamo",
+      "tags": [
+        "mana-rock",
+        "ramp"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 4.0,
+      "mana_per_activation": 3,
+      "mana_colors": [
+        "C"
+      ],
+      "repeatable_mana": true,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Unwinding Clock": {
+      "name": "Unwinding Clock",
+      "tags": [],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 4.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": "untap",
+      "untagged": true
+    },
+    "Urza's Mine": {
+      "name": "Urza's Mine",
+      "tags": [
+        "ramp"
+      ],
+      "is_land": true,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 0.0,
+      "mana_per_activation": 2,
+      "mana_colors": [
+        "C"
+      ],
+      "repeatable_mana": true,
+      "board_dependent_mana": false,
+      "land_mana": 1,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": "land",
+      "untagged": false
+    },
+    "Urza's Power Plant": {
+      "name": "Urza's Power Plant",
+      "tags": [
+        "ramp"
+      ],
+      "is_land": true,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 0.0,
+      "mana_per_activation": 2,
+      "mana_colors": [
+        "C"
+      ],
+      "repeatable_mana": true,
+      "board_dependent_mana": false,
+      "land_mana": 1,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": "land",
+      "untagged": false
+    },
+    "Urza's Saga": {
+      "name": "Urza's Saga",
+      "tags": [
+        "tutor"
+      ],
+      "is_land": true,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 0.0,
+      "mana_per_activation": 1,
+      "mana_colors": [
+        "C"
+      ],
+      "repeatable_mana": true,
+      "board_dependent_mana": false,
+      "land_mana": 1,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Urza's Tower": {
+      "name": "Urza's Tower",
+      "tags": [
+        "ramp"
+      ],
+      "is_land": true,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 0.0,
+      "mana_per_activation": 3,
+      "mana_colors": [
+        "C"
+      ],
+      "repeatable_mana": true,
+      "board_dependent_mana": false,
+      "land_mana": 1,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": "land",
+      "untagged": false
+    },
+    "Urza's Workshop": {
+      "name": "Urza's Workshop",
+      "tags": [
+        "ramp"
+      ],
+      "is_land": true,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 0.0,
+      "mana_per_activation": 1,
+      "mana_colors": [
+        "C"
+      ],
+      "repeatable_mana": true,
+      "board_dependent_mana": true,
+      "land_mana": 1,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": "land",
+      "untagged": false
+    },
+    "Vampiric Tutor": {
+      "name": "Vampiric Tutor",
+      "tags": [
+        "tutor"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 1.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Voltaic Key": {
+      "name": "Voltaic Key",
+      "tags": [],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 1.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": true
+    },
+    "Wan Shi Tong, Librarian": {
+      "name": "Wan Shi Tong, Librarian",
+      "tags": [
+        "card-advantage",
+        "tax"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": true,
+      "is_eldrazi": false,
+      "cmc": 2.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 1,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Deserted Temple": {
+      "name": "Deserted Temple",
+      "tags": [],
+      "is_land": true,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 0.0,
+      "mana_per_activation": 1,
+      "mana_colors": [
+        "C"
+      ],
+      "repeatable_mana": true,
+      "board_dependent_mana": false,
+      "land_mana": 1,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    },
+    "Wishclaw Talisman": {
+      "name": "Wishclaw Talisman",
+      "tags": [
+        "tutor"
+      ],
+      "is_land": false,
+      "is_basic_land": false,
+      "is_creature": false,
+      "is_eldrazi": false,
+      "cmc": 2.0,
+      "mana_per_activation": 0,
+      "mana_colors": [],
+      "repeatable_mana": false,
+      "board_dependent_mana": false,
+      "land_mana": 0,
+      "is_fast_mana": false,
+      "cost_reduction": 0,
+      "cost_reduction_scope": "",
+      "draw_count": 0,
+      "enters_tapped": false,
+      "special": null,
+      "untagged": false
+    }
+  },
+  "partition": {
+    "lands": [
+      "Ancient Tomb",
+      "Boseiju, Who Endures",
+      "City of Brass",
+      "City of Traitors",
+      "Command Tower",
+      "Deserted Temple",
+      "Eldrazi Temple",
+      "Emergence Zone",
+      "Exotic Orchard",
+      "Eye of Ugin",
+      "Forbidden Orchard",
+      "Gaea's Cradle",
+      "Gemstone Caverns",
+      "Inventors' Fair",
+      "Mana Confluence",
+      "Mishra's Workshop",
+      "Otawara, Soaring City",
+      "Planar Nexus",
+      "Spire of Industry",
+      "Starting Town",
+      "Talon Gates of Madara",
+      "Tarnished Citadel",
+      "Urza's Mine",
+      "Urza's Power Plant",
+      "Urza's Saga",
+      "Urza's Tower",
+      "Urza's Workshop"
+    ],
+    "fast_mana": [
+      "Grim Monolith",
+      "Lotus Petal",
+      "Mana Vault",
+      "Mox Diamond",
+      "Mox Opal",
+      "Sol Ring"
+    ],
+    "mana_rocks": [
+      "Arcane Signet",
+      "Basalt Monolith",
+      "Fellwar Stone",
+      "Relic of Legends",
+      "Thran Dynamo"
+    ],
+    "mana_dorks": [
+      "Deathrite Shaman",
+      "Delighted Halfling"
+    ],
+    "land_ramp": [
+      "Sowing Mycospawn"
+    ],
+    "rituals": [],
+    "other_ramp": [
+      "Candelabra of Tawnos",
+      "Glaring Fleshraker",
+      "Gleaming Splendor",
+      "Kinnan, Bonder Prodigy",
+      "Kozilek's Command",
+      "Lotho, Corrupt Shirriff",
+      "Magus of the Candelabra",
+      "Ragavan, Nimble Pilferer",
+      "Smothering Tithe",
+      "Spawn-Gang Commander",
+      "The Cabbage Merchant"
+    ],
+    "cost_reducers": [
+      "Eye of Ugin"
+    ],
+    "tutors": [
+      "Crop Rotation",
+      "Demonic Tutor",
+      "Enlightened Tutor",
+      "Eye of Ugin",
+      "Inventors' Fair",
+      "Ranger-Captain of Eos",
+      "Sowing Mycospawn",
+      "Tezzeret, Cruel Captain",
+      "Urza's Saga",
+      "Vampiric Tutor",
+      "Wishclaw Talisman"
+    ],
+    "counterspells": [
+      "Flusterstorm",
+      "Force of Negation",
+      "Force of Will",
+      "Mental Misstep",
+      "Mindbreak Trap",
+      "Pact of Negation",
+      "Swan Song"
+    ],
+    "board_wipes": [],
+    "removal": [
+      "Boseiju, Who Endures",
+      "Chain of Vapor",
+      "Dismember",
+      "Into the Flood Maw",
+      "Kozilek's Command",
+      "Nameless Inversion",
+      "Otawara, Soaring City",
+      "Snapback",
+      "Sowing Mycospawn",
+      "Spawn-Gang Commander",
+      "Swords to Plowshares"
+    ],
+    "cantrips": [
+      "Kozilek's Command"
+    ],
+    "card_advantage": [
+      "Esper Sentinel",
+      "Faerie Mastermind",
+      "Gleaming Splendor",
+      "King T'Challa // Black Panther, Hope Enduring",
+      "Kinnan, Bonder Prodigy",
+      "Mystic Remora",
+      "Ragavan, Nimble Pilferer",
+      "Rhystic Study",
+      "The One Ring",
+      "Wan Shi Tong, Librarian"
+    ],
+    "extra_turns": [],
+    "mass_land_denial": [],
+    "pitch_spells": [
+      "Force of Negation",
+      "Force of Will",
+      "Misdirection",
+      "Snapback"
+    ],
+    "stax": [
+      "Esper Sentinel",
+      "Faerie Mastermind",
+      "Gleaming Splendor",
+      "Lotho, Corrupt Shirriff",
+      "Mystic Remora",
+      "Rhystic Study",
+      "Smothering Tithe",
+      "The Cabbage Merchant",
+      "Wan Shi Tong, Librarian"
+    ],
+    "reanimate": [],
+    "cheat_into_play": [
+      "Talon Gates of Madara"
+    ],
+    "extra_combat": [],
+    "copy_spell": [
+      "Ulalek, Fused Atrocity"
+    ],
+    "creatures": [
+      "Deathrite Shaman",
+      "Delighted Halfling",
+      "Delney, Streetwise Lookout",
+      "Dimensional Infiltrator",
+      "Esper Sentinel",
+      "Faerie Mastermind",
+      "Glaring Fleshraker",
+      "King T'Challa // Black Panther, Hope Enduring",
+      "Kinnan, Bonder Prodigy",
+      "Kirol, Attentive First-Year",
+      "Liberator, Urza's Battlethopter",
+      "Lotho, Corrupt Shirriff",
+      "Magus of the Candelabra",
+      "Mockingbird",
+      "Omni-Changeling",
+      "Phyrexian Metamorph",
+      "Ragavan, Nimble Pilferer",
+      "Ranger-Captain of Eos",
+      "Seedborn Muse",
+      "Sowing Mycospawn",
+      "Spawn-Gang Commander",
+      "The Cabbage Merchant",
+      "Ulalek, Fused Atrocity",
+      "Wan Shi Tong, Librarian"
+    ],
+    "untagged": [
+      "Clock of Omens",
+      "Delney, Streetwise Lookout",
+      "Dimensional Infiltrator",
+      "Eldritch Immunity",
+      "Kirol, Attentive First-Year",
+      "Liberator, Urza's Battlethopter",
+      "Manifold Key",
+      "Mockingbird",
+      "Noxious Revival",
+      "Omni-Changeling",
+      "Orim's Chant",
+      "Peter Parker's Camera",
+      "Phyrexian Metamorph",
+      "Seedborn Muse",
+      "Shields of Velis Vel",
+      "Silence",
+      "Strionic Resonator",
+      "Unwinding Clock",
+      "Voltaic Key"
+    ]
+  },
+  "partition_counts": {
+    "lands": 27,
+    "fast_mana": 6,
+    "mana_rocks": 5,
+    "mana_dorks": 2,
+    "land_ramp": 1,
+    "rituals": 0,
+    "other_ramp": 11,
+    "cost_reducers": 1,
+    "tutors": 11,
+    "counterspells": 7,
+    "board_wipes": 0,
+    "removal": 11,
+    "cantrips": 1,
+    "card_advantage": 10,
+    "extra_turns": 0,
+    "mass_land_denial": 0,
+    "pitch_spells": 4,
+    "stax": 9,
+    "reanimate": 0,
+    "cheat_into_play": 1,
+    "extra_combat": 0,
+    "copy_spell": 1,
+    "creatures": 24,
+    "untagged": 19
+  },
+  "special_hits": [
+    "Ancient Tomb (land, mana 2)",
+    "Basalt Monolith (rock, mana 3)",
+    "City of Traitors (land, mana 2)",
+    "Eldrazi Temple (land, mana 2)",
+    "Eye of Ugin (land, mana 0)",
+    "Gaea's Cradle (land, mana 0)",
+    "Grim Monolith (rock, mana 3)",
+    "Mana Vault (rock, mana 3)",
+    "Manifold Key (untap, mana 0)",
+    "Mox Opal (rock, mana 1)",
+    "Seedborn Muse (untap, mana 0)",
+    "Unwinding Clock (untap, mana 0)",
+    "Urza's Mine (land, mana 1)",
+    "Urza's Power Plant (land, mana 1)",
+    "Urza's Tower (land, mana 1)",
+    "Urza's Workshop (land, mana 1)"
+  ],
+  "untagged": [
+    "Clock of Omens",
+    "Delney, Streetwise Lookout",
+    "Dimensional Infiltrator",
+    "Eldritch Immunity",
+    "Kirol, Attentive First-Year",
+    "Liberator, Urza's Battlethopter",
+    "Manifold Key",
+    "Mockingbird",
+    "Noxious Revival",
+    "Omni-Changeling",
+    "Orim's Chant",
+    "Peter Parker's Camera",
+    "Phyrexian Metamorph",
+    "Seedborn Muse",
+    "Shields of Velis Vel",
+    "Silence",
+    "Strionic Resonator",
+    "Unwinding Clock",
+    "Voltaic Key"
+  ],
+  "tags_status": "ok",
+  "fetched": {
+    "scryfall_cards_oldest": "2026-09-10T16:52:20Z",
+    "scryfall_cards_newest": "2026-09-10T16:59:01Z",
+    "scryfall_cards_unknown": 0,
+    "spellbook": "2026-09-10T16:59:05Z",
+    "spellbook_api_version": "6.4.0",
+    "tags_oldest": "2026-09-10T16:52:51Z",
+    "tags_newest": "2026-09-10T16:57:01Z"
+  }
+}

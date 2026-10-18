@@ -1,0 +1,87 @@
+# Every tuning constant for the scorers and the tipping point. `config_version` and the profile
+# names are stamped into the JSON output; golden tests pin the fixture results, so changing a value
+# here is a deliberate re-baseline (bump config_version when semantics change, not for every tweak).
+config_version = 1
+default_curve_profile = "edhpowerlevel-2026-08"
+default_components_profile = "v1"
+
+# ---- curve model: faithful edhpowerlevel.com constants ---------------------------------------
+[curve."edhpowerlevel-2026-08"]
+source = "edhpowerlevel.com client bundle main-C1lbqCDd.js, `factors` block (vendored 2026-09-10)"
+land = 0.6
+reserved = 0.2
+favor_price = 0.25
+power_curve = [0, 250, 320, 350, 380, 420, 470, 560, 760, 890, 1000]
+pop_curve = [0, 8500, 13600, 17100, 19800, 21900, 23700, 25300, 26200, 26700, 27000]
+price_curve = [0, 0.5, 1.5, 3.5, 6, 10, 15, 25, 40, 65, 100]
+bracket_curve = [0, 4.7, 6.7, 7.7, 9.25, 10]
+cmc_floor = 1.75
+cmc_ceiling = 6
+efficiency_limits = [0.65, 1.1]
+basic_land_impact = 2
+tipping_share = 0.65
+
+# ---- component model: six capped components, weights sum to 1 ---------------------------------
+[components.v1]
+combo_two_card_value = 1.0
+combo_other_value = 0.5
+curve_avg_mv_best = 2.0
+curve_avg_mv_worst = 4.5
+curve_ramp_cap = 12
+curve_ramp_share = 0.4
+
+[components.v1.parts]
+fast_mana = { cap = 6, weight = 0.20 }
+tutors = { cap = 8, weight = 0.15 }
+interaction = { cap = 12, weight = 0.15 }
+card_advantage = { cap = 12, weight = 0.15 }
+combos = { cap = 4, weight = 0.20 }
+curve = { cap = 10, weight = 0.15 }
+
+[components.v1.archetype]
+combo_min_two_card = 1
+combo_min_lines = 3
+combo_min_tutors = 3
+stax_min = 6
+control_min_interaction = 12
+control_min_counterspells = 4
+creature_min = 30
+big_mana_min_avg_mv = 4.0
+big_mana_min_ramp = 10
+
+# ---- tipping point: closed-form heuristic (scrollvault's boosts, our land classes) -------------
+[tipping]
+threshold = 0.8
+fast_mana_boost = 0.85
+fast_mana_boost_max = 1.5
+ramp_boost = 0.45
+ramp_boost_max = 2.0
+ramp_boost_from_turn = 3
+max_turn = 7
+target_min = 2
+target_max = 6
+heavy_creature_mv = 6
+cheat_min = 2
+heavy_min = 3
+
+# ---- goldfish simulator (Plan C): seeded Monte Carlo driven by CardProfile ---------------------
+[sim]
+version = 1                 # stamped into the JSON as sim_version; bump when the model's semantics change
+iterations = 20000          # production default; --iterations overrides; golden tests use 500
+max_turn = 12
+opening_hand = 7
+mulligan_min_lands = 2      # one London mulligan when the opener has fewer lands than this ...
+mulligan_max_lands = 5      # ... or more than this; the second seven is kept and one card bottomed
+mana_threshold = 7          # "effective mana threshold reached" clock
+threat_mv = 7               # "first large threat cast" clock: MV >= this, from hand, mana paid
+lethal_damage = 40          # combat clock: cumulative unblocked power against one opponent
+metalcraft_count = 3        # artifacts needed for requires = "metalcraft" sources
+max_two_card_lines = 8      # scrollvault's caps on simulated Spellbook lines
+max_three_card_lines = 6
+lethal_features = ["infinite damage", "win the game", "loses the game", "lifeloss", "life loss", "infinite mill", "poison"]
+
+# ---- report narrative: thresholds for the findings block --------------------------------------
+[narrative]
+lowest_components = 2       # how many weakest components to name
+scorer_gap = 2.0             # |curve power − component total| at which the scorers "disagree"
+idle_share = 0.25           # a turn is part of the idle window when the deck casts nothing in >= this share of games

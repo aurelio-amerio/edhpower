@@ -1,2 +1,176 @@
 # edhpower
-A simulation suit to grade your EDH deck 
+
+Commander (EDH) deck power analysis. Given a decklist, reports mana-curve statistics,
+a functional profile of the deck built from Scryfall oracle tags, detected combos
+(Commander Spellbook), two power scores side by side, a tipping-point estimate, the
+official WotC minimum bracket with the cards that trigger each criterion, a seeded
+goldfish simulation with commander, mana, threat, combat and combo clocks, and a
+findings block that reads those numbers back.
+
+## Install
+
+Not on PyPI yet; install straight from GitHub with [uv](https://docs.astral.sh/uv/):
+
+    # run once without installing
+    uvx --from git+https://github.com/aurelio-amerio/edhpower edhpower path/to/decklist.txt
+
+    # or install the `edhpower` command permanently
+    uv tool install git+https://github.com/aurelio-amerio/edhpower
+
+From a clone, `uv run edhpower ...` and `uv run pytest -q` work directly.
+
+## Usage
+
+    uv run edhpower path/to/decklist.txt --json out.json
+
+Options: `--commander NAME` (repeatable), `--json PATH`, `--facts-json PATH`,
+`--from-facts PATH` (offline replay), `--allow-unresolved`, `--no-combos`, `--no-tags`,
+`--refresh-tags`, `--cache-dir DIR`, `--iterations N` (default 20 000), `--no-sim`.
+
+Exit codes: 0 ok · 1 usage/parse error (including no commander identified) · 2 unresolved card names · 3 a data source was unreachable or misconfigured.
+
+## Decklist formats
+
+- Plain: `1 Card Name` per line, `//` comments. The commander is the first line if it is
+  followed by a blank line, or the entry after a `// Commander` comment. If no commander
+  can be identified the run aborts; pass `--commander NAME` (repeatable for partners).
+- Archidekt export: `1x Card Name (set) 123 [Category]`; `[Commander]` marks the commander.
+- JSON: `{"commanders": ["..."], "main": [{"name": "...", "count": 1}]}`.
+
+Double-faced cards may be written as `Front // Back` or just `Front`.
+
+## What the report contains
+
+- **Mana curve** — histogram, average and median MV of the non-land cards, pip counts, prices.
+- **Game Changers and combos** — Spellbook lines with their bracket tag, speed and whether
+  the line is definitely two cards.
+- **Functional profile** — lands (by mana produced), fast mana, rocks, dorks, land ramp,
+  rituals, cost reducers, tutors, interaction, card advantage, stax, creatures; the
+  `special_behaviours` hits; and the untagged cards.
+- **Power** — the two scores (below).
+- **Tipping point** — the turn the deck is expected to reach its functional average mana value.
+- **Bracket** — the minimum bracket implied by the official criteria, with the triggering cards.
+- **Goldfish simulation** — the clock table: median turn and cumulative share by turn for
+  each clock, average mana, share of games casting nothing, which Spellbook lines were
+  simulated and which were not and why, model coverage.
+- **Findings** — bracket triggers, weakest components, scorer agreement, closed-form vs
+  simulated tipping, idle window, combo summary, clock medians.
+- **Data freshness** — cache ages and staleness warnings.
+
+## The two power scores
+
+They are reported side by side and never blended:
+
+- **Curve model** — a faithful port of edhpowerlevel.com's published model: each card's impact
+  is derived from its mana value, USD price and EDHREC rank, and the deck's power is
+  `total impact × efficiency`. Because it is faithful, a difference against the site is
+  attributable (price vendor, printing, rank drift, the site's own override list). It needs
+  USD prices; cards without one are counted in `missing_price`.
+- **Component model** — six capped components taken from the functional profile: fast mana,
+  tutors, interaction, card advantage, combos, curve (which folds in ramp), each scaled against
+  a cap and weighted. `stax` is not a component; it only feeds the informational archetype guess.
+  Caps, weights and the tipping constants live in `src/edhpower/data/scoring.toml`; the file
+  carries a `config_version` and named profiles, and the active profile names are stamped
+  into every JSON output. The reported `archetype` is informational only.
+
+The **tipping point** is a stated heuristic, not a simulation: the deck's functional average
+mana value (clamped to 2–6 mana) versus a closed-form estimate of available mana per turn,
+including land classes, fast mana and ramp (from turn 3), reported as the first turn whose
+probability crosses 0.8. The goldfish simulation is the headline; the closed-form number is
+kept as a cross-check and the findings block compares the two.
+
+## The goldfish simulation
+
+The simulation is seeded from the resolved decklist (the seed is a hash of the sorted
+`(canonical name, count)` pairs, so reordering or commenting the decklist does not change a
+single number — the seed is printed in the report). Each game is played on the play, with one
+London mulligan for hands outside 2–5 lands, and no opponent. Colours are enforced in every
+payment.
+
+What is modelled comes from each card's `CardProfile`: lands by class, mana rocks, mana dorks,
+one-shot mana (rituals and sacrifice sources), cost reducers with their scope, tutors digging
+for combo pieces, land-ramp and draw spells, and the `special_behaviours` params — Monolith-style
+untap engines, metalcraft, tron lands, creature-scaled lands, mana doublers, and City of
+Traitors-style sacrifice-on-land-drop.
+
+The combo model plays 2- and 3-card Spellbook `included` lines that carry no template — each
+piece not yet on the battlefield is cast for its own parsed mana cost, with colours enforced and
+board cost reductions applied, and Spellbook's `manaValueNeeded` is then paid as generic mana on
+top (falling back to `parse_cost(manaNeeded)` when that field is not an integer). At most 8 two-
+card and 6 three-card lines are simulated (`max_two_card_lines` / `max_three_card_lines` in
+`scoring.toml`), most popular first; lines beyond those caps, and templated lines, are reported
+as *not simulated* and never assumed to resolve — those caps are why a deck with 17 `included`
+lines simulates 9 of them.
+
+Each clock (commander, mana threshold, tipping target, threat, combat, combo, lethal combo — the
+seven entries of `engine.CLOCKS`) reports a median turn and a by-turn cumulative share. A game
+that never reaches a clock counts as turn 13 for the median; a clock is printed as `>T12` when
+fewer than half of games reach it by turn 12.
+
+Known limits of sim v1 (each a source of systematic bias, not noise; from `CALIBRATION.md`):
+
+- Mana payment is greedy by colour; it does not hold up a wrong-coloured source hoping for a
+  better later play.
+- Interaction (counterspells, removal, board wipes) is never cast — the goldfish has nothing to
+  interact with.
+- Tutors dig only for a simulated Spellbook combo line; a tutor with no line to fetch is held
+  rather than fetching a generic threat, which under-counts tutor-into-threat play.
+- Land-ramp spells (Nature's Lore, Three Visits, etc.) fetch any 1-mana land, tapped, regardless
+  of what the deck actually wants.
+- Command Tower-style lands are read as five-colour sources regardless of the commander's actual
+  colour identity.
+- Cheat-into-play, reanimation, extra combats and copy effects are not modelled.
+- Commander tax is not modelled.
+- The Mox Opal `requires` gap (see above) is fixed in the simulator's mana model but still open
+  in the static `fast_mana` component.
+
+`[sim]` in `src/edhpower/data/scoring.toml` holds the simulator's tuning constants; `sim_version`
+is stamped into the JSON alongside `config_version`. Golden tests run the simulator at 500 games;
+production defaults to 20 000 (`--iterations` overrides either).
+
+## Data sources and caching
+
+- **Scryfall** for card data — `<cache-dir>/cards.jsonl`, one JSON line per card, each stamped
+  with its own fetch date. Cards older than **7 days** raise a staleness warning, because
+  prices, EDHREC ranks and Game Changer flags drift.
+- **Scryfall oracle tags** for the functional profile — `<cache-dir>/tags/<slug>.json`, one file
+  per slug (about 21 slugs, ~150 paged requests at 1 request/second on the first run, a few
+  minutes). Subsequent runs read the cache. `--refresh-tags` refetches everything;
+  `--no-tags` skips it, which makes the component score and the bracket `tutors` criterion
+  `unevaluated` rather than zero. A tag cache older than **30 days** raises a staleness
+  warning. A slug Scryfall does not recognise is a configuration error and aborts the run;
+  it never becomes an empty tag set.
+- **Commander Spellbook** for combo lines and bracket flags (not cached; skipped with `--no-combos`).
+- Game Changer membership comes from Scryfall's `game_changer` field, cross-checked with Spellbook.
+- Spellbook does not report card names it fails to recognise (its bracket echo lists only a
+  subset of the cards sent, not just flagged ones), so edhpower always sends Scryfall's canonical
+  names and cannot detect a silently ignored card.
+
+The cache directory is `$EDHPOWER_CACHE_DIR`, `--cache-dir`, or `~/.cache/edhpower`.
+
+`src/edhpower/data/special_behaviours.toml` is a small explicit table for cards whose text the
+generic extractor cannot read correctly (Ancient Tomb, Eldrazi Temple, Eye of Ugin, Gaea's Cradle,
+Urza lands, Forsaken Monument, the untap engines). Every hit is listed in the report, so the
+table's effect on a given deck is always visible.
+
+The bracket is a **minimum** implied by the official deckbuilding criteria; Brackets 1 and 5
+are self-declared. Criteria that cannot be evaluated (e.g. Spellbook unreachable, tags skipped)
+are reported as `unevaluated`, never assumed satisfied.
+
+## Offline replay, fixtures and calibration
+
+`--facts-json PATH` writes the `DeckFacts` — every external input, with provenance — and
+`--from-facts PATH` re-runs the whole analysis from it with no network. `DeckFacts` is at
+**schema version 2**; `--from-facts` rejects any other version rather than guessing.
+
+`tests/fixtures/*.facts.json` are frozen live runs of five decks (two Eldrazi bracket-3 lists,
+an Eldrazi bracket-4 list, a bracket-5 contrast and the Eldrazi Unbound precon); their
+decklists are copies under `tests/fixtures/decks/` so that nothing in the package reads the
+repo's `deck/` tree. `tests/test_golden.py` pins the analysis numbers for those fixtures,
+including the simulator's medians at 500 games, so changing a scoring constant or the sim
+engine fails the suite until the values are re-baselined on purpose:
+
+    uv run --directory edhpower python tests/golden_update.py
+
+`CALIBRATION.md` records the reference numbers per deck and date, plus the columns to fill in
+by hand from edhpowerlevel.com and scrollvault.net.

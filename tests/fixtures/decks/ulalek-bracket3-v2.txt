@@ -1,0 +1,404 @@
+1 Ulalek, Fused Atrocity
+
+// ===== DRAFT v2 (2026-08-27) — proposal, not yet final. See deck/ulalek-v2-proposal.md =====
+
+// Lands (36)
+1 Ancient Tomb
+1 Bonders' Enclave
+1 Boseiju, Who Endures
+1 Breeding Pool
+1 Cavern of Souls
+1 City of Brass
+1 Command Tower
+1 Eldrazi Temple
+1 Emergence Zone
+1 Exotic Orchard
+1 Eye of Ugin
+1 Hinterland Harbor
+1 Karplusan Forest
+1 Ketria Triome
+1 Mana Confluence
+1 Misty Rainforest
+1 Path of Ancestry
+1 Planar Nexus
+1 Reflecting Pool
+1 Sanctum of Ugin
+1 Scalding Tarn
+1 Steam Vents
+1 Stomping Ground
+1 Sulfur Falls
+1 Three Tree City
+1 Ugin's Labyrinth
+1 Urza's Cave
+1 Urza's Mine
+1 Urza's Power Plant
+1 Urza's Tower
+1 Vesuva
+1 Wasteland
+1 Winding Canyons
+1 Wooded Foothills
+1 Yavimaya Coast
+1 Yavimaya, Cradle of Growth
+
+// Ramp & Cost Reduction (16)
+1 Arcane Signet
+1 Basalt Monolith
+1 Conduit of Ruin
+1 Fellwar Stone
+1 Forsaken Monument
+1 Herald of Kozilek
+1 It That Heralds the End
+1 Mana Vault
+1 Mind Stone
+1 Nature's Lore
+1 Sol Ring
+1 Talisman of Curiosity
+1 Talisman of Impulse
+1 Three Visits
+1 Thran Dynamo
+1 Urza's Incubator
+
+// Draw & Engines (10)
+1 Crop Rotation
+1 Echoes of Eternity
+1 From Beyond
+1 Kozilek's Command
+1 Kozilek's Unsealing
+1 Mystic Forge
+1 Path of Annihilation
+1 Shadow in the Warp
+1 Ancient Stirrings
+1 Garruk's Uprising
+
+// Interaction & Removal (12)
+1 All Is Dust
+1 Beast Within
+1 Heroic Intervention
+1 Imprisoned in the Moon
+1 Kozilek's Return
+1 Mana Drain
+1 Not of This World
+1 Stubborn Denial
+1 Ugin's Binding
+1 Warping Wail
+1 Ugin, the Ineffable
+1 Ugin, the Spirit Dragon
+
+// Big Threats & Protection (4)
+1 Eldrazi Conscription
+1 Eldritch Immunity
+1 Lightning Greaves
+1 Ugin, Eye of the Storms
+
+// Creatures (21)
+1 Abstruse Archaic
+1 Chittering Dispatcher
+1 Elder Deep-Fiend
+1 Eldrazi Linebreaker
+1 Emrakul, the World Anew
+1 Flayer of Loyalties
+1 Hideous Taskmaster
+1 Kozilek, the Broken Reality
+1 Kozilek, the Great Distortion
+1 Liberator, Urza's Battlethopter
+1 Matter Reshaper
+1 Roaming Throne
+1 Skittering Cicada
+1 Sowing Mycospawn
+1 Thief of Existence
+1 Thought-Knot Seer
+1 Ulamog, the Ceaseless Hunger
+1 Ulamog, the Defiler
+1 Ultima, Origin of Oblivion
+1 World Breaker
+1 Zhulodok, Void Gorger
+
+// --- Decision log ---
+// 2026-08-27 v2 draft (external feedback pass — more lands, faster mana, Urza package;
+// full rationale + card-by-card evaluation of both example decks in deck/ulalek-v2-proposal.md):
+//   OUT -> IN, 10 swaps:
+//     Snow-Covered Wastes   -> Planar Nexus         (every nonbasic land type: single-handedly
+//                                                    "powers" any Urza land; Locus; {1}: any color)
+//     Cascading Cataracts   -> Urza's Tower          }  Urza package: any one Urza land + Nexus
+//     Shivan Reef           -> Urza's Mine           }  is 4-5 mana from 2 lands; all fetchable
+//     Awakening Zone        -> Urza's Power Plant    }  via Crop Rotation/Sylvan Scrying/Mycospawn
+//     Eldrazi Conscription  -> Reflecting Pool      (2nd Command Tower; copies Tomb/Temple "2" too)
+//     Summon: Bahamut       -> Boseiju, Who Endures (interaction in a land slot)
+//     Eldrazi Displacer     -> Roaming Throne       (names Eldrazi; DOUBLES ULALEK'S OWN TRIGGER =
+//                                                    two {C}{C} copy-everything rounds per cast;
+//                                                    also doubles annihilator/ETB/LTB/Azlask.
+//                                                    NOTE: does NOT double "when you cast" triggers
+//                                                    of spells on the stack (CR 109.2, "creature you
+//                                                    control" = permanent) — that's Echoes' job)
+//     Emergence Zone        -> Liberator, Urza's Battlethopter (same job, repeatable: flash for
+//                                                    ~the whole deck; deploy on end steps to dodge
+//                                                    sorcery wipes — upgrades the 2026-08-26
+//                                                    resilience plan; Winding Canyons stays as the
+//                                                    creature-flash backup)
+//     Worn Powerstone       -> Thran Dynamo         (feedback: more/denser ramp)
+//     Nulldrifter           -> Mystic Forge         (Forge is in BOTH example decks; ~80% of deck
+//                                                    castable off the top = Nulldrifter's card-
+//                                                    advantage job, every turn; Nulldrifter was the
+//                                                    weakest cast trigger in the crowded 7+ slot.
+//                                                    Alternate cut if no big should go: Abstruse
+//                                                    Archaic)
+//   2026-08-27 owner rulings (recorded, don't re-litigate): KEEP Herald of Kozilek, KEEP
+//   Hideous Taskmaster, KEEP Path of Annihilation; Devourer of Destiny REJECTED.
+//   2026-08-27 follow-up (owner): Forest -> Emergence Zone (Zone back in as wipe insurance /
+//   Liberator backup; also flashes NONcreature spells, e.g. EOT All Is Dust). Cost accepted:
+//   Nature's Lore/Three Visits down to 3 targets (Breeding Pool/Stomping Ground/Ketria — they
+//   fetch untapped and preferred those anyway; Boseiju is NOT a Forest card), Prismatic Vista
+//   down to 2 basics (Island/Mountain). Lands stay 36.
+//   2026-08-27 follow-up 2 (owner): Prismatic Vista -> Vesuva. Audit confirmed Vista was the
+//   ONLY basic-only fetcher (Lore/Visits = Forest CARD incl. duals; Misty/Scalding/Foothills =
+//   typed; Crop/Scrying/Mycospawn = any land), and with 2 basic targets it was the weakest
+//   land in the list. Vesuva: enters tapped, but = Temple/Tomb #2 or Tower #2 (Tower +
+//   Vesuva-Tower + Nexus = 7 mana from 3 lands), or copy the table's best land.
+//   2026-08-27 follow-up 3 (owner): APPLIED Island -> Tropical Island, Mountain -> Volcanic
+//   Island (nothing basic-only remains, so duals are strictly better fixing for the same
+//   fetches; Volcanic serves the kept Herald {1}{U}{R} and Mana Drain {U}{U}; Tropical is a
+//   Lore/Visits target). Owner rationale for accepting ZERO basics: deck was ~94% nonbasic
+//   anyway, and mass land denial is forbidden at bracket 3. Residual edge case: Blood
+//   Moon-style replacement effects (not MLD by WotC's definition) and opponents'
+//   Field of Ruin/Ghost Quarter — revisit basics only if those appear in the pod.
+//   Proxy note: Tropical/Volcanic are >=25EUR -> proxy candidates for the buylist.
+//   Sim (20k games/side, same script both sides): 7 mana by T5 51%->53%, by T6 68%->71%;
+//   commander by T4 63%->65%. Urza pair "powered" by T6 in ~18% of games (upside wedge, not
+//   engine). Haymaker-in-hand by T6 dips 48%->40% from losing 3 of 12 MV7+ pieces
+//   (Conscription, Bahamut, Nulldrifter) — Forge/Sanctum/Conduit offset this but aren't modeled.
+//   Combos re-verified (Commander Spellbook): still exactly the two allowed late-game lines
+//   (Basalt+Forsaken Monument; Ulalek+Echoes+Unsealing). No new Game Changers — still at cap 3
+//   (Mana Vault, Ancient Tomb, Crop Rotation); Boseiju confirmed NOT a GC (Aug-2026 list).
+//   Feedback's "Basalt + Eldrazi Monument" concern = Basalt + FORSAKEN Monument, already
+//   adjudicated 2026-08-19 as a deliberate late-game keep (rule-0 it at the table).
+//   2026-08-27 follow-up 4 (owner: "Great Henge has poor synergy"). Confirmed by data — Henge
+//   is the LOWEST-signal card in the list: 6% EDHREC inclusion for Ulalek, synergy +0.003
+//   (statistical noise). Mechanically it is win-more here: cost reduction keys off greatest
+//   power among creatures you control, so it is cheap only once a fatty already resolved, and
+//   {G}{G} in a 94%-nonbasic 5-color-identity shell is the deck's hardest color requirement.
+//   Two swaps, both aimed at the weakest side of the deck (see below):
+//     The Great Henge  -> Garruk's Uprising   ({2}{G}, 53% inclusion, synergy +0.40)
+//        - Fixed 3 mana on T3 vs Henge's 2-to-9 chicken-and-egg; one G, not GG.
+//        - 15 of 25 creatures are power 4+, INCLUDING every single MV7+ haymaker — so it
+//          converts "I finally cast my bomb" into "bomb + a card", and the Ulalek/Echoes copy
+//          of a creature spell makes a TOKEN copy that also enters and draws again.
+//        - Second mode is the real prize: TEAM-WIDE trample. Audit found only 4 creatures
+//          with native trample and no team-wide source at all, while the deck runs 4
+//          annihilator bodies (Azlask, Flayer, Taskmaster, Ulamog the Defiler) that get
+//          chump-blocked all day. Trample is what turns the Azlask/Path of Annihilation
+//          overrun plan into actual lethal. (Wording correction to the first draft of this
+//          note: Eldrazi Conscription also grants trample, but only to ONE enchanted
+//          creature — it was never the team-wide source, so the two do not overlap.)
+//        - Caveat: Uprising is GREEN, so Echoes of Eternity (colorless-only) does NOT double
+//          its trigger. Henge wasn't doubled either. No loss.
+//     Sylvan Scrying   -> Ancient Stirrings   ({G}, 35% inclusion, synergy +0.33)
+//        - Measured the deck: 88 of 99 cards are COLORLESS cards (88.9%). Only 11 misses
+//          (Beast Within, Crop Rotation, Heroic Intervention, Imprisoned in the Moon, Mana
+//          Drain, Nature's Lore, Stubborn Denial, Shadow in the Warp, Three Visits + the two
+//          cards being cut). Odds all five cards off the top are colored = 462/C(99,5), i.e.
+//          ~0.0006% — Stirrings is effectively "{G}: Impulse 5, take the best card."
+//        - Strict rate upgrade over Scrying, which is a 2-mana sorcery that draws A LAND.
+//          Stirrings costs 1, is a T1 play, and grabs a land when land-light OR a rock/threat
+//          when land-heavy — which is exactly the flood insurance a 36-land deck wants.
+//        - ACCEPTED COST (flagged, revert this line only if it bites): Scrying was 1 of 3
+//          ways to fetch a SPECIFIC land, so the Urza's Mine/Power Plant/Tower assembly drops
+//          to Crop Rotation + Sowing Mycospawn as guaranteed tutors. The v2 sim already rated
+//          the Urza pair "an upside wedge, not an engine" (powered by T6 in ~18% of games),
+//          and Stirrings still finds Urza pieces opportunistically since lands are colorless
+//          cards. Owner's own standing rule — Tron-style synergy lands are low-value in
+//          singleton — points the same way.
+//   WEAKEST SIDE OF THE DECK (the finding behind both swaps): early/mid-game card FLOW and
+//   post-wipe refuel. Every meaningful card-advantage piece is back-loaded onto already
+//   casting a fatty — Kozilek's Unsealing draws 3 but ONLY on CREATURE spells MV7+ (verified
+//   oracle; it does not see noncreature spells at all), Kozilek the Great Distortion refills
+//   on ETB, the Ugins are 7-8 mana, Bonders' Enclave needs a power-4 body. Nothing at all
+//   draws a card while you are ramping on T1-T5. With 36 lands + 16 ramp = 52 mana sources,
+//   the deck's real failure mode is drawing the mana half, converting it to nothing, and
+//   having no way to dig. Both new cards attack that window (1 mana and 3 mana) instead of
+//   adding more top-end. Section counts unchanged: Draw & Engines stays 10, deck stays 99.
+//   RISE OF THE ELDRAZI — re-evaluated on request, verdict still NO (but the 2026-08-26
+//   reasoning was partly wrong, so recording the corrected version):
+//     Oracle: {9}{C}{C}{C} Sorcery. Can't be countered. Destroy target permanent, target
+//     player draws four cards, take an extra turn, then exile it.
+//     - CORRECTION: it IS colorless, so Echoes of Eternity DOES copy it -> 2 extra turns,
+//       2 permanents destroyed, draw 8. The old note underrated it there.
+//     - But it is NOT an Eldrazi (plain Sorcery), so Ulalek never triggers off it, and it is
+//       NOT a creature spell, so Kozilek's Unsealing does NOT draw 3, Eye of Ugin and Eldrazi
+//       Temple do NOT reduce it, and Conduit of Ruin cannot tutor it.
+//     - So it is a 12-mana card that misses every engine in the deck and only shines off a
+//       6-mana enchantment that is already the best card here. At 12 mana we would rather
+//       untap with Emrakul or Ulamog, which win the game outright. Worse, it adds top-end to
+//       a deck whose diagnosed weakness is the MIDDLE. Deferred again — and it is a 21EUR
+//       card doing a worse job than a 0.29EUR one.
+//   Verification: Commander Spellbook re-run on the exact post-swap 99 — still EXACTLY the
+//   two allowed late-game lines (Basalt + Forsaken Monument; Ulalek + Echoes + Unsealing),
+//   no new lines from either addition. Neither Garruk's Uprising nor Ancient Stirrings is on
+//   the Aug-2026 Game Changer list, so GC count stays at the bracket-3 cap of 3 (Mana Vault,
+//   Ancient Tomb, Crop Rotation). Buylist delta: OUT Great Henge + Sylvan Scrying, IN Garruk's
+//   Uprising (0.57EUR) + Ancient Stirrings (0.29EUR) — both well under the 25EUR proxy line.
+//   2026-08-27 follow-up 5 (owner: Conscription cut in v2 was a miss, restore it).
+//   REVERSED the v2 "Eldrazi Conscription -> Reflecting Pool" swap on the Conscription side.
+//     Reality Smasher -> Eldrazi Conscription
+//   Why Conscription belongs (owner is right, and the v2 pass undervalued it):
+//     - Oracle {8}, "Kindred Enchantment — ELDRAZI Aura" — it IS an Eldrazi spell, so casting
+//       it triggers Ulalek. Pay {C}{C} -> copy all spells you control -> a second Conscription.
+//       It is also COLORLESS, so Echoes of Eternity copies it independently. Ulalek is a 2/5;
+//       two Conscriptions make it a 22/25 with TRAMPLE and annihilator 4. That is a one-shot
+//       kill plus a 4-permanent strip, and it is a documented win package in ulalek-b3-playbook.md.
+//     - EDHREC 47% inclusion / +0.44 synergy — higher synergy than anything added in v2.
+//     - Restores the MV7+ haymaker count the v2 sim flagged as dropping (48%->40% in hand by T6).
+//   THE CUT IS SKITTERING CICADA. (First attempt cut Fellwar Stone on a pure card-quality
+//   argument — Fellwar makes "any COLOR an opponent's land could produce" and colorless is not
+//   a color, so it is the one rock that cannot pay {C}, which is what Ulalek's {C}{C} copy tax,
+//   Kozilek's Command {X}{C}{C}, Echoes {3}{C}{C}{C} and Kozilek the Great Distortion {8}{C}{C}
+//   demand. True, but the SIM said cutting any mana source is the wrong trade — see below.
+//   Fellwar Stone stays; revisit it only if the deck ever wants a 100th slot.)
+//   Cut-candidate sim, 20k games each, one script, each row = add Conscription and cut that card,
+//   measured as delta vs the pre-swap v2 list:
+//       CUT                          cmd by T4   7 mana by T6   MV7+ by T7
+//       Fellwar Stone                   -3.1        -2.4          +0.8
+//       Mind Stone                      -2.9        -1.8          +0.3
+//       Arcane Signet                   -2.8        -1.7          +0.3
+//       Reflecting Pool (land 36->35)   -0.6        -0.7          +0.2
+//       Skittering Cicada / Thief /
+//         Abstruse Archaic (non-mana)   -0.1        -0.2          +2.5
+//     Reading: cutting ANY mana source costs ~3 points of commander-on-T4 and buys nothing,
+//     because Conscription is an 8-drop Aura that needs the mana AND a body. Cutting a cheap
+//     NON-mana spell is nearly free on speed and is the only option that actually raises
+//     haymaker access (+2.5 by T7), since it trades a 3-drop for a 12th MV7+ payoff.
+//     (Absolute values in this script are not comparable to the numbers logged earlier in this
+//     file — different script. Only the deltas within this table are valid, per CLAUDE.md.)
+//   THE CUT IS REALITY SMASHER (owner-proposed, and it is the best of the candidates).
+//     - Oracle: {4}{C} 5/5 Eldrazi, trample + haste, "Whenever this creature becomes the target
+//       of a spell an opponent controls, counter that spell unless its controller discards a
+//       card." Owner's read is exactly right on all three counts: the rider only sees TARGETED
+//       opposing spells, so it does nothing against sweepers (Wrath/Damnation/Blasphemous Act
+//       and our own All Is Dust do not target), nothing against edicts, and the "tax" is one
+//       discard — late game an opponent pitches a dead land and moves on. It is a speed bump,
+//       not protection, and nobody spends targeted removal on a 5/5 in a deck full of Ulamogs.
+//     - EDHREC: does not even REGISTER for Ulalek (below the reporting threshold; general rank
+//       10563). Compare Thief of Existence at 16% and Abstruse Archaic's unique effect. It is
+//       the only creature in the list with no measurable presence in the archetype.
+//     - What we lose is real but small: it is an MV5 Eldrazi, so it triggered Ulalek, took the
+//       Temple/Eye/Incubator discounts, made 2 Spawn off Kozilek's Unsealing, drew off Garruk's
+//       Uprising, and a Ulalek copy gave a second hasty 5/5 trampler. But it is a plain beater
+//       in a deck whose payoffs are annihilator, board theft and exile, and 9 other Eldrazi at
+//       MV<=5 still fill the early-Ulalek-trigger role.
+//     - Sim (60k games/side, 3 seeds): cutting it is FREE — cmd by T4 +0.1, 7 mana by T6 -0.1,
+//       MV7+ by T6 +2.2, MV7+ by T7 +2.5. Identical to cutting Thief or Archaic, and strictly
+//       better than cutting a land (Tomb of the Spirit Dragon: -0.9 / -1.5).
+//   SUPERSEDED CUT CANDIDATES (recorded so they are not re-proposed):
+//   (SUPERSEDED, recorded so it is not re-proposed: this slot first cut Skittering Cicada on a
+//   "strictly dominated by Liberator" argument. Owner overruled, correctly — the claim was
+//   wrong on two counts. (1) Liberator dominates only the FLASH clause; Cicada's second ability
+//   is a different card entirely — +X/+X where X is the cast spell's mana value, and it STACKS
+//   across multiple casts in a turn, which this deck does routinely off its cost reducers. Cast
+//   a 7-drop and a 5-drop precombat and Cicada swings as a 14/14. (2) The trample was called
+//   redundant with Garruk's Uprising — true for the trample keyword alone, but Uprising does not
+//   PUMP, so the damage half is not duplicated. Two flash enablers is also a package, not waste:
+//   the whole point of the 2026-08-26 resilience plan is reliably having one. Cicada STAYS.
+//   Rules caveat on the pressure plan, for the playbook: Ulalek's and Echoes' copies are put on
+//   the stack, NOT cast, so they do not trigger Cicada's "whenever you cast" pump. Only real
+//   casts grow it.)
+//   ABSTRUSE ARCHAIC was proposed as the cut and WITHDRAWN. It STAYS. The redundancy argument
+//   (that Echoes of Eternity and Roaming Throne already double Ulalek's trigger for free) was
+//   too strong: neither of those can copy an ACTIVATED ability, and Roaming Throne only sees
+//   triggers of creatures — Archaic is the only piece that can copy Eye of Ugin's activation,
+//   Mystic Forge, or a land ability. On Ulalek specifically it is a real engine:
+//     - "{1}, {T}: Copy target activated or triggered ability you control from a colorless
+//       source." Ulalek has devoid, so it IS a colorless source and its trigger is a legal target.
+//     - COST CORRECTION for the playbook — it is NOT "a Ulalek copy for {1}". The WotC ruling on
+//       Archaic states: "If a triggered ability asks you to pay a cost, you pay that cost for the
+//       copy separately." Ulalek's trigger reads "you may pay {C}{C}", so the true price is {1}
+//       + tap + {C}{C} = 3 mana for the second round of "copy all spells you control, then copy
+//       all other activated and triggered abilities you control".
+//     - It snowballs: Ulalek's trigger sits ABOVE the Eldrazi spell that caused it, so the spell
+//       is still on the stack to be copied, and the copies made by the first resolution are
+//       themselves spells on the stack when the original trigger resolves.
+//   RULES NOTE for ulalek-b3-playbook.md (from the Ulalek rulings): "The copies are created on
+//   the stack, so they're not cast... Abilities of copied spells that say 'When you cast [this
+//   spell]' won't trigger." Two consequences: (1) Ulalek/Echoes copies do NOT grow Skittering
+//   Cicada — only real casts do; (2) Thief of Existence's second exile comes from Ulalek copying
+//   its TRIGGER on the stack, not from the token copy having a cast trigger.
+//   Lands stay 36, Ramp stays 16. Ramp/Creatures/Threats counts: 16 / 21 / 4.
+//   CORRECTION to the v2 log line "Reflecting Pool (2nd Command Tower; copies Tomb/Temple '2'
+//   too)": half wrong. Reflecting Pool reads "Add one mana of any TYPE that a land you control
+//   could produce" — type includes colorless, so it CAN make {C} (this is why it survives the
+//   cut and Fellwar does not). But it produces ONE mana, so it does NOT copy Ancient Tomb's or
+//   Eldrazi Temple's "{C}{C}". Only Vesuva actually copies those. Reflecting Pool stays.
+//   Section counts: Creatures 22->21, Big Threats & Protection 3->4. Deck still 99.
+//   Bracket unchanged: Conscription is not a Game Changer, GC count stays at the cap of 3.
+//   Spellbook re-run on the exact post-restore 99: still EXACTLY the two allowed late-game
+//   lines. Conscription's only near-line needs Rafiq of the Many, which is not in the deck.
+//   2026-08-27 follow-up 6 (owner: Volcanic Island is too expensive to actually play, even as
+//   the flagged proxy candidate — price-driven exception to the "price never decides" rule,
+//   explicitly owner-ruled for this slot).
+//     Volcanic Island -> Sulfur Falls
+//   Premise correction recorded during the decision: the deck's fetches and land tutors
+//   (Misty/Scalding/Foothills, Crop Rotation, Sowing Mycospawn, Nature's Lore, Three Visits)
+//   put lands onto the battlefield UNTAPPED unless the land's own text says otherwise — a
+//   fetched Volcanic entered untapped. Molten Tributary (true Island Mountain, 0.22EUR) was
+//   considered for keeping fetchability and REJECTED: it enters tapped every time, fetched or
+//   drawn, and the fetchable-U/R niche is already covered (Scalding -> Steam Vents, Misty ->
+//   Tropical, Foothills -> Stomping Ground). Sulfur Falls (0.29EUR) has NO basic land types
+//   (checks "you control an Island or a Mountain" only), so it is invisible to all three
+//   fetches — accepted; in exchange it enters untapped from T2 on in ~all games (Tropical,
+//   Steam Vents, Breeding Pool and Ketria all carry the checked types; T1 it is always
+//   tapped). U/R duty unchanged: Herald {1}{U}{R}, Mana Drain {U}{U}. Lands stay 36; no
+//   GC/combo implications (checked: Sulfur Falls is not a Game Changer, adds no combo line).
+//   Buylist delta: Volcanic Island (proxy candidate) out entirely, IN Sulfur Falls 0.29EUR.
+//   2026-08-27 follow-up 7 (owner: same price call as follow-up 6, for the other dual).
+//     Tropical Island -> Hinterland Harbor
+//   Same colors (G/U), same check-land template as Sulfur Falls, 0.33EUR. Knock-on effects
+//   accepted and recorded:
+//     - Nature's Lore / Three Visits back down to 3 Forest-card targets (Breeding Pool,
+//       Stomping Ground, Ketria Triome) — where they were before the follow-up 3 promotion.
+//     - Harbor has no basic land types -> invisible to Misty/Scalding/Foothills; each fetch
+//       still has 3-4 live targets (the shocks + Ketria).
+//     - Sulfur Falls' untap check loses one Island; both check lands now lean on Steam Vents /
+//       Breeding Pool / Ketria / Stomping Ground — and Yavimaya, Cradle of Growth auto-passes
+//       Harbor's check (every land on the battlefield is a Forest with it out). Both are
+//       always tapped on T1.
+//   With this swap NOTHING >=25EUR remains in the land base; the reserved-list duals are gone
+//   entirely rather than proxied. Lands stay 36, deck 99; no GC/combo implications.
+//   Buylist delta: Tropical Island (proxy candidate) out entirely, IN Hinterland Harbor 0.33EUR.
+// 2026-08-31 land-tutor pass (owner: Azlask feels weak here — tokens are mana, not an army;
+//   wanted another land fetch to complete the Urza package / find Eye of Ugin). Two-for-two:
+//     Tomb of the Spirit Dragon -> Urza's Cave      (land for land, lands stay 36)
+//     Azlask, the Swelling Scourge -> Matter Reshaper (creature for creature, stays 21)
+//   Why Azlask goes: his activation costs {W}{U}{B}{R}{G} — five DIFFERENT colored pips at once.
+//   All-color sources are only City of Brass/Mana Confluence/Command Tower/Planar Nexus/Path of
+//   Ancestry (+ conditional Orchard/Reflecting Pool); holding all five colors simultaneously
+//   essentially never happens, so the pump/annihilator mode is blank text and he is a 3-mana 2/2
+//   collecting experience counters with no payoff.
+//   LOG CORRECTION: the follow-up 4 note counted Azlask among "4 annihilator bodies" — wrong.
+//   His annihilator grant is part of the uncastable WUBRG activation (and only hits Spawns/
+//   Scions); he never contributed to that plan. Annihilator bodies are 3: Flayer, Taskmaster,
+//   Ulamog the Defiler (+ Conscription's enchanted creature).
+//   Why Urza's Cave: {3},{T},sac: any land onto the battlefield TAPPED, instant speed. Fetches
+//   the missing Urza's Mine/Power-Plant/Tower piece, Planar Nexus, Eye of Ugin, Sanctum, Vesuva,
+//   or EOT Winding Canyons/Emergence Zone. Restores a third guaranteed specific-land tutor —
+//   exactly the flagged cost of the Sylvan Scrying -> Ancient Stirrings swap ("revert if it
+//   bites") — without giving Stirrings back, and in a LAND slot ({C} until needed).
+//   TYPE NOTE: its land type is "Urza's Cave", NOT Mine/Power-Plant/Tower — it FETCHES Tron
+//   pieces but never powers them (that's Planar Nexus's job).
+//   Expedition Map considered and REJECTED for the same job: eats a spell slot, dies to the
+//   artifact hate already aimed at our 8+ rocks, and puts the land to HAND (competes with the
+//   land drop). Map's only edges: 3 total mana vs 4, T1 deploy, fetched land can be played
+//   untapped (mostly relevant for Ancient Tomb). Cave's slot economics win.
+//   Tomb of the Spirit Dragon is the cut: weakest utility land left (lifegain valve only).
+//   Does not contradict the 2026-08-26 ruling (Tomb kept OVER BLAST ZONE — a relative call),
+//   and the earlier -0.9/-1.5 sim penalty for cutting it measured lands 36->35; this is a
+//   like-for-like swap, Cave also taps for {C}, so no land-count cost.
+//   Why Matter Reshaper ({2}{C} 3/2 Eldrazi): attacks the diagnosed weakness (early card flow,
+//   post-wipe refuel) in the exact vacated slot — dies: top card MV<=3 permanent onto the
+//   battlefield (lands included; 36 lands + cheap rocks = most hits) or to hand. True-colorless
+//   Eldrazi: triggers Ulalek (token copy also dies into value), Roaming Throne doubles the death
+//   trigger, Urza's Incubator makes it {C}. Makes wipes cost opponents something.
+//   Verification: Spellbook re-run on the exact post-swap 99 — still EXACTLY the two allowed
+//   late-game lines (Basalt + Forsaken Monument; Ulalek + Echoes + Unsealing), nothing new.
+//   Neither add is on the Aug-2026 Game Changer list; GC count stays at cap 3 (Mana Vault,
+//   Ancient Tomb, Crop Rotation). No color-identity issues (both adds fully colorless).
+//   Buylist delta: OUT Tomb of the Spirit Dragon + Azlask; IN Urza's Cave (1.31EUR) + Matter
+//   Reshaper (0.54EUR) — both far under the 25EUR proxy line.
+// (v1 history lives in deck/ulalek-bracket3.txt — unchanged.)

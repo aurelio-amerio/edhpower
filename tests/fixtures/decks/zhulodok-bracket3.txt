@@ -1,0 +1,112 @@
+1 Zhulodok, Void Gorger
+
+// Lands (37)
+18 Wastes
+1 Eldrazi Temple
+1 Eye of Ugin
+1 Shrine of the Forsaken Gods
+1 Sanctum of Ugin
+1 Ugin's Labyrinth
+1 War Room
+1 Bonders' Enclave
+1 Reliquary Tower
+1 Rogue's Passage
+1 Tomb of the Spirit Dragon
+1 Scavenger Grounds
+1 Arcane Lighthouse
+1 Urza's Cave
+1 Blast Zone
+1 Ghost Quarter
+1 Sea Gate Wreckage
+1 Urza's Mine
+1 Urza's Power Plant
+1 Urza's Tower
+
+// Ramp (13)
+1 Sol Ring
+1 Mana Vault
+1 Mind Stone
+1 Thought Vessel
+1 Everflowing Chalice
+1 Worn Powerstone
+1 Hedron Archive
+1 Thran Dynamo
+1 Fellwar Stone
+1 Sisay's Ring
+1 Palladium Myr
+1 Coldsteel Heart
+1 Forsaken Monument
+
+// Payoffs 7+ (21)
+1 Emrakul, the World Anew
+1 Kozilek, Butcher of Truth
+1 Ulamog, the Infinite Gyre
+1 It That Betrays
+1 Pathrazer of Ulamog
+1 Ulamog's Crusher
+1 Spawnsire of Ulamog
+1 Kozilek, the Great Distortion
+1 Kozilek, the Broken Reality
+1 Ulamog, the Ceaseless Hunger
+1 Ulamog, the Defiler
+1 Emrakul, the Promised End
+1 Void Winnower
+1 Artisan of Kozilek
+1 Flayer of Loyalties
+1 Desecrate Reality
+1 Rise of the Eldrazi
+1 Darksteel Monolith
+1 Bane of Bala Ged
+1 Desolation Twin
+1 Sire of Seven Deaths
+
+// Interaction (12)
+1 All Is Dust
+1 Eldrazi Confluence
+1 Calamity of the Titans
+1 Titan's Presence
+1 Warping Wail
+1 Not of This World
+1 Scour from Existence
+1 Spatial Contortion
+1 Kozilek's Command
+1 Ugin, the Spirit Dragon
+1 Ugin, the Ineffable
+1 Ugin, Eye of the Storms
+
+// Draw / tutors / glue (8)
+1 Conduit of Ruin
+1 Endbringer
+1 Urza's Incubator
+1 Eldrazi Conscription
+1 Lightning Greaves
+1 Mystic Forge
+1 Echoes of Eternity
+1 Expedition Map
+
+// Midgame / flex (8)
+1 Thought-Knot Seer
+1 Oblivion Sower
+1 Abstruse Archaic
+1 Skittering Cicada
+1 Solemn Simulacrum
+1 It That Heralds the End
+1 Roaming Throne
+1 Wandering Archaic // Explore the Vastlands
+
+// Bracket check 2026-08-17: spellbook_estimate_bracket returned malformed
+// output (non-numeric bracket_tag, empty game_changer_cards even for known
+// GCs on control lists) — treated as a persistent tool failure. Fallback per
+// task brief: spellbook_find_decklist_combos + manual check against the
+// official WotC Game Changers list.
+// spellbook_find_decklist_combos flagged Basalt Monolith + Forsaken Monument
+// as an INCLUDED (real, fully present) infinite-colorless-mana combo:
+// Forsaken Monument's actual oracle text is "Whenever you tap a permanent
+// for {C}, add an additional {C}" (not a flat static {C} as assumed in the
+// task brief), so Basalt Monolith taps for {C}{C}{C}{C} with Monument out;
+// untapping costs {3}, netting +1 mana per loop = infinite. Cut Basalt
+// Monolith, substituted Sisay's Ring (plain {T}: Add {C}{C}, no untap
+// ability, no combo re-formed) per brief contingency, and re-ran the combo
+// check: included combos = none; only unrelated almost_included entries
+// remain, none of whose other required pieces are in this decklist.
+// Bracket check 2026-08-17: bracket 3, Game Changers: Mana Vault (1/3)

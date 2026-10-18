@@ -1,0 +1,238 @@
+1 Ulalek, Fused Atrocity
+
+// ===== DRAFT b4 v2 (2026-09-09, revision 3) — proposal, not yet final. See deck/b4/v2/ulalek-b4-v2-proposal.md =====
+// Base: deck/b3/v2/ulalek-bracket3-v2.txt (99). Reference: deck/b5/ulalek-nightmare-stacks-toodeep-b5.txt
+// + its primer (deck/b5/primer.txt) = the "best possible version", toned down. Price cap 500 EUR/card,
+// owner exception: Gaea's Cradle. deck/b4/v1 is an example of possible combos only; its log is NOT binding.
+
+// Lands (36)
+1 Ancient Tomb
+1 Boseiju, Who Endures
+1 Breeding Pool
+1 Cavern of Souls
+1 City of Brass
+1 City of Traitors
+1 Command Tower
+1 Deserted Temple
+1 Eldrazi Temple
+1 Emergence Zone
+1 Exotic Orchard
+1 Eye of Ugin
+1 Gaea's Cradle
+1 Inventors' Fair
+1 Ketria Triome
+1 Mana Confluence
+1 Misty Rainforest
+1 Path of Ancestry
+1 Planar Nexus
+1 Reflecting Pool
+1 Sanctum of Ugin
+1 Scalding Tarn
+1 Steam Vents
+1 Stomping Ground
+1 Talon Gates of Madara
+1 Temple Garden
+1 Three Tree City
+1 Urza's Cave
+1 Urza's Mine
+1 Urza's Power Plant
+1 Urza's Saga
+1 Urza's Tower
+1 Urza's Workshop
+1 Vesuva
+1 Wasteland
+1 Wooded Foothills
+
+// Ramp & Mana Engine (19)
+1 Arcane Signet
+1 Basalt Monolith
+1 Forsaken Monument
+1 Grim Monolith
+1 Herald of Kozilek
+1 Kinnan, Bonder Prodigy
+1 Lotus Petal
+1 Magus of the Candelabra
+1 Mana Vault
+1 Manifold Key
+1 Mox Opal
+1 Seedborn Muse
+1 Sol Ring
+1 Talisman of Curiosity
+1 Talisman of Dominance
+1 Talisman of Impulse
+1 Thran Dynamo
+1 Unwinding Clock
+1 Urza's Incubator
+
+// Tutors, Draw & Tax (16)
+1 Ancient Stirrings
+1 Crop Rotation
+1 Demonic Tutor
+1 Echoes of Eternity
+1 Enlightened Tutor
+1 Esper Sentinel
+1 From Beyond
+1 Kozilek's Command
+1 Kozilek's Unsealing
+1 Mystic Forge
+1 Mystic Remora
+1 Rhystic Study
+1 Smothering Tithe
+1 The One Ring
+1 Vampiric Tutor
+1 Wishclaw Talisman
+
+// Combo Package (8)
+1 Delney, Streetwise Lookout
+1 Dimensional Infiltrator
+1 Glaring Fleshraker
+1 Peter Parker's Camera
+1 Rings of Brighthearth
+1 Spawn-Gang Commander
+1 Strionic Resonator
+1 Writhing Chrysalis
+
+// Interaction & Protection (14)
+1 All Is Dust
+1 Beast Within
+1 Deflecting Swat
+1 Eldritch Immunity
+1 Fierce Guardianship
+1 Mana Drain
+1 Nameless Inversion
+1 Not of This World
+1 Pact of Negation
+1 Shields of Velis Vel
+1 Silence
+1 Swan Song
+1 Teferi's Protection
+
+// Creatures (7)
+1 Abstruse Archaic
+1 Elder Deep-Fiend
+1 Kozilek, the Great Distortion
+1 Liberator, Urza's Battlethopter
+1 Roaming Throne
+1 Sowing Mycospawn
+1 Thought-Knot Seer
+
+// --- Decision log ---
+// 2026-09-09 b4 v2 draft, revision 2 (owner: cap raised 200 -> 500 EUR, Gaea's Cradle and Grim
+// Monolith in regardless, add a stax layer, decide on the b5 deck; ignore the b4 v1 log).
+// 38 swaps vs deck/b3/v2/ulalek-bracket3-v2.txt as of revision 2 (99 -> 99); revision 3 below adds 4 more (42 total).
+//   LANDS OUT (7): Bonders' Enclave, Karplusan Forest, Ugin's Labyrinth (needs MV7+ colorless in
+//     hand; few left), Winding Canyons (Liberator/Emergence Zone/Talon Gates cover flash), Hinterland
+//     Harbor, Sulfur Falls (check lands, weakest fixing), Yavimaya Cradle of Growth (only existed to
+//     feed Lore/Visits and Harbor's check; both gone).
+//   LANDS IN (7): Gaea's Cradle (OWNER EXCEPTION, ~1160 EUR, proxy: the b5 Mycospawn loop closer;
+//     with Fleshraker/Spawn-Gang spawn it taps for a lot even outside the loop), Urza's Workshop
+//     (metalcraft: {C} per Urza's land — with Nexus + Tower + Mine + Plant it is a 5-mana land),
+//     Deserted Temple (untap Workshop/Tower/Cradle; Rings + Temple + Cradle = infinite mana),
+//     City of Traitors (b5 fast mana; Tomb #2), Urza's Saga, Inventors' Fair, Talon Gates of Madara.
+//   RAMP OUT (6): Three Visits, Nature's Lore, Fellwar Stone (no {C}), Mind Stone, Conduit of Ruin
+//     (tutors MV7+ creatures — only Kozilek GD is left), It That Heralds the End (creature-spell
+//     reducer for a 7-creature deck).
+//   RAMP IN (7): Grim Monolith (302 EUR, proxy; Rings + Monument + Grim = infinite {C}; Unwinding
+//     Clock untaps it every turn cycle), Kinnan, Lotus Petal, Mox Opal, Manifold Key, Talisman of
+//     Dominance, Unwinding Clock (b5 "hold everything up" engine: Vault/Grim/Basalt/Monument untap on
+//     each opponent's untap step -> instant-speed Eldrazi with all mana open).
+//   DRAW/ENGINE OUT (3): Path of Annihilation, Garruk's Uprising, Shadow in the Warp (its 2 damage on
+//     opponents' spells is the only tax; replaced by real tax pieces).
+//   TUTORS/DRAW/TAX IN (9): Demonic, Vampiric, Enlightened, Wishclaw, The One Ring, Rhystic Study,
+//     and the STAX LAYER from b5: Smothering Tithe, Esper Sentinel, Mystic Remora (tax opponents'
+//     draws/spells; Tithe treasures are colorless-castable fuel and artifacts for metalcraft/Fair).
+//   COMBO PACKAGE IN (7): Glaring Fleshraker, Spawn-Gang Commander, Strionic Resonator, Delney,
+//     Peter Parker's Camera (1 EUR, 3-use trigger doubler from the b5 list, {2},{T}: copy a triggered
+//     OR activated ability -> also copies Eye of Ugin / Wishclaw / Key), Dimensional Infiltrator,
+//     Rings of Brighthearth. Writhing Chrysalis (revision 1) dropped: not in b5, RG pips, and five
+//     doublers (Strionic/Camera/Delney/Throne/Archaic) already make the second trigger.
+//   INTERACTION OUT (6): Heroic Intervention, Ugin's Binding, Ugin the Ineffable, Imprisoned in the
+//     Moon, Kozilek's Return, Warping Wail (all replaced by cheaper or free b5-style pieces).
+//   INTERACTION IN (8): Fierce Guardianship, Deflecting Swat, Pact of Negation, Swan Song, Silence
+//     (win-turn insurance; b5 runs Silence + Orim's Chant), Teferi's Protection (owner asked; the
+//     "cannot lose this turn cycle" button — caveat: it phases out Ulalek and all mana too),
+//     Nameless Inversion + Shields of Velis Vel (changeling = instant-speed Eldrazi cast triggers).
+//   BIG THREATS OUT (2): Eldrazi Conscription, Ugin, Eye of the Storms.
+//   CREATURES OUT (14): Chittering Dispatcher, Eldrazi Linebreaker, Emrakul the World Anew, Flayer of
+//     Loyalties, Hideous Taskmaster, Kozilek the Broken Reality, Matter Reshaper, Skittering Cicada,
+//     Thief of Existence, Ulamog the Ceaseless Hunger, Ulamog the Defiler, Ultima, World Breaker,
+//     Zhulodok. Kozilek GD stays as the one 10-drop (refill + Eye of Ugin target); Ulamog CH cut in
+//     revision 2 — b5 runs no titans and the slot went to Cradle's loop pieces.
+//   KEPT on purpose: Abstruse Archaic, Roaming Throne (doublers), Elder Deep-Fiend (flash Eldrazi),
+//     Sowing Mycospawn + full Urza package + Nexus (the loop), Herald of Kozilek / Urza's Incubator
+//     (cheap double-Eldrazi turns), Kozilek's Unsealing (loop piece), From Beyond (finds any Eldrazi
+//     card + a spawn every upkeep), All Is Dust / Ugin SD (the deck's only sweepers), Mystic Forge.
+//   STILL EXCLUDED from b5: Candelabra of Tawnos, Mishra's Workshop, Mox Diamond (all > 500 EUR;
+//     Scryfall has no EUR quote, market is well above the cap), Force of Will / Force of Negation /
+//     Misdirection / Mental Misstep (~10 blue cards to pitch), Kirol (taps two creatures), Seedborn
+//     Muse (GG; Unwinding Clock covers the rocks, which is where our mana is), Gleaming Splendor /
+//     King T'Challa / Faerie Mastermind / Lotho / Cabbage Merchant / Ragavan / Deathrite / Delighted
+//     Halfling (cEDH value creatures; the stax layer is Tithe/Sentinel/Remora/Rhystic + Silence),
+//     Orim's Chant (Silence taken), Swords / Chain of Vapor / Snapback / Flood Maw / 'Tis But a
+//     Scratch / Noxious Revival / Otawara (cEDH-specific answers), Forbidden Orchard / Spire / Starting
+//     Town / Tarnished Citadel / Gemstone Caverns (9 any-colour lands already), Ranger-Captain,
+//     Wan Shi Tong, Tezzeret, Clock of Omens, Voltaic Key (Manifold taken), Mockingbird /
+//     Omni-Changeling / Phyrexian Metamorph (revisit for Fleshraker redundancy), Magus of the
+//     Candelabra, Relic of Legends. Food Chain + Eternal Scourge (b4 v1) not imported: not a b5 line.
+// Combo web (Commander Spellbook on this exact 99 + commander, 2026-09-09): 11 included lines —
+//   Basalt+Monument, Basalt+Rings, Basalt+Kinnan, Grim+Rings+Monument, Rings+Deserted Temple+Cradle,
+//   Ulalek+Echoes+{Fleshraker|Unsealing|Spawn-Gang}, Ulalek+Throne+Fleshraker,
+//   Ulalek+Strionic+{Unsealing|Spawn-Gang}. Delney/Camera/Infiltrator/Mycospawn lines are the b5
+//   primer's documented lines, not in Spellbook's database.
+// Game Changers (commanderbrackets.com, list updated 2026-06-10; bracket 4 = no cap): Ancient Tomb,
+//   Mana Vault, Crop Rotation, Demonic Tutor, Vampiric Tutor, Enlightened Tutor, Rhystic Study, The
+//   One Ring, Fierce Guardianship, Grim Monolith, Gaea's Cradle, Smothering Tithe, Teferi's
+//   Protection, Seedborn Muse (rev. 3) = 14. Deflecting Swat is NOT on the June-2026 list. Bracket-4 only.
+// Proxy candidates (>=25 EUR, Cardmarket via Scryfall 2026-09-09) among the adds: Gaea's Cradle 1161,
+//   Grim Monolith 302, Mox Opal 162, The One Ring 89, Deflecting Swat 61, Demonic Tutor 52, Fierce
+//   Guardianship 49, Vampiric Tutor 42, Rhystic Study 42, Esper Sentinel 39, Urza's Saga 39,
+//   Smothering Tithe 37, Teferi's Protection 36, Delney 30, Enlightened Tutor 28, Lotus Petal ~26
+//   and City of Traitors (no EUR quote; reserved list, historically ~150-200). Rest < 25 EUR.
+// 2026-09-09 revision 3 (owner: add Magus of the Candelabra and Seedborn Muse after a mana check;
+//   bring Writhing Chrysalis back for the infinite-x/x board lines).
+//   MANA CHECK (36 lands + 6 colour rocks, fetches counted as the shock/triome they find; "cond" =
+//   Cavern creature-only, Exotic Orchard, Nexus/Talon {1}, Three Tree City {2}):
+//       W  5 lands + 5 cond + 3 rocks = 13   (7 white cards: Delney, Enlightened, Shields, Silence,
+//                                             Sentinel, Teferi's, Tithe)  <- thinnest
+//       U 12 + 5 + 5 = 22                    (Mana Drain UU, Pact upkeep 3UU fine)
+//       B  5 + 5 + 4 = 14                    (4 single-pip black cards)
+//       R 11 + 5 + 4 = 20                    (Spawn-Gang RR fine)
+//       G 14 + 5 + 5 = 24                    (deepest: Seedborn GG and Magus G are safe)
+//   Swaps (4, all like-for-like):
+//     Yavimaya Coast        -> Temple Garden          (keeps G, adds the ONLY typed white land; Misty +
+//                                                     Foothills fetch it; Lore-style Forest card too)
+//     Ugin, the Spirit Dragon -> Magus of the Candelabra ({G} 1-drop; {X},{T}: untap X lands — Tower/
+//                                                     Workshop/Cradle/Tomb make it net-positive at X=1-2,
+//                                                     and it is an ACTIVATED ability: Ulalek, Rings and
+//                                                     Camera copy it; Seedborn/Clock plan needs no 8-drop
+//                                                     sorcery-speed sweeper — All Is Dust stays)
+//     Lightning Greaves     -> Seedborn Muse          (b5 "hold everything up" engine #2: untaps lands +
+//                                                     Magus + Eye of Ugin every opponent's turn; Greaves'
+//                                                     shroud also blocked our own Talon Gates/Shields
+//                                                     targeting Ulalek)
+//     Stubborn Denial       -> Writhing Chrysalis     (Denial's ferocious needs power 4+, which only Kozilek
+//                                                     GD / TKS / Deep-Fiend / Spawn-Gang still have — a Force
+//                                                     Spike most of the time. Chrysalis: 2 spawn on cast, and
+//                                                     "whenever you sacrifice another Eldrazi, +1/+1 counter"
+//                                                     -> with any loop it is an infinite army of infinitely
+//                                                     large tokens. Spellbook: 6 lines with Echoes / Strionic
+//                                                     / Archaic / Camera / Eldritch Immunity / Nameless
+//                                                     Inversion.)
+//   Section counts: Lands 36, Ramp & Mana Engine 19, Tutors/Draw/Tax 16, Combo 8, Interaction 14,
+//   Creatures 7 (Magus/Seedborn/Chrysalis are filed by role). Deck 99.
+//   Spellbook on the exact post-swap 99: 17 included lines (was 11): + the 6 Chrysalis lines. Magus lines
+//   in the database need Maze of Ith (not run); the primer's Magus use (untap Cradle/Workshop in the
+//   Mycospawn loop) is the intended one. GC count 13 -> 14 (Seedborn Muse is a GC).
+//   Proxy candidates unchanged; Magus 0.60, Seedborn 10.75, Chrysalis 0.41, Temple Garden ~15 EUR.
+// 2026-09-09 SIM (tools/goldfish/sim.py, 20k games per list, same script on b3 v2; on the play,
+//   colours ignored; Tithe treasures / Mycospawn / From Beyond / Ulalek copies NOT modelled):
+//       metric                 b4 v2 (T4/T6/T8/T10)     b3 v2 (T4/T6/T8/T10)
+//       commander castable     50/83/93/98%             53/86/95/98%
+//       7 mana available       15/45/70/85%             13/41/65/81%
+//       MV7+ castable          4/12/20/27%              7/22/36/49%
+//       any combo online       4/17/36/51%  (median T8) 0/2/4/7%  (median T9)
+//   Early mana is a wash (burst/engine rocks replaced steady +1 rocks); late mana and the combo
+//   rate are the b4 gains. Clarification recorded: "second Fleshraker" in earlier notes meant a
+//   CLONE (Metamorph/Mockingbird) or Ulalek's token copy of the Fleshraker spell, not a second
+//   copy of the card. Owner ruling: Teferi's Protection STAYS.
+// (b3 v2 history: deck/b3/v2/ulalek-bracket3-v2.txt; b4 v1: deck/b4/v1/, example only.)

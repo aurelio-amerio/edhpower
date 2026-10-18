@@ -1,0 +1,24 @@
+# Official Commander bracket deckbuilding criteria. Source of truth for bracket.py.
+source_url = "https://magic.wizards.com/en/news/announcements/introducing-commander-brackets-beta"
+source_date = "2026-02-09"   # last WotC update reflected (Game Changer list revision)
+
+[game_changers]
+bracket3_max = 3
+quote = "Up to three cards from the Game Changers list"
+
+[two_card_combos]
+# Bracket 3: "No intentional early-game two-card infinite combos" — early = "two-card infinite
+# combos that can happen cheaply and in about the first six or so turns of the game".
+# Total mana value of the two pieces is a proxy for "cheaply"; it flags lines for review only.
+early_total_mv_max = 6
+quote = "No intentional early-game two-card infinite combos"
+
+[extra_turns]
+quote = "Extra-turn cards should only appear in low quantities and are not intended to be chained in succession or looped"
+
+[mass_land_denial]
+quote = "No mass land denial"
+
+[tutors]
+review_min = 4
+note = "WotC's bracket descriptions treat tutor density as a judgement call (Bracket 2 decks run few tutors; Bracket 3 decks may run them). Counts at or above review_min are flagged for review and never set a floor."

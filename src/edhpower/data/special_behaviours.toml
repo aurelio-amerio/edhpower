@@ -1,0 +1,97 @@
+# Cards whose mana behaviour is neither a tag nor a simple "Add N". Kept deliberately small; every
+# card that hits this table is listed in the report. `kind` ∈ land | rock | doubler | untap.
+# `mana`: the number the model uses (lands: mana class 0/1/2; rocks: mana per activation).
+# Other keys are passed through as `params` for the simulator (Plan C): untap_cost, tron, scales_with,
+# reduces, reduces_scope, tutor_cost, requires, scope, sacrifice_on_land_drop.
+version = 1
+
+[cards."Ancient Tomb"]
+kind = "land"
+mana = 2
+note = "2-mana land; the extractor reads {C}{C} correctly, listed so the class is explicit"
+
+[cards."Eldrazi Temple"]
+kind = "land"
+mana = 2
+note = "2 mana for colourless Eldrazi only; modelled as 2 (spec)"
+
+[cards."City of Traitors"]
+kind = "land"
+mana = 2
+sacrifice_on_land_drop = true
+note = "2-mana land sacrificed when the next land is played; the simulator applies the sacrifice"
+
+[cards."Eye of Ugin"]
+kind = "land"
+mana = 0
+reduces = 2
+reduces_scope = "colorless eldrazi spells you cast"
+tutor_cost = 7
+note = "non-producing; −2 reducer for colourless Eldrazi plus a 7-mana tutor"
+
+[cards."Gaea's Cradle"]
+kind = "land"
+mana = 0
+scales_with = "creatures"
+note = "board-dependent; counted as a non-producing land by the closed-form numbers"
+
+[cards."Urza's Mine"]
+kind = "land"
+mana = 1
+tron = 2
+
+[cards."Urza's Power Plant"]
+kind = "land"
+mana = 1
+tron = 2
+
+[cards."Urza's Tower"]
+kind = "land"
+mana = 1
+tron = 3
+
+[cards."Urza's Workshop"]
+kind = "land"
+mana = 1
+scales_with = "urza_lands"
+
+[cards."Forsaken Monument"]
+kind = "doubler"
+mana = 0
+scope = "colorless"
+note = "+{C} whenever a permanent is tapped for {C}; Plan C models the doubling"
+
+[cards."Basalt Monolith"]
+kind = "rock"
+mana = 3
+untap_cost = 3
+
+[cards."Mana Vault"]
+kind = "rock"
+mana = 3
+untap_cost = 4
+
+[cards."Grim Monolith"]
+kind = "rock"
+mana = 3
+untap_cost = 3
+
+[cards."Mox Opal"]
+kind = "rock"
+mana = 1
+requires = "metalcraft"
+
+[cards."Unwinding Clock"]
+kind = "untap"
+mana = 0
+scope = "artifacts"
+
+[cards."Seedborn Muse"]
+kind = "untap"
+mana = 0
+scope = "permanents"
+
+[cards."Manifold Key"]
+kind = "untap"
+mana = 0
+scope = "one_artifact"

@@ -1,0 +1,108 @@
+1 Ulalek, Fused Atrocity
+
+1 Dismember
+1 Ancient Tomb
+1 Arcane Signet
+1 Basalt Monolith
+1 Boseiju, Who Endures
+1 Candelabra of Tawnos
+1 Chain of Vapor
+1 City of Brass
+1 City of Traitors
+1 Clock of Omens
+1 Command Tower
+1 Crop Rotation
+1 Deathrite Shaman
+1 Delighted Halfling
+1 Delney, Streetwise Lookout
+1 Demonic Tutor
+1 Dimensional Infiltrator
+1 Eldrazi Temple
+1 Eldritch Immunity
+1 Emergence Zone
+1 Enlightened Tutor
+1 Esper Sentinel
+1 Exotic Orchard
+1 Eye of Ugin
+1 Faerie Mastermind
+1 Flusterstorm
+1 Forbidden Orchard
+1 Force of Negation
+1 Force of Will
+1 Gaea's Cradle
+1 Glaring Fleshraker
+1 Gleaming Splendor
+1 Gemstone Caverns
+1 Grim Monolith
+1 Into the Flood Maw
+1 Inventors' Fair
+1 King T'Challa
+1 Kinnan, Bonder Prodigy
+1 Kirol, Attentive First-Year
+1 Kozilek's Command
+1 Liberator, Urza's Battlethopter
+1 Lotho, Corrupt Shirriff
+1 Lotus Petal
+1 Magus of the Candelabra
+1 Mana Confluence
+1 Mana Vault
+1 Manifold Key
+1 Mental Misstep
+1 Mindbreak Trap
+1 Misdirection
+1 Mishra's Workshop
+1 Mockingbird
+1 Mox Diamond
+1 Mox Opal
+1 Mystic Remora
+1 Nameless Inversion
+1 Noxious Revival
+1 Omni-Changeling
+1 Orim's Chant
+1 Otawara, Soaring City
+1 Pact of Negation
+1 Peter Parker's Camera
+1 Phyrexian Metamorph
+1 Planar Nexus
+1 Ragavan, Nimble Pilferer
+1 Ranger-Captain of Eos
+1 Relic of Legends
+1 Rhystic Study
+1 Seedborn Muse
+1 Shields of Velis Vel
+1 Fellwar Stone
+1 Silence
+1 Smothering Tithe
+1 Snapback
+1 Sol Ring
+1 Sowing Mycospawn
+1 Spawn-Gang Commander
+1 Spire of Industry
+1 Starting Town
+1 Strionic Resonator
+1 Swan Song
+1 Swords to Plowshares
+1 Talon Gates of Madara
+1 Tarnished Citadel
+1 Tezzeret, Cruel Captain
+1 The Cabbage Merchant
+1 The One Ring
+1 Thran Dynamo
+1 Unwinding Clock
+1 Urza's Mine
+1 Urza's Power Plant
+1 Urza's Saga
+1 Urza's Tower
+1 Urza's Workshop
+1 Vampiric Tutor
+1 Voltaic Key
+1 Wan Shi Tong, Librarian
+1 Deserted Temple
+1 Wishclaw Talisman
+
+// source: deck/b5/ulalek-nightmare-stacks-toodeep-b5.txt (Moxfield export), copied 2026-09-10
+// The export used printed flavour names for five cards; replaced here with the Oracle names Scryfall
+// resolves ('Tis But a Scratch! -> Dismember, Glittering Caves of Aglarond -> Gemstone Caverns,
+// Shu Jing Meteorite -> Fellwar Stone, Weathertop -> Deserted Temple, Phenomena Recorder ->
+// Peter Parker's Camera; the last one is confirmed by deck/b5/primer.txt, which names the card).
+
