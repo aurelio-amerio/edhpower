@@ -90,3 +90,31 @@ def test_b4_combo_clock_beats_b3():
     assert len(b4.lines_simulated) > len(b3.lines_simulated)
     assert b4.clocks["combo"].reached > b3.clocks["combo"].reached
     assert b4.clocks["combo"].by_turn[6] > 0.0
+
+
+def test_result_carries_line_statuses_and_payoffs():
+    from edhpower.payoffs import detect
+    facts = fixture_facts("ulalek-bracket4-v2")
+    r = simulate(facts, CFG, 20, tipping_target=3)
+    assert r.payoffs == detect(facts).by_category
+    assert len(r.line_status) == len(r.lines_simulated)
+    for row, label in zip(r.line_status, r.lines_simulated):
+        assert row["label"] == label and row["status"] in ("direct", "payoff", "no_payoff", "unmapped")
+        assert set(row) == {"label", "status", "resources", "categories", "candidates", "hand_ok"}
+        assert all(c in r.payoffs for c in row["categories"])
+        assert (row["status"] == "payoff") == bool(row["candidates"])
+    d = r.to_dict()
+    assert d["line_status"] == r.line_status and d["payoffs"] == r.payoffs
+
+
+def test_payoff_notes_reach_the_result():
+    import dataclasses
+    facts = dataclasses.replace(fixture_facts("precon-eldrazi-unbound"), tags_status="skipped (--no-tags)")
+    r = simulate(facts, CFG, 10, tipping_target=5)
+    assert any("payoff tag check skipped" in n for n in r.notes)
+
+
+def test_precomputed_payoffs_give_identical_results():
+    from edhpower.payoffs import detect
+    facts = fixture_facts("ulalek-bracket3-v2")
+    assert simulate(facts, CFG, 30, 4, payoffs=detect(facts)).to_dict() == simulate(facts, CFG, 30, 4).to_dict()

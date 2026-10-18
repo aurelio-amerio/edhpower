@@ -16,6 +16,7 @@ from typing import Any
 
 from edhpower.config import SimConfig
 from edhpower.facts import DeckFacts
+from edhpower.payoffs import DeckPayoffs, detect
 from edhpower.sim.combos import SkippedLine, select_lines
 from edhpower.sim.engine import CLOCKS, play_game
 from edhpower.sim.model import build_sim_deck
@@ -43,6 +44,8 @@ class SimResult:
     idle_by_turn: dict[int, float]
     lines_simulated: list[str]
     lines_skipped: list[SkippedLine]
+    line_status: list[dict[str, Any]]
+    payoffs: dict[str, list[str]]
     combos_status: str
     coverage: dict[str, int]
     notes: list[str]
@@ -78,9 +81,10 @@ def _clock(name: str, label: str, turns: list[int | None], max_turn: int, status
     return Clock(name, label, status, med if med <= max_turn else None, by_turn[max_turn], by_turn)
 
 
-def simulate(facts: DeckFacts, cfg: SimConfig, iterations: int, tipping_target: int) -> SimResult:
+def simulate(facts: DeckFacts, cfg: SimConfig, iterations: int, tipping_target: int, payoffs: DeckPayoffs | None = None) -> SimResult:
+    payoffs = payoffs if payoffs is not None else detect(facts)
     deck = build_sim_deck(facts, cfg)
-    lines, skipped = select_lines(facts, cfg)
+    lines, skipped = select_lines(facts, cfg, payoffs)
     seed = deck_seed(facts)
     firsts: dict[str, list[int | None]] = {k: [] for k in CLOCKS}
     mana_sum = [0.0] * (cfg.max_turn + 1)
@@ -106,6 +110,7 @@ def simulate(facts: DeckFacts, cfg: SimConfig, iterations: int, tipping_target: 
         "combat counts printed power only (tokens, anthems and pump excluded); colours are enforced"
     ]
     notes.extend(deck.notes)
+    notes.extend(payoffs.notes)
     if not combos_ok:
         notes.append(f"Spellbook unavailable ({facts.combos_unavailable_reason}): combo clocks unevaluated")
     elif skipped:
@@ -121,6 +126,15 @@ def simulate(facts: DeckFacts, cfg: SimConfig, iterations: int, tipping_target: 
         idle_by_turn={t: round(idle_sum[t] / n, 6) for t in range(1, cfg.max_turn + 1)},
         lines_simulated=[l.label for l in lines],
         lines_skipped=skipped,
+        line_status=[{
+            "label": l.label,
+            "status": l.status,
+            "resources": list(l.resources),
+            "categories": list(dict.fromkeys(c for r in l.resources for c in cfg.payoff_converts.get(r, ()))),
+            "candidates": sorted(l.payoff.candidates) if l.payoff else [],
+            "hand_ok": bool(l.payoff.hand_ok) if l.payoff else False,
+        } for l in lines],
+        payoffs={k: list(v) for k, v in payoffs.by_category.items()},
         combos_status="ok" if combos_ok else "unavailable",
         coverage=dict(deck.coverage),
         notes=notes,
