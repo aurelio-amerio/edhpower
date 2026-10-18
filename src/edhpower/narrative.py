@@ -109,6 +109,12 @@ def build_narrative(facts: DeckFacts, bracket: BracketVerdict, curve: CurveScore
             more = f" … (+{s - 3} more)" if s > 3 else ""
             text += f"; not simulated: {shown}{more}"
         findings.append(Finding("combos", text))
+        gaps = [row["label"] for row in sim.line_status if row["status"] == "no_payoff"]
+        if gaps:
+            findings.append(Finding("combos", f"{len(gaps)} infinite engine(s) have no payoff in this deck: {'; '.join(gaps[:3])}" + (f" … (+{len(gaps) - 3} more)" if len(gaps) > 3 else "")))
+        locks = [x.label for x in sim.lines_skipped if x.reason == "lock only"]
+        if locks:
+            findings.append(Finding("combos", f"{len(locks)} lock line(s) excluded from the combo clock: {'; '.join(locks[:3])}" + (f" … (+{len(locks) - 3} more)" if len(locks) > 3 else "")))
 
     c = sim.clocks
     findings.append(Finding("clocks", (f"Medians: commander {_turn(c['commander'].median, sim.max_turn)}, {c['mana_threshold'].label} "

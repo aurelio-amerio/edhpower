@@ -62,3 +62,20 @@ def test_unevaluated_inputs_are_named_not_scored():
     assert "Combo clocks unevaluated: Spellbook was unavailable" in text
     assert "two_card_combos could not be evaluated" in text
     assert "disagree" not in text and "agree within" not in text
+
+
+def test_combos_findings_name_payoff_gaps_and_locks():
+    from edhpower.sim import Clock, SimResult
+    facts, bracket, curve, components, tipping, sim = _parts("ulalek-bracket3-v2", iterations=20)
+    import dataclasses
+    doctored = dataclasses.replace(
+        sim,
+        lines_simulated=["A + B", "C + D"],
+        line_status=[{"label": "A + B", "status": "no_payoff", "resources": ["mana"], "categories": ["mana_sink"], "candidates": [], "hand_ok": False},
+                     {"label": "C + D", "status": "payoff", "resources": ["etb"], "categories": ["etb_damage"], "candidates": ["E"], "hand_ok": False}],
+        lines_skipped=[dataclasses.replace(sim.lines_skipped[0], reason="lock only")] if sim.lines_skipped else [],
+    )
+    text = "\n".join(f.text for f in build_narrative(facts, bracket, curve, components, tipping, doctored, CFG.narrative).findings if f.kind == "combos")
+    assert "1 infinite engine(s) have no payoff in this deck: A + B" in text
+    if sim.lines_skipped:
+        assert "1 lock line(s) excluded from the combo clock" in text

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from edhpower.analysis import Analysis
+from edhpower.payoffs import CATEGORY_LABELS
 from edhpower.stats import BUCKETS
 
 
@@ -23,6 +24,17 @@ def _truncated(items: list[str], limit: int, sep: str = ", ") -> str:
 
 def _names(names: list[str], limit: int = 8) -> str:
     return "none" if not names else _truncated(names, limit)
+
+
+def _status_text(row: dict) -> str:
+    res = "/".join(row["resources"]) or "no recognised product"
+    if row["status"] == "direct":
+        return "direct win"
+    if row["status"] == "payoff":
+        return f"{res} → {_names(row['candidates'], 3)}"
+    if row["status"] == "no_payoff":
+        return f"{res} → no payoff in deck"
+    return res
 
 
 def _fmt(x: float | None, digits: int = 2) -> str:
@@ -128,9 +140,16 @@ def render_text(analysis: Analysis) -> str:
             out.append(f"  {c.label:<52} {med:<7} {row}")
         out.append(f"  {'avg mana produced':<52} {'':<7} " + " ".join(f"{sim.mana_by_turn[t]:4.1f} " for t in turns))
         out.append(f"  {'share of games casting nothing':<52} {'':<7} " + " ".join(f"{sim.idle_by_turn[t]:4.0%} " for t in turns))
-        out.append(f"  lines simulated: {_names(sim.lines_simulated, 6)}")
+        shown = [f"{row['label']} [{_status_text(row)}]" for row in sim.line_status]
+        out.append(f"  lines simulated: {_truncated(shown, 6, '; ') if shown else 'none'}")
         if sim.lines_skipped:
             out.append("  not simulated: " + _truncated([f"{s.label} ({s.reason})" for s in sim.lines_skipped], 6, "; "))
+        relevant = {c for row in sim.line_status for c in row["categories"]}
+        cats = [c for c in CATEGORY_LABELS if c in relevant or sim.payoffs.get(c)]
+        if cats:
+            out.append("  payoffs: " + "; ".join(f"{CATEGORY_LABELS[c]}: {_names(sim.payoffs.get(c, []), 4) if sim.payoffs.get(c) else 'none'}" for c in cats))
+        else:
+            out.append("  payoffs: none detected, and no simulated line needs one")
         cov = sim.coverage
         out.append(f"  model coverage: lands {cov['land']} · rocks {cov['rock']} · dorks {cov['dork']} · one-shot {cov['one_shot']} · reducers {cov['reducer']} · ramp spells {cov['ramp_spell']} · draw spells {cov['draw_spell']} · tutors {cov['tutor']} · threats {cov['threat']} · creatures {cov['creature']} · engines {cov['engine']} · other permanents {cov['permanent']} · held {cov['held']}")
         for n in sim.notes:
