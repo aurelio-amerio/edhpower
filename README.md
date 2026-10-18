@@ -163,14 +163,14 @@ are reported as `unevaluated`, never assumed satisfied.
 `--from-facts PATH` re-runs the whole analysis from it with no network. `DeckFacts` is at
 **schema version 2**; `--from-facts` rejects any other version rather than guessing.
 
-`tests/fixtures/*.facts.json` are frozen live runs of five decks (two Eldrazi bracket-3 lists,
-an Eldrazi bracket-4 list, a bracket-5 contrast and the Eldrazi Unbound precon); their
-decklists are copies under `tests/fixtures/decks/` so that nothing in the package reads the
-repo's `deck/` tree. `tests/test_golden.py` pins the analysis numbers for those fixtures,
+`tests/fixtures/*.facts.json` are frozen live runs of five sample Commander decks spanning
+brackets 2 to 5 (a precon, two tuned bracket-3 lists, a bracket-4 list and a bracket-5 contrast);
+their decklists are under `tests/fixtures/decks/`, and the package reads nothing outside the
+fixtures. `tests/test_golden.py` pins the analysis numbers for those fixtures,
 including the simulator's medians at 500 games, so changing a scoring constant or the sim
 engine fails the suite until the values are re-baselined on purpose:
 
-    uv run --directory edhpower python tests/golden_update.py
+    uv run python tests/golden_update.py
 
 `CALIBRATION.md` records the reference numbers per deck and date, plus the columns to fill in
 by hand from edhpowerlevel.com and scrollvault.net.

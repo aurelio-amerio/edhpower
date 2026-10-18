@@ -22,7 +22,7 @@ stopped counting as a mana ability, so in them Forsaken Monument and From Beyond
 sources (`mana_per_activation = 1`); `ulalek-bracket4-v2`, frozen after, reads 0. For a deck running
 such cards the stale profiles run about a turn fast — the `ulalek-bracket3-v2` row reports 7 mana at
 T7 and the first MV 7+ spell at T9, where a live 0.3.0 run of the same list gives T8 and T10
-(`deck/b3/v2/ulalek-b3-v2-benchmarks.md`, 2026-09-11). Treat this table as the cross-deck reference
+(live run recorded 2026-09-11). Treat this table as the cross-deck reference
 at *fixed inputs*, and a live run as the reference for a deck. Re-freezing the four older fixtures
 would move their goldens and is a deliberate future change, not a fix to slip in.
 
@@ -38,9 +38,9 @@ Note the price vendor the site used. Leave a cell as `—` rather than guessing.
 | precon-eldrazi-unbound | 2026-09-10 | 0.3.0 | 1 / edhpowerlevel-2026-08 / v1 / sim 1 | 5.19 | 2 | 4.31 | creature-based | 2 | T4 (p=0.83, target 5) | T5 | T6 | T9 | T9 | 0% (0 lines) | 0/0 | — | — | — | — | Scryfall USD, default printing | avg MV 4.61, efficiency 0.724, impact 593.3; 0 Game Changers, 0 combo lines, every bracket criterion `ok`; 19 untagged, 5 without a USD price |
 | ulalek-bracket4-v2 | 2026-09-11 | 0.3.0 | 1 / edhpowerlevel-2026-08 / v1 / sim 1 | 9.68 | 5 | 9.24 | combo | 4 | T3 (p=0.96, target 3) | T6 | T8 | >T12 | >T12 | 41% | 9/17 | — | — | — | — | Scryfall USD, default printing | avg MV 2.84, efficiency 0.976, impact 988.2; 14 Game Changers, 17 Spellbook lines included (91 almost-included), 9 of the 17 survive simulator selection (the rest are over the per-deck line cap or need a template the sim does not resolve); 18 untagged, 8 without a USD price |
 
-Deck sources: `tests/fixtures/decks/*.txt` (copies; the package never reads the repo's `deck/` tree).
+Deck sources: `tests/fixtures/decks/*.txt` (the package reads nothing outside the fixtures).
 The precon list comes from EDHREC's precon page for Eldrazi Unbound (Commander Masters, 2023),
-fetched 2026-09-10; the bracket-5 list is the repo's Moxfield export with five printed flavour
+fetched 2026-09-10; the bracket-5 list is a Moxfield export with five printed flavour
 names replaced by their Oracle names (recorded in the file's trailing comments).
 
 ## Observed orderings and findings
@@ -140,9 +140,9 @@ of the sim figures above against an earlier run of the same fixtures:
   (every fixture except `ulalek-b5`; All Is Dust alone accounts for four of them) that would
   previously never have registered on this clock.
 
-**Comparison against the retired name-table simulator.** `TODO.md` (2026-09-09) reported "any
-combo online 17% by T6 / 51% by T10" for ulalek-bracket4-v2 and "2% / 7%" for ulalek-bracket3-v2;
-`CLAUDE.md` reported, for ulalek-bracket3-v2, "median commander turn 4, 7 mana by T5 in 53% of
+**Comparison against the retired name-table simulator.** The deck workspace's notes (2026-09-09) reported "any
+combo online 17% by T6 / 51% by T10" for ulalek-bracket4-v2 and "2% / 7%" for ulalek-bracket3-v2,
+and, for ulalek-bracket3-v2, "median commander turn 4, 7 mana by T5 in 53% of
 games, first haymaker median T6". Sim v1 measures, on the same two fixtures: ulalek-bracket4-v2
 combo-line-assembled 14% by T6 / 30% by T10; ulalek-bracket3-v2 combo-line-assembled 2% by T6 /
 5% by T10; ulalek-bracket3-v2 commander median T5, 7 mana available by T5 in 26% of games, first
