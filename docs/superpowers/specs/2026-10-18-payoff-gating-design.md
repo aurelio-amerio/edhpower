@@ -1,6 +1,6 @@
 # Payoff gating for the goldfish simulator
 
-**Date:** 2026-10-18. **Status:** approved design, awaiting implementation plan.
+**Date:** 2026-10-18. **Status:** implemented (sim v2, 2026-10-18); plan at docs/superpowers/plans/2026-10-18-payoff-gating.md.
 
 ## Problem
 

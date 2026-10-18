@@ -107,7 +107,7 @@ seven entries of `engine.CLOCKS`) reports a median turn and a by-turn cumulative
 that never reaches a clock counts as turn 13 for the median; a clock is printed as `>T12` when
 fewer than half of games reach it by turn 12.
 
-Known limits of sim v1 (each a source of systematic bias, not noise; from `CALIBRATION.md`):
+Known limits of sim v2 (each a source of systematic bias, not noise):
 
 - Mana payment is greedy by colour; it does not hold up a wrong-coloured source hoping for a
   better later play.
@@ -123,10 +123,13 @@ Known limits of sim v1 (each a source of systematic bias, not noise; from `CALIB
 - Commander tax is not modelled.
 - The Mox Opal `requires` gap (see above) is fixed in the simulator's mana model but still open
   in the static `fast_mana` component.
+- Combo payoffs are detected by oracle-text patterns (plus the `mana-sink` and
+  `alternate-win-condition` tags for two categories). A payoff the patterns miss makes a real
+  win read as "no payoff in deck"; the report lists what was detected so the gap is visible.
 
 `[sim]` in `src/edhpower/data/scoring.toml` holds the simulator's tuning constants; `sim_version`
 is stamped into the JSON alongside `config_version`. Golden tests run the simulator at 500 games;
-production defaults to 20 000 (`--iterations` overrides either).
+production defaults to 20 000 (`--iterations` overrides either). sim v2 (2026-10-18) gates the lethal-combo clock on a detected payoff and drops lock-only lines from the combo clock; v1 and v2 combo numbers are not comparable.
 
 ## Data sources and caching
 

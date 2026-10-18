@@ -3,7 +3,7 @@
     "config_version": 1,
     "curve_profile": "edhpowerlevel-2026-08",
     "components_profile": "v1",
-    "sim_version": 1,
+    "sim_version": 2,
     "sim_iterations": 500
   },
   "decks": {
