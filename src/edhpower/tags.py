@@ -14,7 +14,7 @@ SCRYFALL_SEARCH = "https://api.scryfall.com/cards/search"
 TAG_MIN_INTERVAL = 1.0
 TAG_CACHE_VERSION = 1
 
-# Verified slugs (spec §tags.py, probed 2026-09-10; values are legal:commander counts at probe time,
+# Verified slugs (spec §tags.py, probed 2026-09-10, payoff slugs 2026-10-18; values are legal:commander counts at probe time,
 # informational only — the cache records fresh counts). Anything not listed here is a configuration error.
 TAG_TABLE: dict[str, int] = {
     "ramp": 2125,
@@ -38,6 +38,8 @@ TAG_TABLE: dict[str, int] = {
     "cheat-into-play": 242,
     "extra-combat": 45,
     "copy-spell": 177,
+    "mana-sink": 1814,              # probed 2026-10-18; payoff check for activation-based sinks
+    "alternate-win-condition": 62,  # probed 2026-10-18; payoff check for empty-library wins
 }
 
 

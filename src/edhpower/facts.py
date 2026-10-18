@@ -13,7 +13,7 @@ from edhpower.profile import CardProfile, build_profile, load_special_behaviours
 from edhpower.scryfall import CardData, Resolution
 from edhpower.spellbook import ComboData
 from edhpower.stats import CurveStats, PriceTotals, color_identity_violations, game_changers, mana_curve, pip_counts, price_totals
-from edhpower.tags import TagCache
+from edhpower.tags import TAG_TABLE, TagCache
 
 SCHEMA_VERSION = 2
 
@@ -148,6 +148,18 @@ def build_facts(
     names, counts = partition([(profiles[e.name], e.count) for e in entries])
     tags_oldest, tags_newest = tag_cache.fetched_range() if tags_ok else (None, None)
 
+    fetched: dict[str, str | int | None] = {
+        "scryfall_cards_oldest": resolution.fetched_oldest,
+        "scryfall_cards_newest": resolution.fetched_newest,
+        "scryfall_cards_unknown": resolution.fetched_unknown,
+        "spellbook": combos.fetched_at if combos else None,
+        "spellbook_api_version": combos.api_version if combos else None,
+        "tags_oldest": tags_oldest,
+        "tags_newest": tags_newest,
+    }
+    if tags_ok:
+        fetched["tag_table"] = ",".join(sorted(TAG_TABLE))
+
     return DeckFacts(
         schema_version=SCHEMA_VERSION,
         tool_version=__version__,
@@ -171,15 +183,7 @@ def build_facts(
         special_hits=sorted(hits),
         untagged=sorted(names["untagged"]),
         tags_status=tags_status,
-        fetched={
-            "scryfall_cards_oldest": resolution.fetched_oldest,
-            "scryfall_cards_newest": resolution.fetched_newest,
-            "scryfall_cards_unknown": resolution.fetched_unknown,
-            "spellbook": combos.fetched_at if combos else None,
-            "spellbook_api_version": combos.api_version if combos else None,
-            "tags_oldest": tags_oldest,
-            "tags_newest": tags_newest,
-        },
+        fetched=fetched,
     )
 
 

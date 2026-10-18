@@ -29,10 +29,10 @@ def _fetcher(tmp_path, fake_send, progress=None) -> TagFetcher:
 
 
 def test_tag_table_matches_spec():
-    assert len(TAG_TABLE) == 21
+    assert len(TAG_TABLE) == 23
     assert {"ramp", "mana-rock", "mana-dork", "land-ramp", "ritual", "cost-reducer", "tutor", "removal", "counterspell",
             "board-wipe", "card-advantage", "cantrip", "extra-turn", "mass-land-denial", "pitch-spell", "tax", "hatebear",
-            "reanimate", "cheat-into-play", "extra-combat", "copy-spell"} == set(TAG_TABLE)
+            "reanimate", "cheat-into-play", "extra-combat", "copy-spell", "mana-sink", "alternate-win-condition"} == set(TAG_TABLE)
     assert TAG_TABLE["ramp"] == 2125 and TAG_TABLE["removal"] == 6146
 
 
@@ -98,3 +98,8 @@ def test_load_skips_corrupt_or_foreign_files_and_reports_missing(tmp_path):
     assert cache.tags_for("Brainstorm") == ("cantrip", "card-advantage") and cache.tags_for("Sol Ring") == ()
     assert cache.fetched_range() == ("2026-09-01T00:00:00Z", "2026-09-05T00:00:00Z")
     assert TagCache({}).fetched_range() == (None, None)
+
+
+def test_payoff_slugs_are_in_the_verified_table():
+    from edhpower.tags import TAG_TABLE
+    assert TAG_TABLE["mana-sink"] == 1814 and TAG_TABLE["alternate-win-condition"] == 62

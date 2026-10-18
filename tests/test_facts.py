@@ -120,3 +120,18 @@ def test_load_facts_rejects_other_schema_versions(tmp_path: Path):
     import pytest
     with pytest.raises(ValueError, match="schema 1"):
         load_facts(p)
+
+
+def test_fetched_records_the_tag_table_when_tags_are_ok():
+    from edhpower.decklist import parse_decklist
+    from edhpower.facts import build_facts
+    from edhpower.scryfall import CardData, Resolution
+    from edhpower.tags import TAG_TABLE
+    from .conftest import full_tag_cache, make_card
+    objs = [make_card("Sol Ring")]
+    res = Resolution({o["name"]: CardData.from_scryfall(o) for o in objs}, [], 0, None)
+    with_tags = build_facts(parse_decklist("1 Sol Ring\n"), res, None, "offline", "t.txt", tag_cache=full_tag_cache())
+    assert with_tags.fetched["tag_table"] == ",".join(sorted(TAG_TABLE))
+    assert "mana-sink" in with_tags.fetched["tag_table"].split(",")
+    without = build_facts(parse_decklist("1 Sol Ring\n"), res, None, "offline", "t.txt")
+    assert "tag_table" not in without.fetched
