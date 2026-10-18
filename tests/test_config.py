@@ -112,3 +112,39 @@ def test_missing_sim_key_raises(monkeypatch, tmp_path):
     from edhpower import config as config_mod
     with pytest.raises(KeyError):
         config_mod._sim_from(raw["sim"])
+
+
+def test_sim_payoffs_block_loads_and_compiles():
+    import re
+    s = load_config().sim
+    names = [r for r, _ in s.payoff_resources]
+    assert names == ["mana", "death", "etb", "tokens", "counters", "storm", "draw", "self_mill", "landfall"]
+    assert all(isinstance(p, re.Pattern) for _, p in s.payoff_resources)
+    assert s.payoff_converts["mana"] == ("mana_sink",)
+    assert s.payoff_converts["tokens"] == ("go_wide", "etb_damage", "token_drain")
+    assert s.payoff_converts["landfall"] == ("landfall_payoff", "landfall_tokens")
+    assert s.payoff_chained == {"landfall_tokens": ("go_wide", "token_drain", "etb_damage")}
+    assert s.payoff_hand_ok == frozenset({"mana"})
+    assert s.lock_only.match("Prevent all damage that would be dealt to you")
+    assert s.lock_only.match("Lock") and not s.lock_only.match("Infinite colorless mana")
+    assert s.payoff_resources[0][1].search("infinite colorless mana")
+
+
+def test_bad_payoff_pattern_raises_value_error():
+    import tomllib
+    from importlib import resources
+    from edhpower import config as config_mod
+    raw = tomllib.loads(resources.files("edhpower.data").joinpath("scoring.toml").read_text(encoding="utf-8"))
+    raw["sim"]["payoffs"]["resources"][0]["pattern"] = "infinite (mana"
+    with pytest.raises(ValueError, match="payoff pattern"):
+        config_mod._sim_from(raw["sim"])
+
+
+def test_convert_target_must_be_a_known_category_name():
+    import tomllib
+    from importlib import resources
+    from edhpower import config as config_mod
+    raw = tomllib.loads(resources.files("edhpower.data").joinpath("scoring.toml").read_text(encoding="utf-8"))
+    raw["sim"]["payoffs"]["converts"]["mana"] = ["mana_sinkk"]
+    with pytest.raises(ValueError, match="unknown payoff category"):
+        config_mod._sim_from(raw["sim"])

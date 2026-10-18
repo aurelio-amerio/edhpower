@@ -2,12 +2,15 @@
 
 from __future__ import annotations
 
+import re
 import tomllib
 from dataclasses import dataclass
 from importlib import resources
 from typing import Any
 
 COMPONENT_NAMES: tuple[str, ...] = ("fast_mana", "tutors", "interaction", "card_advantage", "combos", "curve")
+PAYOFF_CATEGORIES: tuple[str, ...] = ("mana_sink", "drain", "etb_damage", "go_wide", "token_drain", "counter_win",
+                                      "cast_damage", "empty_library_win", "life_drain", "landfall_payoff", "landfall_tokens")
 
 
 @dataclass(frozen=True)
@@ -78,6 +81,11 @@ class SimConfig:
     max_two_card_lines: int
     max_three_card_lines: int
     lethal_features: tuple[str, ...]
+    payoff_resources: tuple[tuple[str, re.Pattern[str]], ...]
+    payoff_converts: dict[str, tuple[str, ...]]
+    payoff_chained: dict[str, tuple[str, ...]]
+    payoff_hand_ok: frozenset[str]
+    lock_only: re.Pattern[str]
 
 
 @dataclass(frozen=True)
@@ -162,6 +170,41 @@ def _tipping_from(raw: dict[str, Any]) -> TippingConfig:
     )
 
 
+def _pattern(text: str, where: str) -> re.Pattern[str]:
+    try:
+        return re.compile(text, re.IGNORECASE)
+    except re.error as e:
+        raise ValueError(f"bad payoff pattern in {where}: {e}") from e
+
+
+def _payoffs_from(raw: dict[str, Any]) -> dict[str, Any]:
+    resources = tuple((str(r["resource"]), _pattern(str(r["pattern"]), f"resource '{r['resource']}'")) for r in raw["resources"])
+    known = {r for r, _ in resources}
+    converts: dict[str, tuple[str, ...]] = {}
+    for res, cats in raw["converts"].items():
+        if res not in known:
+            raise ValueError(f"payoff converts: unknown resource '{res}'")
+        for c in cats:
+            if c not in PAYOFF_CATEGORIES:
+                raise ValueError(f"payoff converts '{res}': unknown payoff category '{c}'")
+        converts[str(res)] = tuple(str(c) for c in cats)
+    chained: dict[str, tuple[str, ...]] = {}
+    for cat, targets in raw["chained"].items():
+        if cat not in PAYOFF_CATEGORIES or any(t not in PAYOFF_CATEGORIES for t in targets):
+            raise ValueError(f"payoff chained '{cat}': unknown payoff category")
+        chained[str(cat)] = tuple(str(t) for t in targets)
+    hand_ok = frozenset(str(r) for r in raw["zones"]["hand_ok"])
+    if not hand_ok <= known:
+        raise ValueError(f"payoff hand_ok names unknown resources: {sorted(hand_ok - known)}")
+    return {
+        "payoff_resources": resources,
+        "payoff_converts": converts,
+        "payoff_chained": chained,
+        "payoff_hand_ok": hand_ok,
+        "lock_only": _pattern(str(raw["zones"]["lock_only"]), "lock_only"),
+    }
+
+
 def _sim_from(raw: dict[str, Any]) -> SimConfig:
     return SimConfig(
         version=int(raw["version"]),
@@ -177,6 +220,7 @@ def _sim_from(raw: dict[str, Any]) -> SimConfig:
         max_two_card_lines=int(raw["max_two_card_lines"]),
         max_three_card_lines=int(raw["max_three_card_lines"]),
         lethal_features=tuple(str(f).lower() for f in raw["lethal_features"]),
+        **_payoffs_from(raw["payoffs"]),
     )
 
 
