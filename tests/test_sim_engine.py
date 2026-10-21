@@ -325,7 +325,6 @@ def test_payoff_already_on_board_stamps_lethal_at_assembly():
 # ---- tokens, triggers, counters, ramp counts, board diagnostics ---------------------------------
 
 from edhpower.sim.effects import Effect
-from edhpower.sim.engine import OPPONENTS
 from edhpower.sim.model import token_card
 
 from .test_sim_effects import (AVENGER, BALOTHS, CULTIVATE, GRIZZLY_BEARS, HARROW, INTANGIBLE_VIRTUE, LOTUS_COBRA, MIRKWOOD_BATS,
@@ -467,10 +466,10 @@ def test_creature_etb_fires_for_other_creatures_only():
     g.command_zone = set()
     g.pool = g._produce()
     g._cast("Drain Watcher")
-    assert g.life == [CFG.lethal_damage] * OPPONENTS   # its own entry does not trigger it
+    assert g.life == [CFG.life_per_opponent] * CFG.opponents   # its own entry does not trigger it
     g.board.append(Perm(deck.cards["Grizzly Bears"], 3))
     g._creature_entered(g.board[-1])
-    assert g.life == [CFG.lethal_damage - 1] * OPPONENTS
+    assert g.life == [CFG.life_per_opponent - 1] * CFG.opponents
 
 
 def test_token_created_drain_fires_per_token():
@@ -480,7 +479,7 @@ def test_token_created_drain_fires_per_token():
     g.pool = g._produce() + [frozenset("G")] * 2
     g._cast("Avenger of Zendikar")
     assert _tokens(g, "Plant") == 5
-    assert g.life == [CFG.lethal_damage - 5] * OPPONENTS
+    assert g.life == [CFG.life_per_opponent - 5] * CFG.opponents
 
 
 def test_single_target_drain_hits_the_opponent_with_most_life():
@@ -542,3 +541,94 @@ def test_board_diagnostics_shape():
     n = CFG.max_turn + 1
     assert len(rec.board_power_by_turn) == n and len(rec.lands_by_turn) == n and len(rec.landfall_by_turn) == n
     assert set(rec.tokens_by_turn) == {"Beast"} and len(rec.tokens_by_turn["Beast"]) == n
+
+
+# ---- three opponents, pumps held for lethal, win clocks ------------------------------------------
+
+import dataclasses
+
+from .test_sim_effects import OVERRUN
+
+HUGE = make_card("Huge Thing", cmc=12.0, mana_cost="{12}", type_line="Creature — Eldrazi", power="45", toughness="45")
+FORTY = make_card("Forty Thing", cmc=12.0, mana_cost="{12}", type_line="Creature — Eldrazi", power="40", toughness="40")
+BRUTE = make_card("Brute", cmc=12.0, mana_cost="{12}", type_line="Creature — Beast", power="36", toughness="36")
+OVERRUN_C = make_card("Overrun", cmc=5.0, mana_cost="{2}{G}{G}{G}", type_line="Sorcery", colors=["G"])
+
+
+def _attack_game(deck, attackers, turn=0):
+    g = _game(deck)
+    g.turn, g.hand, g.library = turn, [], ["Wastes"] * 20
+    g.command_zone = set()
+    g.board = [Perm(deck.cards[n], 0) for n in attackers] + [Perm(deck.cards["Wastes"], 0)]
+    return g
+
+
+def test_single_huge_attacker_does_not_kill_the_table_in_one_swing():
+    deck, _ = _deck(CMD, [(HUGE, 1), (WASTES, 39)])
+    g = _attack_game(deck, ["Huge Thing"])
+    g.take_turn()
+    assert g.life == [-5, 40, 40]
+    clocks = _run_to(g, 3)
+    assert clocks["combat"] == 1 and clocks["first_opponent"] == 1
+    assert clocks["lethal_table"] == 3 and clocks["win"] == 3
+
+
+def test_three_forty_power_attackers_kill_the_table_in_one_swing():
+    deck, _ = _deck(CMD, [(FORTY, 3), (WASTES, 37)])
+    g = _attack_game(deck, ["Forty Thing"] * 3)
+    g.take_turn()
+    assert g.life == [0, 0, 0] and g.damage == 120
+    assert g.record.clocks["lethal_table"] == 1 and g.record.clocks["win"] == 1 and g.record.clocks["first_opponent"] == 1
+
+
+def test_pump_is_held_until_it_kills_someone():
+    deck = _fx_deck(CMD, [(FOREST, 38), (BRUTE, 1), (OVERRUN_C, 1)], scripts={**SCRIPTS, "Overrun": OVERRUN})
+    assert deck.cards["Overrun"].role == "held"
+    g = _staged(deck, ["Forest"] * 5 + ["Brute"], hand=["Overrun"])
+    g.command_zone = set()
+    g.take_turn()   # 36 + 3 = 39 does not kill a 40-life opponent: held
+    assert "Overrun" in g.hand and g.life == [4, 40, 40] and g.record.damage_by_turn[1] == 36
+    g.life = [39, 5, 5]
+    g.take_turn()   # 36 leaves 3; 39 kills: cast
+    assert "Overrun" not in g.hand and g.life == [0, 5, 5] and g.record.damage_by_turn[2] == 39
+    assert g.damage == 36 + 39 and g.record.clocks["first_opponent"] == 2
+    g.take_turn()   # the pump ended with the turn
+    assert g.record.damage_by_turn[3] == 36 and not g.pumps
+
+
+def test_each_opponent_drain_hits_all_three():
+    deck = _fx_deck(CMD, [(FOREST, 37), (SWAMP, 1), (WATCHER_C, 1), (BEAR, 1)])
+    g = _staged(deck, ["Forest", "Swamp", "Drain Watcher"], hand=["Grizzly Bears"], turn=3)
+    g.command_zone = set()
+    g.board[-1].entered = 4   # cannot attack this turn: only the drain deals damage
+    g.life = [1, 1, 1]
+    g.take_turn()
+    assert g.life == [0, 0, 0] and g.damage == 0
+    assert g.record.damage_by_turn[4] == 3
+    assert g.record.clocks["first_opponent"] == 4 and g.record.clocks["lethal_table"] == 4 and g.record.clocks["win"] == 4
+    assert g.record.clocks["combat"] is None
+
+
+def test_win_stamps_on_lethal_combo_too():
+    deck, lines = _deck_lines(BIG_CMD, [(WASTES, 30), (BASALT, 1), (MONUMENT, 1)], _payoff_line(["Infinite colorless mana", "Infinite damage"]))
+    clocks = _run_to(_staged_game(deck, lines, "Wastes"), 12)
+    assert clocks["lethal_combo"] == 6 and clocks["win"] == 6 and clocks["lethal_table"] is None
+
+
+def test_damage_by_turn_and_max_swing():
+    deck, _ = _deck(CMD, [(BIG, 2), (WASTES, 38)])
+    g = _attack_game(deck, ["Ulamog, the Ceaseless Hunger"])
+    g.take_turn()
+    g.board.append(Perm(deck.cards["Ulamog, the Ceaseless Hunger"], 2))
+    _run_to(g, 3)
+    assert g.record.damage_by_turn[1:4] == [10, 10, 20] and g.record.max_swing == 20
+    assert len(g.record.damage_by_turn) == CFG.max_turn + 1
+
+
+def test_token_created_does_not_make_tokens_from_tokens():
+    deck = _fx_deck(CMD, [(FOREST, 39), (BALOTHS_C, 1)])
+    card = dataclasses.replace(deck.cards["Rampaging Baloths"], effects=(Effect("token_created", "token", 1, 1, 1, "Elf"),))
+    g = _staged(deck, ["Forest"])
+    g.board.append(Perm(card, 0))
+    g._fire(Effect("landfall", "token", 1, 4, 4, "Beast"), None)   # would recurse without the guard
+    assert _tokens(g, "Beast") == 1 and _tokens(g, "Elf") == 0

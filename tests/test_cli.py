@@ -277,7 +277,7 @@ def test_iterations_and_no_sim_flags(tmp_path: Path, fake_send):
     deck.write_text(DECK)
     out = io.StringIO()
     code = main([str(deck), "--cache-dir", str(tmp_path / "c"), "--iterations", "15", "--json", str(tmp_path / "o.json")], send=fake_send, stdout=out, stderr=io.StringIO(), sleep=lambda s: None)
-    assert code == 0 and "Goldfish simulation (sim v2, 15 games" in out.getvalue()
+    assert code == 0 and "Goldfish simulation (sim v3, 15 games" in out.getvalue()
     assert json.loads((tmp_path / "o.json").read_text())["sim"]["iterations"] == 15
     out = io.StringIO()
     code = main([str(deck), "--cache-dir", str(tmp_path / "c"), "--no-sim"], send=fake_send, stdout=out, stderr=io.StringIO(), sleep=lambda s: None)

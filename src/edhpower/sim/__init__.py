@@ -65,9 +65,12 @@ def clock_labels(cfg: SimConfig, tipping_target: int) -> dict[str, str]:
         "mana_threshold": f"{cfg.mana_threshold} mana available",
         "tipping_target": f"{tipping_target} mana available (closed-form tipping target)",
         "threat": f"MV {cfg.threat_mv}+ spell cast from hand",
-        "combat": f"{cfg.lethal_damage} combat damage (no blockers)",
+        "combat": f"{cfg.life_per_opponent} combat damage (no blockers)",
         "combo": "combo line assembled",
         "lethal_combo": "lethal combo line assembled",
+        "lethal_table": "lethal to the table",   # provisional: Task 5 sets the final labels
+        "first_opponent": "first opponent dead",
+        "win": "win",
     }
 
 

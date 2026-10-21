@@ -76,7 +76,8 @@ class SimConfig:
     mulligan_max_lands: int
     mana_threshold: int
     threat_mv: int
-    lethal_damage: int
+    life_per_opponent: int
+    opponents: int
     metalcraft_count: int
     max_two_card_lines: int
     max_three_card_lines: int
@@ -99,6 +100,7 @@ class NarrativeConfig:
     lowest_components: int
     scorer_gap: float
     idle_share: float
+    unmodelled_share: float
 
 
 @dataclass(frozen=True)
@@ -222,7 +224,8 @@ def _sim_from(raw: dict[str, Any]) -> SimConfig:
         mulligan_max_lands=int(raw["mulligan_max_lands"]),
         mana_threshold=int(raw["mana_threshold"]),
         threat_mv=int(raw["threat_mv"]),
-        lethal_damage=int(raw["lethal_damage"]),
+        life_per_opponent=int(raw["life_per_opponent"]),
+        opponents=int(raw["opponents"]),
         metalcraft_count=int(raw["metalcraft_count"]),
         max_two_card_lines=int(raw["max_two_card_lines"]),
         max_three_card_lines=int(raw["max_three_card_lines"]),
@@ -236,6 +239,7 @@ def _narrative_from(raw: dict[str, Any]) -> NarrativeConfig:
         lowest_components=int(raw["lowest_components"]),
         scorer_gap=float(raw["scorer_gap"]),
         idle_share=float(raw["idle_share"]),
+        unmodelled_share=float(raw["unmodelled_share"]),
     )
 
 

@@ -41,7 +41,7 @@ def test_analyse_runs_the_sim_with_the_tipping_target_and_stamps_it():
     a = analyse(_facts(), iterations=25)
     assert a.sim is not None and a.sim.iterations == 25 and a.sim.sim_version == load_config().sim.version
     assert a.sim.clocks["tipping_target"].label.startswith(f"{a.tipping.target} mana available")
-    assert a.to_dict()["sim"]["iterations"] == 25 and a.to_dict()["config"]["sim_version"] == 2
+    assert a.to_dict()["sim"]["iterations"] == 25 and a.to_dict()["config"]["sim_version"] == 3
     assert {f.kind for f in a.narrative.findings} >= {"bracket", "tipping", "clocks"}
 
 
@@ -60,4 +60,4 @@ def test_analysis_carries_payoffs_once():
     assert isinstance(a.payoffs, DeckPayoffs) and a.payoffs == detect(facts)
     assert a.to_dict()["payoffs"] == a.payoffs.to_dict()
     assert a.sim is not None and a.sim.payoffs == a.payoffs.by_category
-    assert a.config["sim_version"] == 2
+    assert a.config["sim_version"] == 3

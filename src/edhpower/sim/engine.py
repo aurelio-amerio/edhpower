@@ -12,12 +12,12 @@ from edhpower.sim.effects import Effect, condition_holds
 from edhpower.sim.mana import ANY_COLOR, COLORLESS, ManaCost, Unit, pay
 from edhpower.sim.model import SimCard, SimDeck, reduction_applies, token_card
 
-CLOCKS: tuple[str, ...] = ("commander", "mana_threshold", "tipping_target", "threat", "combat", "combo", "lethal_combo")
+CLOCKS: tuple[str, ...] = ("commander", "mana_threshold", "tipping_target", "threat", "combat", "combo", "lethal_combo",
+                           "lethal_table", "first_opponent", "win")
 MAIN_ORDER: tuple[str, ...] = ("rock", "dork", "reducer", "ramp_spell", "draw_spell", "commander", "tutor", "combo",
                                "threat", "creature", "engine", "permanent")
 CHEAPEST_FIRST = {"rock", "dork", "reducer", "engine", "permanent", "ramp_spell", "draw_spell", "tutor"}
 UNTAP_RANK = {"permanents": 3, "artifacts": 2, "one_artifact": 1}
-OPPONENTS = 3
 
 
 @dataclass
@@ -37,6 +37,8 @@ class GameRecord:
     board_power_by_turn: list[int] = field(default_factory=list)   # power of creatures able to attack that turn
     lands_by_turn: list[int] = field(default_factory=list)
     landfall_by_turn: list[int] = field(default_factory=list)   # lands that entered that turn
+    damage_by_turn: list[int] = field(default_factory=list)   # life the opponents lost that turn, combat and drain
+    max_swing: int = 0   # largest damage_by_turn
 
 
 class Game:
@@ -51,11 +53,12 @@ class Game:
         self.pool: list[Unit] = []
         self.turn = 0
         self.produced = 0
-        self.damage = 0
+        self.damage = 0   # cumulative combat damage as if focused on one opponent: the `combat` clock
         self.casts = 0
         self.fired: set[str] = set()
         self.pending_payoff: set[str] = set()
-        self.life: list[int] = [cfg.lethal_damage] * OPPONENTS
+        self.life: list[int] = [cfg.life_per_opponent] * cfg.opponents
+        self.pumps: list[Effect] = []   # pumps resolved this turn; they end with it
         self.distinct_lands: set[str] = set()
         self.landfalls = 0   # lands that entered this turn
         self.token_cards: dict[tuple[str, int, int], SimCard] = {}
@@ -63,7 +66,7 @@ class Game:
         token_types = sorted({e.type for c in deck.cards.values() for top in c.effects for e in (top, top.upgrade)
                               if e is not None and e.do == "token"})
         self.record = GameRecord({k: None for k in CLOCKS}, [0] * n, [False] * n, {k: [0] * n for k in token_types},
-                                 [0] * n, [0] * n, [0] * n)
+                                 [0] * n, [0] * n, [0] * n, [0] * n)
         self._opening_hand()
 
     # ---- setup -------------------------------------------------------------------------------
@@ -125,6 +128,27 @@ class Game:
         anthems = self._anthems()
         return sum(p.card.power + p.counters + (self._anthem_bonus(p.card, anthems) if anthems else 0)
                    for p in self.board if p.card.is_creature and p.entered < self.turn)
+
+    def _attack_powers(self, extra: Iterable[Effect] = ()) -> list[int]:
+        """Positive damage of each creature able to attack this turn, largest first: printed power, counters,
+        anthems, this turn's pumps and `extra` (pumps being considered)."""
+        boosts = [*self._anthems(), *self.pumps, *extra]
+        out = []
+        for p in self.board:
+            if p.card.is_creature and p.entered < self.turn:
+                n = p.card.power + p.counters + sum(e.power for e in boosts if self._in_scope(p.card, e.type))
+                if n > 0:
+                    out.append(n)
+        return sorted(out, reverse=True)
+
+    @staticmethod
+    def _assign(life: list[int], powers: list[int]) -> list[int]:
+        """Life totals after `powers` (largest first) attack, each at the opponent with the most life left (ties: lowest index)."""
+        life = list(life)
+        for n in powers:
+            i = max(range(len(life)), key=lambda k: (life[k], -k))
+            life[i] -= n
+        return life
 
     def _tron_names(self) -> set[str]:
         return {p.card.name for p in self.board if "tron" in p.card.params}
@@ -311,7 +335,9 @@ class Game:
                 self._fire(e, p)
 
     def _tokens_created(self, n: int) -> None:
-        fx = self._triggered("token_created")
+        """`token_created` effects fire once per token. Token-making ones are skipped: each token they make would
+        trigger them again."""
+        fx = [(p, e) for p, e in self._triggered("token_created") if e.do != "token"]
         for _ in range(n):
             for p, e in fx:
                 self._fire(e, p)
@@ -335,16 +361,22 @@ class Game:
             for perm in made:
                 self._creature_entered(perm)
 
-    def _fire(self, effect: Effect, source: Perm | None) -> None:
-        """Resolve one effect. `source` is the permanent it belongs to (None for a spell)."""
-        del source
-        e = effect
+    def _applicable(self, e: Effect) -> Effect | None:
+        """The effect as it resolves now: its upgrade when that condition holds, None when its own condition fails."""
         if e.when or (e.upgrade is not None and e.upgrade.when):
             lands, tokens = self._land_count(), self._token_count()
             if e.upgrade is not None and condition_holds(e.upgrade.when, len(self.distinct_lands), lands, tokens):
-                e = e.upgrade
-            elif not condition_holds(e.when, len(self.distinct_lands), lands, tokens):
-                return
+                return e.upgrade
+            if not condition_holds(e.when, len(self.distinct_lands), lands, tokens):
+                return None
+        return e
+
+    def _fire(self, effect: Effect, source: Perm | None) -> None:
+        """Resolve one effect. `source` is the permanent it belongs to (None for a spell)."""
+        del source
+        e = self._applicable(effect)
+        if e is None:
+            return
         if e.do == "token":
             self._create_tokens(e)
             return
@@ -363,7 +395,9 @@ class Game:
             else:
                 i = max(range(len(self.life)), key=lambda k: (self.life[k], -k))
                 self.life[i] -= n
-        # anthem is read by _board_power; pump arrives with combat
+        elif e.do == "pump":
+            self.pumps.append(e)
+        # anthem is read by _board_power and _attack_powers
 
     def _resolve(self, name: str, from_hand: bool) -> None:
         """Put a paid-for card where it goes and apply its effect. Payment happened already."""
@@ -511,6 +545,31 @@ class Game:
                 return True
         return False
 
+    def _try_pump(self) -> bool:
+        """Cast the cheapest castable pump spell that makes this turn's attack kill an opponent who survives without it.
+        Held otherwise: a pump is never cast for damage that kills nobody."""
+        pumps = sorted({n for n in self.hand if any(e.on == "cast" and e.do == "pump" for e in self.cards[n].effects)},
+                       key=lambda n: (self.cards[n].cmc, n))
+        if not pumps:
+            return False
+        powers = self._attack_powers()
+        if not powers:
+            return False
+        without = self._assign(self.life, powers)
+        for n in pumps:
+            c = self.cards[n]
+            if self._try_pay(c) is None:
+                continue
+            fx = [a for e in c.effects if e.on == "cast" and e.do == "pump" and (a := self._applicable(e)) is not None]
+            life = self._assign(self.life, self._attack_powers(fx))
+            if any(w <= 0 < wo for w, wo in zip(life, without)):
+                self._cast(n)
+                for e in c.effects:
+                    if e.on == "cast" and e.do == "pump":
+                        self._fire(e, None)
+                return True
+        return False
+
     def _try_role(self, role: str) -> bool:
         if role == "commander":
             for n in sorted(self.command_zone):
@@ -539,6 +598,7 @@ class Game:
             progressed = any(self._try_role(role) for role in MAIN_ORDER)   # short-circuits at the first cast
             if not progressed:
                 progressed = self._try_one_shot()
+        self._try_pump()
 
     def take_turn(self) -> None:
         self.turn += 1
@@ -547,6 +607,8 @@ class Game:
         self.produced = 0
         self.landfalls = 0
         self.pool = []
+        self.pumps = []
+        life_before = sum(self.life)
         self._untap()
         if t > 1:
             self._draw(1)
@@ -566,8 +628,25 @@ class Game:
             self._stamp("mana_threshold")
         if self.produced >= self.tipping_target:
             self._stamp("tipping_target")
-        self.damage += sum(p.card.power for p in self.board if p.card.is_creature and p.entered < t)
-        if self.damage >= self.cfg.lethal_damage:
+        self._combat()
+        dealt = life_before - sum(self.life)
+        if t <= self.cfg.max_turn:
+            self.record.damage_by_turn[t] = dealt
+        self.record.max_swing = max(self.record.max_swing, dealt)
+        if any(x <= 0 for x in self.life):
+            self._stamp("first_opponent")
+        if all(x <= 0 for x in self.life):
+            self._stamp("lethal_table")
+        if self.record.clocks["lethal_table"] is not None or self.record.clocks["lethal_combo"] is not None:
+            self._stamp("win")
+
+    def _combat(self) -> None:
+        """Every creature that entered before this turn attacks. The life totals take it greedily, largest attacker
+        first; the focused `combat` counter takes all of it."""
+        powers = self._attack_powers()
+        self.life = self._assign(self.life, powers)
+        self.damage += sum(powers)
+        if self.damage >= self.cfg.life_per_opponent:
             self._stamp("combat")
 
     def _record_board(self, t: int) -> None:

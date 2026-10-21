@@ -44,7 +44,7 @@ def test_result_shape_and_labels():
         assert c.median is None or 1 <= c.median <= CFG.max_turn
     assert r.clocks["tipping_target"].label == "5 mana available (closed-form tipping target)"
     assert r.clocks["mana_threshold"].label == f"{CFG.mana_threshold} mana available"
-    assert clock_labels(CFG, 5)["combat"] == f"{CFG.lethal_damage} combat damage (no blockers)"
+    assert clock_labels(CFG, 5)["combat"] == f"{CFG.life_per_opponent} combat damage (no blockers)"
     assert set(r.mana_by_turn) == set(range(1, CFG.max_turn + 1)) and set(r.idle_by_turn) == set(range(1, CFG.max_turn + 1))
     assert r.combos_status == "ok" and r.lines_simulated == [] and r.clocks["combo"].reached == 0.0
     assert sum(r.coverage.values()) == 99 and r.coverage["land"] == 38
