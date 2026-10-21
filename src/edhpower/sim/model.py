@@ -193,6 +193,7 @@ def build_sim_deck(facts: DeckFacts, cfg: SimConfig) -> SimDeck:
     sources: dict[str, list[str]] = {"table": [], "forge": [], "none": []}
     unmodelled: list[str] = []
     partial: list[str] = []
+    never_cast = 0   # held spells with no `cast` effect (pump spells are cast for lethal, so not counted)
     for e in facts.entries:
         special = specials.get(e.name)
         fx = effects_for(e.card, e.forge_script, special)
@@ -203,6 +204,8 @@ def build_sim_deck(facts: DeckFacts, cfg: SimConfig) -> SimDeck:
         else:
             library.extend([e.name] * e.count)
             coverage[sc.role] += e.count
+            if sc.role == "held" and not any(x.on == "cast" for x in sc.effects):
+                never_cast += e.count
             if not sc.is_land:
                 sources[fx.source].append(e.name)
                 if fx.source != "table" and not fx.effects and (fx.unread or fx.source == "none"):
@@ -215,8 +218,8 @@ def build_sim_deck(facts: DeckFacts, cfg: SimConfig) -> SimDeck:
     notes: list[str] = []
     if not tags_ok:
         notes.append(f"tags unavailable ({facts.tags_status}): tutors and land-ramp spells are not modelled, so every clock is a floor (later than reality)")
-    if coverage["held"]:
-        notes.append(f"{coverage['held']} instant/sorcery card(s) with no modelled effect are never cast (a goldfish has nothing to interact with)")
+    if never_cast:
+        notes.append(f"{never_cast} instant/sorcery card(s) with no modelled effect are never cast (a goldfish has nothing to interact with)")
     if unmodelled:
         notes.append(f"{len(unmodelled)} nonland card(s) have script lines the model does not read: {sorted(unmodelled)[:4]}…")
     if partial:

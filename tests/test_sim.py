@@ -44,7 +44,7 @@ def test_result_shape_and_labels():
         assert c.median is None or 1 <= c.median <= CFG.max_turn
     assert r.clocks["tipping_target"].label == "5 mana available (closed-form tipping target)"
     assert r.clocks["mana_threshold"].label == f"{CFG.mana_threshold} mana available"
-    assert clock_labels(CFG, 5)["combat"] == f"{CFG.life_per_opponent} combat damage (no blockers)"
+    assert clock_labels(CFG, 5)["combat"] == f"{CFG.life_per_opponent} combat damage to one opponent (no blockers)"
     assert set(r.mana_by_turn) == set(range(1, CFG.max_turn + 1)) and set(r.idle_by_turn) == set(range(1, CFG.max_turn + 1))
     assert r.combos_status == "ok" and r.lines_simulated == [] and r.clocks["combo"].reached == 0.0
     assert sum(r.coverage.values()) == 99 and r.coverage["land"] == 38
@@ -118,3 +118,40 @@ def test_precomputed_payoffs_give_identical_results():
     from edhpower.payoffs import detect
     facts = fixture_facts("ulalek-bracket3-v2")
     assert simulate(facts, CFG, 30, 4, payoffs=detect(facts)).to_dict() == simulate(facts, CFG, 30, 4).to_dict()
+
+
+def test_clock_fast_is_fifth_percentile():
+    from edhpower.sim import _clock
+    c = _clock("x", "x", [3] * 95 + [1] * 5, 10)
+    assert c.fast == 1 and c.median == 3
+    assert _clock("x", "x", [None] * 100, 10).fast is None
+
+
+def test_result_carries_new_rows():
+    r = simulate(fixture_facts("ulalek-bracket3-v2"), CFG, 40, 4)
+    assert list(r.clocks)[:3] == ["win", "lethal_table", "first_opponent"]
+    assert r.clocks["win"].label == "win (table lethal or lethal combo)"
+    assert r.clocks["combat"].label == f"{CFG.life_per_opponent} combat damage to one opponent (no blockers)"
+    turns = set(range(1, CFG.max_turn + 1))
+    for rows in (r.damage_by_turn, r.board_power_by_turn, r.lands_by_turn):
+        assert set(rows) == turns
+    assert all(set(v) == turns for v in r.tokens_by_turn.values())
+    assert abs(sum(r.win_route.values()) - 1.0) < 1e-4 and set(r.win_route) == {"combat", "combo", "none"}
+    assert r.max_swing_median >= 0 and set(r.effects_sources) >= {"table", "forge", "none"}
+    assert r.nonland_count == sum(r.coverage.values()) - r.coverage["land"]
+    assert isinstance(r.unmodelled, list) and isinstance(r.partial, list)
+    assert sum("note:" in n for n in r.notes) >= 5
+    json.dumps(r.to_dict())
+
+
+def test_win_ok_without_spellbook():
+    facts = dataclasses.replace(fixture_facts("ulalek-bracket3-v2"), combos=None, combos_unavailable_reason="down")
+    r = simulate(facts, CFG, 20, 4)
+    assert r.clocks["win"].status == "ok" and r.clocks["lethal_table"].status == "ok"
+    assert r.win_route["combo"] == 0.0
+    assert any("lethal_table alone" in n for n in r.notes)
+
+
+def test_same_deck_same_numbers():
+    facts = fixture_facts("zhulodok-bracket3")
+    assert simulate(facts, CFG, 40, 6).to_dict() == simulate(facts, CFG, 40, 6).to_dict()
