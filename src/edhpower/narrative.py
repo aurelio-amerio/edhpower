@@ -82,6 +82,26 @@ def build_narrative(facts: DeckFacts, bracket: BracketVerdict, curve: CurveScore
         findings.append(Finding("simulation", "Simulation skipped (--no-sim): tipping, idle, combo and clock findings are unavailable"))
         return Narrative(findings, None, weakest)
 
+    win = sim.clocks["win"]
+    m, wr = win.median, sim.win_route
+    if m is None:
+        hint = f"no win by T{sim.max_turn} in half the games"
+    elif m < 6:
+        hint = "earlier than Bracket 3 decks usually close (T6): a Bracket 4 hint, or the model is counting something twice"
+    elif m <= 8:
+        hint = "typical of an uncontested Bracket 3 deck (T6–T8)"
+    else:
+        hint = "later than Bracket 3 decks usually close (T8)"
+    findings.append(Finding("win", f"Median win {_turn(m, sim.max_turn)} (fast games {_turn(win.fast, sim.max_turn)}), via combat {wr['combat']:.0%} / combo {wr['combo']:.0%}; {hint}"))
+
+    n = sim.nonland_count
+    if n > 0:
+        copies = {e.name: e.count for e in facts.entries if not e.is_commander}
+        k = sum(copies.get(u, 1) for u in sim.unmodelled)
+        if k / n >= cfg.unmodelled_share:
+            shown = ", ".join(sim.unmodelled[:4]) + (f", … (+{len(sim.unmodelled) - 4})" if len(sim.unmodelled) > 4 else "")
+            findings.append(Finding("coverage", f"{k} of {n} nonland cards have no modelled effect ({shown}); every clock is a floor and the deck is not comparable with a well-covered list"))
+
     sim_target = sim.clocks["tipping_target"].median
     text = (f"Closed-form tipping point {_turn(tipping.turn, tipping.max_turn)} for {tipping.target} mana; "
             f"the simulation reaches {tipping.target} mana in half the games by {_turn(sim_target, sim.max_turn)}")
@@ -119,5 +139,5 @@ def build_narrative(facts: DeckFacts, bracket: BracketVerdict, curve: CurveScore
     c = sim.clocks
     findings.append(Finding("clocks", (f"Medians: commander {_turn(c['commander'].median, sim.max_turn)}, {c['mana_threshold'].label} "
                                       f"{_turn(c['mana_threshold'].median, sim.max_turn)}, {c['threat'].label} {_turn(c['threat'].median, sim.max_turn)}, "
-                                      f"{c['combat'].label} {_turn(c['combat'].median, sim.max_turn)}")))
+                                      f"{c['combat'].label} {_turn(c['combat'].median, sim.max_turn)}, {c['lethal_table'].label} {_turn(c['lethal_table'].median, sim.max_turn)}")))
     return Narrative(findings, window, weakest)

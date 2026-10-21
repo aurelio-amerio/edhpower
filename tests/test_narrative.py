@@ -79,3 +79,34 @@ def test_combos_findings_name_payoff_gaps_and_locks():
     assert "1 infinite engine(s) have no payoff in this deck: A + B" in text
     if sim.lines_skipped:
         assert "1 lock line(s) excluded from the combo clock" in text
+
+
+def _with(sim, **kw):
+    from dataclasses import replace
+    clocks = dict(sim.clocks)
+    if "median" in kw:
+        clocks["win"] = replace(clocks["win"], median=kw.pop("median"))
+    return replace(sim, clocks=clocks, **kw)
+
+
+def _texts(**kw):
+    f, b, c, comp, t, sim = _parts("ulalek-bracket3-v2")
+    return [x for x in build_narrative(f, b, c, comp, t, _with(sim, **kw), CFG.narrative).findings]
+
+
+def test_win_finding_hints_bracket3_window():
+    win = next(x for x in _texts(median=7) if x.kind == "win")
+    assert "Median win T7" in win.text and "typical of" in win.text
+
+
+def test_win_finding_flags_fast_median():
+    assert "counting something twice" in next(x for x in _texts(median=5) if x.kind == "win").text
+    assert "later than" in next(x for x in _texts(median=10) if x.kind == "win").text
+    assert "no win by T" in next(x for x in _texts(median=None) if x.kind == "win").text
+
+
+def test_coverage_finding_threshold():
+    assert any(x.kind == "coverage" for x in _texts(nonland_count=10, unmodelled=["a", "b", "c"]))
+    assert not any(x.kind == "coverage" for x in _texts(nonland_count=10, unmodelled=["a", "b"]))
+    assert not any(x.kind == "coverage" for x in _texts(nonland_count=0, unmodelled=["a"]))
+    assert "3 of 10 nonland" in next(x for x in _texts(nonland_count=10, unmodelled=["a", "b", "c"]) if x.kind == "coverage").text

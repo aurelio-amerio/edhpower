@@ -141,13 +141,20 @@ def render_text(analysis: Analysis) -> str:
     else:
         turns = list(range(2, sim.max_turn + 1))
         out.append(f"Goldfish simulation (sim v{sim.sim_version}, {sim.iterations} games, seed {sim.seed})")
-        out.append(f"  {'clock':<52} {'median':<7} " + " ".join(f"T{t:<4d}" for t in turns))
+        out.append(f"  {'clock':<52} {'median':<7} {'fast':<7} " + " ".join(f"T{t:<4d}" for t in turns))
         for c in sim.clocks.values():
             med = "unevaluated" if c.status != "ok" else (f"T{c.median}" if c.median is not None else f">T{sim.max_turn}")
+            fast = "" if c.status != "ok" else (f"T{c.fast}" if c.fast is not None else f">T{sim.max_turn}")
             row = " ".join(f"{c.by_turn[t]:4.0%} " for t in turns) if c.status == "ok" else ""
-            out.append(f"  {c.label:<52} {med:<7} {row}")
-        out.append(f"  {'avg mana produced':<52} {'':<7} " + " ".join(f"{sim.mana_by_turn[t]:4.1f} " for t in turns))
-        out.append(f"  {'share of games casting nothing':<52} {'':<7} " + " ".join(f"{sim.idle_by_turn[t]:4.0%} " for t in turns))
+            out.append(f"  {c.label:<52} {med:<7} {fast:<7} {row}")
+        out.append(f"  {'avg mana produced':<52} {'':<7} {'':<7} " + " ".join(f"{sim.mana_by_turn[t]:4.1f} " for t in turns))
+        out.append(f"  {'share of games casting nothing':<52} {'':<7} {'':<7} " + " ".join(f"{sim.idle_by_turn[t]:4.0%} " for t in turns))
+        for label, series in [("damage this turn", sim.damage_by_turn), ("board power", sim.board_power_by_turn), ("lands on battlefield", sim.lands_by_turn),
+                              *((f"tokens: {k}", sim.tokens_by_turn[k]) for k in sorted(sim.tokens_by_turn))]:
+            out.append(f"  {label:<52} {'':<7} {'':<7} " + " ".join(f"{series[t]:4.1f} " for t in turns))
+        wr = sim.win_route
+        out.append(f"  win route: combat {wr['combat']:.0%} · combo {wr['combo']:.0%} · none {wr['none']:.0%}")
+        out.append(f"  biggest swing (median) {sim.max_swing_median}")
         shown = [f"{row['label']} [{_status_text(row)}]" for row in sim.line_status]
         out.append(f"  lines simulated: {_truncated(shown, 6, '; ') if shown else 'none'}")
         if sim.lines_skipped:
@@ -160,7 +167,12 @@ def render_text(analysis: Analysis) -> str:
         else:
             out.append("  payoffs: none detected, and no simulated line needs one")
         cov = sim.coverage
-        out.append(f"  model coverage: lands {cov['land']} · rocks {cov['rock']} · dorks {cov['dork']} · one-shot {cov['one_shot']} · reducers {cov['reducer']} · ramp spells {cov['ramp_spell']} · draw spells {cov['draw_spell']} · tutors {cov['tutor']} · threats {cov['threat']} · creatures {cov['creature']} · engines {cov['engine']} · other permanents {cov['permanent']} · held {cov['held']}")
+        out.append(f"  model coverage: lands {cov['land']} · rocks {cov['rock']} · dorks {cov['dork']} · one-shot {cov['one_shot']} · reducers {cov['reducer']} · ramp spells {cov['ramp_spell']} · draw spells {cov['draw_spell']} · tutors {cov['tutor']} · threats {cov['threat']} · creatures {cov['creature']} · engines {cov['engine']} · other permanents {cov['permanent']} · held {cov['held']} · unmodelled {len(sim.unmodelled)}")
+        src = sim.effects_sources
+        eff = f"  effects: table {len(src['table'])} ({_names(src['table'], 4)}) · forge {len(src['forge'])} · unmodelled: {_names(sim.unmodelled, 4)}"
+        if sim.partial:
+            eff += f" · partial: {_names(sim.partial, 4)}"
+        out.append(eff)
         for n in sim.notes:
             out.append(f"  note: {n}")
     out.append("")

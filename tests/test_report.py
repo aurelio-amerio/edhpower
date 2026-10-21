@@ -108,3 +108,14 @@ def test_report_explains_landfall_fuel_without_a_finisher():
     text = render_text(analyse(facts, iterations=20))
     assert "Basalt Monolith + Forsaken Monument [landfall → Field of the Dead is fuel only: no go-wide finisher, token drain or ETB damage in deck]" in text
     assert "go-wide finisher: none" in text and "token drain: none" in text and "ETB damage: none" in text
+
+
+def test_report_prints_fast_column_and_board_rows():
+    from dataclasses import replace
+    a = analyse(_facts(), iterations=20)
+    sim = replace(a.sim, tokens_by_turn={"Zombie": {t: 1.0 for t in range(1, a.sim.max_turn + 1)}}, unmodelled=["Foo"],
+                  partial=["Bar"], effects_sources={"table": ["Baz"], "forge": [], "none": []})
+    text = render_text(replace(a, sim=sim))
+    for needle in ["fast", "tokens: Zombie", "win route:", "unmodelled", "damage this turn", "board power", "lands on battlefield",
+                   "biggest swing (median)", "effects: table 1 (Baz) · forge 0 · unmodelled: Foo · partial: Bar"]:
+        assert needle in text, needle
