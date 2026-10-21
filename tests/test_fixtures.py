@@ -87,3 +87,12 @@ def test_necrobloom_engine_is_alive_in_stage2():
     assert sim.tokens_by_turn["Zombie"][12] > 3.4   # stage 1 measured 3.4 at 20 000 games
     assert "Life from the Loam" in sim.effects_sources["forge"] and "Life from the Loam" not in sim.unmodelled
     assert sim.effects_sources["table"] == ["Victimize"]   # the one table entry the deck uses (stage 3)
+
+
+def test_necrobloom_stage3_reanimates():
+    sim = analyse(load_facts(FIXTURES / "necrobloom-v3.facts.json"), iterations=500).sim
+    assert sim is not None
+    assert sim.clocks["reanimate"].reached > 0
+    assert {"The Gitrog Monster", "World Shaper"} <= set(sim.effects_sources["forge"])
+    assert "Victimize" in sim.effects_sources["table"]
+    assert "Hedge Shredder" in sim.partial

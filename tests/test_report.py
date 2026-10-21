@@ -120,7 +120,7 @@ def test_report_prints_fast_column_and_board_rows():
                    "biggest swing (median)", "effects: table 1 (Baz) · forge 0 · unmodelled: Foo · partial: Bar",
                    "lands entering this turn", "lands in graveyard", "distinct land names",
                    "  not modelled: fetch then dredge in one turn (Gitrog loop), Sylvan Library dredges, Field of the Dead counting lands "
-                   "that enter with it, Saga chapters, attack triggers, life as a resource, Room cards, reanimation, blockers/interaction"]:
+                   "that enter with it, Saga chapters, attack triggers, life as a resource, Room cards, blockers/interaction"]:
         assert needle in text, needle
 
 
@@ -128,3 +128,13 @@ def test_report_coverage_line_has_spells():
     text = render_text(analyse(_facts(), iterations=20))
     line = next(l for l in text.splitlines() if "model coverage:" in l)
     assert " · spells " in line and line.index("spells") < line.index("held")
+
+
+def test_report_clock_column_fits_the_longest_label():
+    a = analyse(_facts(), iterations=20)
+    lines = render_text(a).splitlines()
+    header = next(l for l in lines if l.lstrip().startswith("clock ") and "median" in l)
+    col = header.index("median")
+    for c in a.sim.clocks.values():
+        row = next(l for l in lines if l.startswith(f"  {c.label} "))
+        assert row[col - 1] == " " and row[col] in "T>u", c.label

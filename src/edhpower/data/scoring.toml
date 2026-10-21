@@ -66,7 +66,7 @@ heavy_min = 3
 
 # ---- goldfish simulator (Plan C): seeded Monte Carlo driven by CardProfile ---------------------
 [sim]
-version = 4                 # stamped into the JSON as sim_version; bump when the model's semantics change. 2 (2026-10-18): lethal_combo needs the payoff; lock-only lines leave the combo clock. 3 (2026-10-21): tokens, triggers, three opponents, win clocks. 4 (2026-10-21): graveyard, dredge, land drops, fetches, land recursion
+version = 5                 # stamped into the JSON as sim_version; bump when the model's semantics change. 2 (2026-10-18): lethal_combo needs the payoff; lock-only lines leave the combo clock. 3 (2026-10-21): tokens, triggers, three opponents, win clocks. 4 (2026-10-21): graveyard, dredge, land drops, fetches, land recursion. 5 (2026-10-21): reanimation, land-milled and dies triggers, triggered draw
 iterations = 20000          # production default; --iterations overrides; golden tests use 500
 max_turn = 12
 opening_hand = 7

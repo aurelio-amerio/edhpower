@@ -3,7 +3,7 @@
     "config_version": 1,
     "curve_profile": "edhpowerlevel-2026-08",
     "components_profile": "v1",
-    "sim_version": 4,
+    "sim_version": 5,
     "sim_iterations": 500
   },
   "decks": {
@@ -54,17 +54,17 @@
       },
       "sim_seed": 1189066043824635889,
       "sim_commander_median": 4,
-      "sim_mana_threshold_median": 6,
+      "sim_mana_threshold_median": 7,
       "sim_tipping_target_median": 3,
       "sim_threat_median": null,
       "sim_combat_median": 9,
       "sim_combo_reached": 0.0,
       "sim_lethal_combo_reached": 0.0,
-      "sim_win_median": null,
+      "sim_win_median": 12,
       "sim_win_fast": 10,
-      "sim_lethal_table_median": null,
-      "sim_max_swing_median": 30,
-      "sim_unmodelled_count": 25,
+      "sim_lethal_table_median": 12,
+      "sim_max_swing_median": 35,
+      "sim_unmodelled_count": 17,
       "sim_idle_window": [
         7,
         12
@@ -127,7 +127,7 @@
       "sim_win_fast": 11,
       "sim_lethal_table_median": null,
       "sim_max_swing_median": 22,
-      "sim_unmodelled_count": 53,
+      "sim_unmodelled_count": 45,
       "sim_idle_window": [
         2,
         4
@@ -253,7 +253,7 @@
       "sim_win_fast": 12,
       "sim_lethal_table_median": null,
       "sim_max_swing_median": 15,
-      "sim_unmodelled_count": 52,
+      "sim_unmodelled_count": 51,
       "sim_idle_window": [
         2,
         12
@@ -379,7 +379,7 @@
       "sim_win_fast": 9,
       "sim_lethal_table_median": 12,
       "sim_max_swing_median": 28,
-      "sim_unmodelled_count": 53,
+      "sim_unmodelled_count": 50,
       "sim_idle_window": [
         8,
         12

@@ -24,7 +24,7 @@ from edhpower.sim.model import build_sim_deck
 # Interactions this stage of the engine does not play (spec: "a `not modelled:` line per stage").
 NOT_MODELLED: tuple[str, ...] = ("fetch then dredge in one turn (Gitrog loop)", "Sylvan Library dredges",
                                  "Field of the Dead counting lands that enter with it", "Saga chapters", "attack triggers",
-                                 "life as a resource", "Room cards", "reanimation", "blockers/interaction")
+                                 "life as a resource", "Room cards", "blockers/interaction")
 
 
 @dataclass
@@ -179,6 +179,9 @@ def simulate(facts: DeckFacts, cfg: SimConfig, iterations: int, tipping_target: 
         f"mass land return is cast with {cfg.mass_return_min_lands}+ lands in the graveyard and a landfall source out, or on the last two turns",
         "activated abilities are paid from mana left after the main phase",
         "a draw granted by a trigger is a plain draw, never a dredge",
+        f"reanimation targets the highest-MV eligible card; a reanimation spell is cast only for a creature with MV "
+        f"{cfg.threat_mv}+ or power {cfg.reanimate_min_power}+",
+        "a sacrifice cost takes a creature whose death returns lands, else a token, else the smallest creature",
         "no maximum hand size",
     ]
     notes.extend(deck.notes)

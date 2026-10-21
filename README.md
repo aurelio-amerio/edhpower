@@ -145,6 +145,25 @@ Since sim v4 the game has a **graveyard** and a land step that follows the cards
 The board rows add `lands entering this turn` (landfall), `lands in graveyard` and `distinct
 land names` under `lands on battlefield`, each the average across games at the end of the turn.
 
+Since sim v5 creatures and lands come back from the graveyard:
+
+- **Reanimation.** A reanimation effect returns the highest-MV eligible card from the graveyard
+  (ties by name); a "permanent" effect can take a land, and a mana-value cap (Sun Titan) is
+  respected. The targets are chosen before any cost is paid, so a creature sacrificed to the
+  cost never comes back. A reanimation **spell** is cast only when the graveyard holds as many
+  eligible cards as it has targets (Victimize needs two), at least one of them a creature with
+  MV `threat_mv`+ or power `reanimate_min_power`+ (`scoring.toml`), and the cost can be paid. It
+  is held when a creature the cost would sacrifice is worth more than the best target.
+- **Sacrifice costs.** A sacrifice cost takes a creature whose death returns lands (World
+  Shaper) while the graveyard holds a land, else the lowest-power token, else the smallest
+  creature. A cost that cannot be paid in full sacrifices nothing.
+- **Land-milled and dies triggers.** When a mill puts lands into the graveyard (dredge
+  included), each land-milled effect on the board fires once for that mill: a draw (The Gitrog
+  Monster) or a return of the milled lands (Hedge Shredder). A creature's dies effect fires when
+  it is sacrificed, after it reaches the graveyard (the goldfish has no other way to die).
+- **Triggered draw.** A draw from a trigger, an enters effect or an activation is a plain draw,
+  never a dredge. A draw activation (Horizon lands) is used only when the hand is empty.
+
 The table has three opponents at 40 life each (`opponents`, `life_per_opponent` in
 `scoring.toml`); attackers are assigned greedily to the opponent with the most life, and drain
 hits every opponent (or the one with the most life, when the script names one opponent).
@@ -161,12 +180,14 @@ share:
   rows, which counted printed power only.
 - `combo`, `lethal_combo` — a simulated Spellbook line assembled (with a detected payoff, for
   the lethal one).
+- `reanimate` — the first creature returned from the graveyard to the battlefield (a land or
+  another noncreature permanent coming back does not count).
 
 A game that never reaches a clock counts as turn 13 for the median; a clock is printed as `>T12`
 when fewer than half of games reach it by turn 12. `fast` is the turn by which 5% of games have
 reached the clock (the 5th percentile, comparable with scrollvault's "ceiling").
 
-Known limits of sim v4 (each a source of systematic bias, not noise; the report's `note:` lines
+Known limits of sim v5 (each a source of systematic bias, not noise; the report's `note:` lines
 add the effect-model simplifications):
 
 - Mana payment is greedy by colour; it does not hold up a wrong-coloured source hoping for a
@@ -179,9 +200,12 @@ add the effect-model simplifications):
   of what the deck actually wants.
 - Command Tower-style lands are read as five-colour sources regardless of the commander's actual
   colour identity.
-- Cheat-into-play, reanimation, extra combats and copy effects are not modelled; neither are
-  the Gitrog fetch-then-dredge loop, attack triggers, Saga chapters, Room cards and life as a
-  resource (the report's `not modelled:` line lists them).
+- Cheat-into-play, extra combats and copy effects are not modelled; neither are the Gitrog
+  fetch-then-dredge loop, attack triggers, Saga chapters, Room cards and life as a resource (the
+  report's `not modelled:` line lists them).
+- A land-sacrificed draw fires once per land, not once per batch of lands sacrificed together.
+  The fixtures only ever sacrifice one land at a time.
+- A reanimated mana rock does not tap for mana on the turn it returns.
 - There is no maximum hand size.
 - Commander tax is not modelled.
 - The Mox Opal `requires` gap (see above) is fixed in the simulator's mana model but still open
@@ -192,7 +216,7 @@ add the effect-model simplifications):
 
 `[sim]` in `src/edhpower/data/scoring.toml` holds the simulator's tuning constants; `sim_version`
 is stamped into the JSON alongside `config_version`. Golden tests run the simulator at 500 games;
-production defaults to 20 000 (`--iterations` overrides either). sim v2 (2026-10-18) gates the lethal-combo clock on a detected payoff and drops lock-only lines from the combo clock; v1 and v2 combo numbers are not comparable. sim v3 (2026-10-21) adds Forge-read effects, tokens and triggers, three opponents and the `win`, `lethal_table` and `first_opponent` clocks; its `combat` clock counts tokens, counters, anthems and pumps, so a v3 combat median can be earlier than the v2 one for a token deck. sim v4 (2026-10-21) adds the graveyard, dredge, several land drops, lands played from the graveyard, fetch lands, activated abilities, land chains, mass land return and the `spell` role; a deck with fetch lands or newly read instants and sorceries can have earlier v4 clocks than v3 ones, because sim v3 played a fetch land as a land with no mana.
+production defaults to 20 000 (`--iterations` overrides either). sim v2 (2026-10-18) gates the lethal-combo clock on a detected payoff and drops lock-only lines from the combo clock; v1 and v2 combo numbers are not comparable. sim v3 (2026-10-21) adds Forge-read effects, tokens and triggers, three opponents and the `win`, `lethal_table` and `first_opponent` clocks; its `combat` clock counts tokens, counters, anthems and pumps, so a v3 combat median can be earlier than the v2 one for a token deck. sim v4 (2026-10-21) adds the graveyard, dredge, several land drops, lands played from the graveyard, fetch lands, activated abilities, land chains, mass land return and the `spell` role; a deck with fetch lands or newly read instants and sorceries can have earlier v4 clocks than v3 ones, because sim v3 played a fetch land as a land with no mana. sim v5 (2026-10-21) adds reanimation, land-milled and dies triggers, triggered draw and the `reanimate` clock; a deck with reanimation spells, a land-milled draw engine or newly read draw effects can have earlier v5 clocks than v4 ones.
 
 ## Data sources and caching
 

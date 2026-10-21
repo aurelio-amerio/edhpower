@@ -162,6 +162,20 @@ def test_result_carries_stage2_rows():
     json.dumps(r.to_dict())
 
 
+def test_result_carries_stage3_clock_and_notes():
+    r = simulate(fixture_facts("necrobloom-v3"), CFG, 40, 4)
+    c = r.clocks["reanimate"]
+    assert c.label == "creature returned from the graveyard to the battlefield" and c.status == "ok"
+    assert list(r.clocks).index("reanimate") == list(r.clocks).index("lethal_combo") + 1
+    for text in (f"reanimation targets the highest-MV eligible card; a reanimation spell is cast only for a creature with MV "
+                 f"{CFG.threat_mv}+ or power {CFG.reanimate_min_power}+",
+                 "a sacrifice cost takes a creature whose death returns lands, else a token, else the smallest creature"):
+        assert text in r.notes, text
+    from edhpower.sim import NOT_MODELLED
+    assert "reanimation" not in NOT_MODELLED
+    json.dumps(r.to_dict())
+
+
 def test_win_ok_without_spellbook():
     facts = dataclasses.replace(fixture_facts("ulalek-bracket3-v2"), combos=None, combos_unavailable_reason="down")
     r = simulate(facts, CFG, 20, 4)
