@@ -294,7 +294,6 @@ class Game:
             self._put_land(pick, self.cards[pick].enters_tapped, zone)
             self.lands_played += 1
             self._crack_free_fetches()
-        self._crack_free_fetches()
 
     @staticmethod
     def _free_fetch(c: SimCard) -> Effect | None:
@@ -487,12 +486,16 @@ class Game:
         if cost.tap and (perm.tapped or (perm.card.is_creature and perm.entered >= self.turn)):
             return False
         left = pay(cost.mana, self.pool) if cost.mana.total else self.pool
-        if left is None or not self._pay_additional(cost, perm):
+        if left is None or not self._can_pay_additional(cost, perm):
             return False
-        self.pool = left
+        # reanimation targets are chosen before the cost is paid: a card it sacrifices is never one
+        targets = self._reanimate_targets(e.type, e.mv_max, self._amount(e)) if e.do == "reanimate" else None
+        self.pool = left   # before the sacrifices, so mana their triggers add stays
+        if not self._pay_additional(cost, perm):
+            return False   # only when a trigger of the cost took a counted creature: part paid (see _pay_additional)
         if cost.tap:
             perm.tapped = True
-        self._fire(e, perm)
+        self._fire(e, perm, targets=targets)
         return True
 
     def _mass_return_wanted(self) -> bool:
@@ -513,6 +516,8 @@ class Game:
                     wanted = self._mass_return_wanted()
                 elif e.do == "draw":
                     wanted = not self.hand
+                elif e.do == "reanimate":
+                    wanted = self._reanimate_wanted(e, p)
                 else:
                     continue
                 if wanted and self._activate(p, e):
@@ -651,9 +656,10 @@ class Game:
                 return None
         return e
 
-    def _fire(self, effect: Effect, source: Perm | None, milled: tuple[str, ...] = ()) -> None:
+    def _fire(self, effect: Effect, source: Perm | None, milled: tuple[str, ...] = (), targets: list[str] | None = None) -> None:
         """Resolve one effect. `source` is the permanent it belongs to (None for a spell or a dies effect);
-        `milled` the lands of the mill that fired a `land_milled` effect."""
+        `milled` the lands of the mill that fired a `land_milled` effect; `targets` a reanimation's targets when
+        they were chosen before an activation paid its cost."""
         e = self._applicable(effect)
         if e is None:
             return
@@ -668,16 +674,19 @@ class Game:
             else:
                 self._return_lands(e.n)
             return
-        targets: list[str] = []
-        if e.do == "reanimate":   # targets are chosen before the cost is paid: a card it sacrifices is never one
-            targets = self._reanimate_targets(e.type, e.mv_max, self._amount(e))
+        if targets is None:
+            targets = []
+            if e.do == "reanimate":   # targets are chosen before the cost is paid: a card it sacrifices is never one
+                targets = self._reanimate_targets(e.type, e.mv_max, self._amount(e))
         if e.do in ("fetch", "draw", "reanimate") and e.cost and e.on != "activated":   # an activation pays its whole cost before firing
             cost = _cost(e.cost)
             # a spell's Cost$ holds its own mana cost, paid when it was cast
             left = pay(cost.mana, self.pool) if cost.mana.total and e.on != "cast" else self.pool
-            if left is None or not self._pay_additional(cost, source):
+            if left is None or not self._can_pay_additional(cost, source):
                 return
-            self.pool = left
+            self.pool = left   # before the sacrifices, so mana their triggers add stays
+            if not self._pay_additional(cost, source):
+                return
         n = self._amount(e)
         if n <= 0:
             return
@@ -783,7 +792,10 @@ class Game:
         return sorted(names, key=lambda name: (-self.cards[name].cmc, name))[:n]
 
     def _reanimate_eligible(self, c: SimCard, type_: str, mv_max: int, threshold: bool) -> bool:
-        if not (c.is_creature if type_ == "creature" else not c.is_spell):
+        if type_ == "creature":
+            if not c.is_creature:
+                return False
+        elif type_ != "permanent" or c.is_spell:   # an unknown type finds nothing
             return False
         if mv_max > 0 and c.cmc > mv_max:
             return False
@@ -793,15 +805,16 @@ class Game:
         """How much a creature is worth to a reanimation: the threshold first, then MV, then power."""
         return c.cmc >= self.cfg.threat_mv or c.power >= self.cfg.reanimate_min_power, c.cmc, c.power
 
-    def _reanimate_wanted(self, e: Effect) -> bool:
-        """Cast a reanimation spell: its `n` targets are in the graveyard before any cost is paid, one meets the
-        threshold, its sacrifices are payable and none of them is worth more than the best target."""
+    def _reanimate_wanted(self, e: Effect, source: Perm | None = None) -> bool:
+        """Cast a reanimation spell (or activate `source`'s reanimation): its `n` targets are in the graveyard
+        before any cost is paid, one meets the threshold, its sacrifices are payable and none of them is worth
+        more than the best target."""
         n = self._amount(e)
         targets = self._reanimate_targets(e.type, e.mv_max, n)
         if n <= 0 or len(targets) < n or self._reanimate_target(e.type, e.mv_max, threshold=True) is None:
             return False
         cost = _cost(e.cost)
-        if not self._can_pay_additional(cost, None):
+        if not self._can_pay_additional(cost, source):
             return False
         best = max(self._reanimate_value(self.cards[t]) for t in targets)
         return all(self._reanimate_value(p.card) <= best for p in self._sacrifice_victims(cost.sacrifice_creatures))
@@ -858,7 +871,19 @@ class Game:
             elif e.do == "reanimate":
                 if self._reanimate_wanted(e):
                     return True
+            elif e.do == "draw":   # a draw riding on another cast effect waits for that effect's policy
+                if all(x.do == "draw" for x in c.effects if x.on == "cast" and x.do != "pump") and self._draw_wanted(e):
+                    return True
         return False
+
+    def _draw_wanted(self, e: Effect) -> bool:
+        """Cast a draw spell: its additional cost is payable, and a creature it sacrifices is a token or a small
+        creature (below the reanimation threshold, counters included), never a threat traded for cards."""
+        cost = _cost(e.cost)
+        if not self._can_pay_additional(cost, None):
+            return False
+        return not any(p.card.cmc >= self.cfg.threat_mv or p.card.power + p.counters >= self.cfg.reanimate_min_power
+                       for p in self._sacrifice_victims(cost.sacrifice_creatures))
 
     def _tutor_target(self) -> str | None:
         board, hand, cz = self._zones()

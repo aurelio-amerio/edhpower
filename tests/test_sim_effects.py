@@ -1003,3 +1003,13 @@ def test_parse_effects_table_stage3():
     for bad in ({"on": "etb", "do": "return_lands", "n": "milled"}, {"on": "land_milled", "do": "draw", "n": "milled"}):
         with pytest.raises(ValueError, match="milled"):
             parse_effects_table([bad])
+
+
+def test_reanimate_table_type_and_mv_max_are_validated():
+    for bad in ({"on": "cast", "do": "reanimate", "type": "artifact"}, {"on": "cast", "do": "reanimate"},
+                {"on": "etb", "do": "reanimate", "type": "Creature"}):
+        with pytest.raises(ValueError, match="type"):
+            parse_effects_table([bad])
+    with pytest.raises(ValueError, match="mv_max"):
+        parse_effects_table([{"on": "etb", "do": "reanimate", "type": "permanent", "mv_max": -1}])
+    assert parse_effects_table([{"on": "etb", "do": "reanimate", "type": "permanent", "mv_max": 0}])[0].mv_max == 0

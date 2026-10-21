@@ -1,9 +1,12 @@
 """Effect records: what a permanent or spell does to the board, read from the behaviours table or from a
 Card-Forge script. The reader knows a small vocabulary (stage 1: landfall/ETB/token-created triggers that
 make tokens, put counters, add mana or drain; anthems; mass pump; land-search ramp spells; stage 2: graveyard
-lands, extra land drops, dredge, fetches, upkeep sacrifice, land-sacrifice triggers). Every ability
-line or sub-ability it does not understand is returned in `unread`, so nothing is skipped silently.
-No card names appear in this module."""
+lands, extra land drops, dredge, fetches, upkeep sacrifice, land-sacrifice triggers; stage 3: land-milled and
+dies triggers, reanimation of a creature or a (mana-value capped, `mv_max`) permanent card, draws, and
+`n = "milled"` to return the lands of the mill that fired a land-milled trigger). A `cast` effect's `cost` mana
+is the spell's own mana cost, paid when it is cast, never paid again; only its non-mana parts (sacrifices) are
+extra. Every ability line or sub-ability it does not understand is returned in `unread`, so nothing is skipped
+silently. No card names appear in this module."""
 
 from __future__ import annotations
 
@@ -22,6 +25,7 @@ TRIGGERS = ("landfall", "etb", "creature_etb", "token_created", "static", "cast"
 ACTIONS = ("token", "counters", "anthem", "pump", "mana", "drain", "mill", "dredge", "extra_land",
            "play_lands_from_graveyard", "return_lands", "return_lands_to_hand", "fetch", "sacrifice_land",
            "chain_lands_from_hand", "reanimate", "draw")
+REANIMATE_TYPES = ("creature", "permanent")
 UNREAD_CHARS = 60
 
 
@@ -710,6 +714,11 @@ def _table_effect(raw: dict[str, Any]) -> Effect:
         raise ValueError(f"effect key 'n' = \"milled\" is only for do = \"return_lands\" on = \"land_milled\", not {do!r} on {on!r}")
     if raw.get("type") == "lands" and do != "dredge":
         raise ValueError(f"effect key 'type' = \"lands\" is only for do = \"dredge\", not {do!r}")
+    if do == "reanimate" and raw.get("type") not in REANIMATE_TYPES:
+        raise ValueError(f"effect key 'type' = {raw.get('type')!r} must be one of {REANIMATE_TYPES} for do = \"reanimate\"")
+    mv_max = raw.get("mv_max", 0)
+    if not isinstance(mv_max, int) or mv_max < 0:
+        raise ValueError(f"effect key 'mv_max' = {mv_max!r} must be a non-negative integer (0 = no cap)")
     cost = str(raw.get("cost", ""))
     parse_activation_cost(cost)
     when = str(raw.get("when", ""))
@@ -717,7 +726,7 @@ def _table_effect(raw: dict[str, Any]) -> Effect:
         raise ValueError(f"effect key 'when' = {when!r} is not a known condition")
     upgrade = _table_effect(raw["upgrade"]) if "upgrade" in raw else None
     return Effect(on, do, n, int(raw.get("power", 0)), int(raw.get("toughness", 0)), str(raw.get("type", "")),
-                  bool(raw.get("each_opponent", True)), when, upgrade, cost, int(raw.get("mv_max", 0)))
+                  bool(raw.get("each_opponent", True)), when, upgrade, cost, mv_max)
 
 
 def parse_effects_table(raw: list[dict]) -> tuple[Effect, ...]:

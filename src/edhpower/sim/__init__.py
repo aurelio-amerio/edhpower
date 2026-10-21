@@ -178,6 +178,7 @@ def simulate(facts: DeckFacts, cfg: SimConfig, iterations: int, tipping_target: 
         "dredge replaces the draw only when the hand lacks a land for this turn's drops, never the opening hand",
         f"mass land return is cast with {cfg.mass_return_min_lands}+ lands in the graveyard and a landfall source out, or on the last two turns",
         "activated abilities are paid from mana left after the main phase",
+        "an activated ability on a mana source is used only with mana left after the main phase, so lands and rocks that tap for mana rarely activate",
         "a draw granted by a trigger is a plain draw, never a dredge",
         f"reanimation targets the highest-MV eligible card; a reanimation spell is cast only for a creature with MV "
         f"{cfg.threat_mv}+ or power {cfg.reanimate_min_power}+",

@@ -156,6 +156,7 @@ def test_result_carries_stage2_rows():
                  "dredge replaces the draw only when the hand lacks a land for this turn's drops, never the opening hand",
                  f"mass land return is cast with {CFG.mass_return_min_lands}+ lands in the graveyard and a landfall source out, or on the last two turns",
                  "activated abilities are paid from mana left after the main phase",
+                 "an activated ability on a mana source is used only with mana left after the main phase, so lands and rocks that tap for mana rarely activate",
                  "a draw granted by a trigger is a plain draw, never a dredge",
                  "no maximum hand size"):
         assert text in r.notes, text

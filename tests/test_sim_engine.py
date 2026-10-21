@@ -1290,3 +1290,110 @@ def test_triggered_draw_is_never_a_dredge():
                    ["Grizzly Bears"] * 3 + ["Island"])
     g._mill(1)
     assert g.hand == ["Grizzly Bears"] * 2 and g.graveyard == ["Forest", "Island"] and len(g.library) == 2
+
+
+# ---- final review: draw sorceries are cast, activated reanimation, pool after triggers ---------------------------
+
+from .test_sim_effects import CORRUPTED_CONVICTION
+
+HARMONIZE = ("Name:Harmonize\nManaCost:2 G G\nTypes:Sorcery\n"
+             "A:SP$ Draw | NumCards$ 3 | SpellDescription$ Draw three cards.\nOracle:Draw three cards.\n")
+HARMONIZE_C = make_card("Harmonize", cmc=4.0, mana_cost="{2}{G}{G}", type_line="Sorcery", oracle_text="Draw three cards.", colors=["G"])
+CONVICTION_C = make_card("Corrupted Conviction", cmc=1.0, mana_cost="{B}", type_line="Instant", colors=["B"],
+                         oracle_text="As an additional cost to cast this spell, sacrifice a creature.\nDraw two cards.")
+WHIP = ("Name:Whip Thing\nManaCost:2 B B\nTypes:Artifact\n"
+        "A:AB$ ChangeZone | Cost$ 2 B T | Origin$ Graveyard | Destination$ Battlefield | ValidTgts$ Creature.YouCtrl"
+        " | TgtPrompt$ Choose target creature card in your graveyard | SpellDescription$ Return target creature card.\n")
+WHIP_C = make_card("Whip Thing", cmc=4.0, mana_cost="{2}{B}{B}", type_line="Artifact", colors=["B"])
+SCRIPTS9 = {**SCRIPTS8, "Harmonize": HARMONIZE, "Corrupted Conviction": CORRUPTED_CONVICTION, "Whip Thing": WHIP}
+
+
+def _fx9(entries, tags=None):
+    return _fx_deck(CMD, entries, tags=tags, scripts=SCRIPTS9)
+
+
+def test_script_read_draw_sorcery_is_cast_and_draws():
+    deck = _fx9([(FOREST, 38), (HARMONIZE_C, 1)])
+    assert deck.cards["Harmonize"].effects == (Effect("cast", "draw", 3),)
+    g = _staged(deck, ["Forest"] * 4, hand=["Harmonize"], library=["Forest"] * 10, turn=4)
+    g.command_zone = set()
+    g.pool = g._produce()
+    g._main_phase()
+    assert g.hand == ["Forest"] * 3 and len(g.library) == 7 and g.graveyard == ["Harmonize"]   # drawn once, not twice
+
+
+def _conviction_game(deck, creatures, token):
+    g = _staged(deck, ["Swamp"] + creatures, hand=["Corrupted Conviction"], library=["Swamp"] * 10, turn=4)
+    if token:
+        g.board.append(Perm(token_card("Saproling", 1, 1), 0))
+    g.command_zone = set()
+    g.pool = g._produce()
+    g._main_phase()
+    return g
+
+
+def test_sacrifice_draw_spell_eats_a_token_and_is_held_without_a_creature():
+    deck = _fx9([(SWAMP, 37), (CONVICTION_C, 1), (BIG, 1)])
+    g = _conviction_game(deck, [], token=True)
+    assert not _tokens(g, "Saproling") and g.hand == ["Swamp", "Swamp"] and g.graveyard == ["Corrupted Conviction"]
+    g = _conviction_game(deck, [], token=False)
+    assert g.hand == ["Corrupted Conviction"] and len(g.library) == 10
+    g = _conviction_game(deck, ["Ulamog, the Ceaseless Hunger"], token=False)   # never a threat for two cards
+    assert g.hand == ["Corrupted Conviction"] and _on_board(g, "Ulamog, the Ceaseless Hunger")
+
+
+def test_activated_reanimate_returns_a_threat_only():
+    deck = _fx9([(SWAMP, 36), (WHIP_C, 1), (BEAR, 1), (BALOTHS_C, 1)])
+    assert deck.cards["Whip Thing"].effects == (Effect("activated", "reanimate", 1, type="creature", cost="2 B T"),)
+    g = _staged(deck, ["Swamp"] * 3 + ["Whip Thing"], library=["Swamp"] * 10, turn=5)
+    g.command_zone = set()
+    g.graveyard = ["Grizzly Bears", "Rampaging Baloths"]
+    g.pool = g._produce()
+    g._main_phase()
+    assert _on_board(g, "Rampaging Baloths") and _on_board(g, "Whip Thing")[0].tapped and g.pool == []
+    assert g.graveyard == ["Grizzly Bears"] and g.record.clocks["reanimate"] == 5
+    g = _staged(deck, ["Swamp"] * 3 + ["Whip Thing"], library=["Swamp"] * 10, turn=5)
+    g.command_zone = set()
+    g.graveyard = ["Grizzly Bears"]
+    g.pool = g._produce()
+    g._main_phase()
+    assert not _on_board(g, "Whip Thing")[0].tapped and len(g.pool) == 3 and g.graveyard == ["Grizzly Bears"]
+
+
+def test_activated_reanimate_targets_come_before_its_sacrifice():
+    deck = _fx9([(SWAMP, 35), (WHIP_C, 1), (ELDRAZI, 1), (AVENGER_C, 1), (BIG, 1)])
+    card = dataclasses.replace(deck.cards["Whip Thing"],
+                               effects=(Effect("activated", "reanimate", 1, type="creature", cost="Sac<1/Creature>"),))
+    deck.cards["Whip Thing"] = card
+    g = _staged(deck, ["Swamp", "Whip Thing", "Endbringer"], library=["Swamp"] * 10, turn=5)
+    g.command_zone = set()
+    g.graveyard = ["Avenger of Zendikar"]
+    g.pool = g._produce()
+    assert g._try_activated()
+    assert _on_board(g, "Avenger of Zendikar") and g.graveyard == ["Endbringer"]   # the sacrificed one is not the target
+
+
+def test_reanimate_of_an_unknown_type_finds_nothing():
+    deck = _fx9([(SWAMP, 37), (BALOTHS_C, 1), (THREE_C, 1)])
+    g = _staged(deck, ["Swamp"], turn=5)
+    g.graveyard = ["Rampaging Baloths", "Three Thing", "Swamp"]
+    assert g._reanimate_targets("permanent", 0, 3) == ["Rampaging Baloths", "Three Thing", "Swamp"]
+    for bad in ("", "artifact"):
+        assert g._reanimate_targets(bad, 0, 3) == [] and g._reanimate_target(bad, 0, False) is None
+
+
+def test_pool_keeps_mana_added_by_a_cost_trigger():
+    deck = _fx9([(FOREST, 38), (CANOPY_C, 1)])
+    g = _staged(deck, ["Forest", "Forest", "Horizon Canopy"], library=["Forest"] * 10, turn=4)
+    mana_on_sac = Perm(dataclasses.replace(deck.cards["Forest"], name="Sac Mana", is_land=False,
+                                           effects=(Effect("land_sacrificed", "mana", 1),)), 0)
+    g.board.append(mana_on_sac)
+    g.pool = [frozenset("G"), frozenset("G")]
+    activated = Effect("activated", "draw", 1, cost="1 Sac<1/Land>")
+    assert g._activate(g.board[2], activated)
+    assert len(g.pool) == 2 and g.hand == ["Forest"]   # 1 paid, 1 added by the trigger
+    g = _staged(deck, ["Forest", "Forest"], library=["Forest"] * 10, turn=4)
+    g.board.append(Perm(mana_on_sac.card, 0))
+    g.pool = [frozenset("G"), frozenset("G")]
+    g._fire(Effect("etb", "draw", 1, cost="1 Sac<1/Land>"), None)
+    assert len(g.pool) == 2 and g.hand == ["Forest"]

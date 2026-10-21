@@ -54,7 +54,7 @@
       },
       "sim_seed": 1189066043824635889,
       "sim_commander_median": 4,
-      "sim_mana_threshold_median": 7,
+      "sim_mana_threshold_median": 6,
       "sim_tipping_target_median": 3,
       "sim_threat_median": null,
       "sim_combat_median": 9,

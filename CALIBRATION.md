@@ -131,11 +131,11 @@ Stage 3: reanimation, land-milled and dies triggers, triggered draw, and the `re
 | ulalek-bracket4-v2 | 5 | >T12 | T8 | >T12 | T12 | 0% |
 | zhulodok-bracket3 | 5 | T12 | T10 | T12 | T9 | 0% |
 
-Win route (share of games won by T12): necrobloom-v3 combat 54%; precon-eldrazi-unbound combat
+Win route (share of games won by T12): necrobloom-v3 combat 55%; precon-eldrazi-unbound combat
 32%; ulalek-b5 combo 6%; ulalek-bracket3-v2 combat 11%; ulalek-bracket4-v2 combo 17%;
 zhulodok-bracket3 combat 54%. Forge pin `33aecdd6adac36a42af9eab75d2e654626a0e7db`.
 
-No Eldrazi deck's clock moved. Necrobloom's win median moved from >T12 to T12 (47% to 54% of
+No Eldrazi deck's clock moved. Necrobloom's win median moved from >T12 to T12 (47% to 55% of
 games won by T12), and its combat median moved from T10 to T9. Stripping the stage-3 effects
 from the deck (reanimation, every draw effect, land-milled and dies triggers) gives back the v4
 values at 20 000 games: win >T12 (45%) and combat T10. Stripping one group at a time shows each
@@ -149,7 +149,13 @@ group's share of the 54%:
 | other draws (Explore, Spelunking) | 53% |
 
 The binding limit is unchanged: the win needs 120 combat damage, and the hand still runs dry
-(62% of games cast nothing on T12, down from 74%).
+(61% of games cast nothing on T12, down from 74%).
+
+The table rows above were re-run after the final-review fix that casts draw sorceries again
+(Corrupted Conviction had become a never-cast `spell`, which v4 cast as a `draw_spell`): only
+Necrobloom moved, from 54% to 55% won by T12 (medians unchanged; the 500-game golden
+`mana_threshold` median moved from T7 to T6). The stripping table was measured before that
+fix, against 54%.
 
 ### necrobloom-v3 benchmark (sim v5)
 
@@ -162,33 +168,33 @@ Reproduce with `uv run edhpower --from-facts tests/fixtures/necrobloom-v3.facts.
 ```
 Goldfish simulation (sim v5, 20000 games, seed 1189066043824635889)
   clock                                                   median  fast    T2    T3    T4    T5    T6    T7    T8    T9    T10   T11   T12  
-  win (table lethal or lethal combo)                      T12     T10       0%    0%    0%    0%    0%    0%    1%    5%   15%   33%   54% 
-  lethal to the table (3 × 40, combat and drain)          T12     T10       0%    0%    0%    0%    0%    0%    1%    5%   15%   33%   54% 
+  win (table lethal or lethal combo)                      T12     T10       0%    0%    0%    0%    0%    0%    1%    5%   16%   34%   55% 
+  lethal to the table (3 × 40, combat and drain)          T12     T10       0%    0%    0%    0%    0%    0%    1%    5%   16%   34%   55% 
   first opponent dead (40 life, combat and drain)         T12     T10       0%    0%    0%    0%    0%    0%    1%    5%   16%   35%   56% 
-  commander castable                                      T4      T3        0%   13%   52%   78%   87%   91%   94%   96%   97%   98%   99% 
-  7 mana available                                        T6      T5        0%    0%    5%   23%   50%   74%   86%   91%   95%   97%   98% 
+  commander castable                                      T4      T3        0%   13%   52%   78%   87%   92%   94%   96%   97%   98%   99% 
+  7 mana available                                        T6      T5        0%    0%    5%   23%   51%   75%   86%   92%   95%   97%   98% 
   3 mana available (closed-form tipping target)           T3      T1       23%   69%   96%   98%   99%   99%  100%  100%  100%  100%  100% 
-  MV 7+ spell cast from hand                              >T12    T7        0%    0%    0%    1%    4%    9%   13%   17%   20%   22%   25% 
-  40 combat damage to one opponent (no blockers)          T9      T8        0%    0%    0%    0%    0%    2%   18%   52%   78%   90%   95% 
+  MV 7+ spell cast from hand                              >T12    T7        0%    0%    0%    1%    4%   10%   14%   17%   21%   23%   26% 
+  40 combat damage to one opponent (no blockers)          T9      T8        0%    0%    0%    0%    0%    2%   18%   51%   77%   89%   95% 
   combo line assembled                                    >T12    >T12      0%    0%    0%    0%    0%    0%    0%    0%    0%    0%    0% 
   lethal combo line assembled                             >T12    >T12      0%    0%    0%    0%    0%    0%    0%    0%    0%    0%    0% 
-  creature returned from the graveyard to the battlefield >T12    T8        0%    0%    0%    0%    2%    3%    5%    8%   10%   12%   14% 
-  avg mana produced                                                        2.0   3.1   4.3   5.5   6.5   7.6   8.6   9.7  10.8  12.0  13.3 
-  share of games casting nothing                                           61%   33%   16%   12%   17%   28%   43%   53%   59%   59%   62% 
-  damage this turn                                                         0.0   0.2   0.7   1.9   4.3   8.5  14.1  21.0  29.2  39.0  50.3 
-  board power                                                              0.0   0.1   0.6   1.8   4.0   7.9  13.2  19.8  27.6  37.0  48.0 
-  lands on battlefield                                                     2.2   3.4   4.5   5.4   6.4   7.4   8.4   9.4  10.5  11.8  12.9 
-  lands entering this turn                                                 1.3   1.4   1.3   1.2   1.2   1.3   1.4   1.5   1.6   1.9   1.7 
-  lands in graveyard                                                       0.1   0.4   0.6   0.8   0.9   1.1   1.3   1.5   1.7   1.7   2.1 
-  distinct land names                                                      2.1   3.2   4.2   5.1   5.9   6.7   7.6   8.4   9.3  10.3  11.1 
-  tokens: Beast                                                            0.0   0.0   0.0   0.0   0.0   0.1   0.2   0.4   0.5   0.8   1.1 
-  tokens: Bird                                                             0.0   0.0   0.0   0.0   0.0   0.1   0.2   0.4   0.5   0.8   1.0 
+  creature returned from the graveyard to the battlefield >T12    T8        0%    0%    0%    0%    2%    4%    6%    8%   10%   12%   14% 
+  avg mana produced                                                        2.0   3.1   4.3   5.5   6.6   7.6   8.7   9.8  11.0  12.1  13.5 
+  share of games casting nothing                                           61%   33%   16%   12%   16%   26%   40%   51%   57%   57%   61% 
+  damage this turn                                                         0.0   0.1   0.6   1.8   4.2   8.3  14.1  21.1  29.4  39.3  50.9 
+  board power                                                              0.0   0.1   0.6   1.7   3.9   7.7  13.2  19.9  27.8  37.3  48.6 
+  lands on battlefield                                                     2.2   3.4   4.5   5.4   6.4   7.4   8.4   9.5  10.6  11.9  13.0 
+  lands entering this turn                                                 1.3   1.4   1.3   1.2   1.2   1.3   1.4   1.5   1.6   1.9   1.8 
+  lands in graveyard                                                       0.1   0.4   0.6   0.8   0.9   1.1   1.3   1.5   1.7   1.7   2.0 
+  distinct land names                                                      2.1   3.2   4.2   5.1   5.9   6.8   7.6   8.5   9.4  10.4  11.3 
+  tokens: Beast                                                            0.0   0.0   0.0   0.0   0.0   0.1   0.2   0.4   0.6   0.8   1.1 
+  tokens: Bird                                                             0.0   0.0   0.0   0.0   0.0   0.1   0.2   0.4   0.6   0.8   1.1 
   tokens: Cat Beast                                                        0.0   0.0   0.0   0.0   0.0   0.1   0.2   0.3   0.5   0.7   1.0 
   tokens: Elemental                                                        0.0   0.0   0.0   0.0   0.0   0.0   0.1   0.1   0.2   0.3   0.4 
   tokens: Insect                                                           0.0   0.0   0.0   0.1   0.1   0.2   0.4   0.5   0.7   1.0   1.3 
-  tokens: Plant                                                            0.0   0.0   0.1   0.6   1.3   1.9   2.3   2.6   2.9   3.0   3.3 
-  tokens: Zombie                                                           0.0   0.0   0.0   0.1   0.5   1.3   2.4   3.8   5.2   7.0   8.7 
-  win route: combat 54% · combo 0% · none 46%
+  tokens: Plant                                                            0.0   0.0   0.1   0.6   1.2   1.8   2.2   2.5   2.8   3.0   3.2 
+  tokens: Zombie                                                           0.0   0.0   0.0   0.1   0.5   1.3   2.4   3.7   5.2   6.9   8.6 
+  win route: combat 55% · combo 0% · none 45%
   biggest swing (median) 34
   lines simulated: none
   not simulated: The Gitrog Monster + The Necrobloom (notable prerequisites)
@@ -207,6 +213,7 @@ Goldfish simulation (sim v5, 20000 games, seed 1189066043824635889)
   note: dredge replaces the draw only when the hand lacks a land for this turn's drops, never the opening hand
   note: mass land return is cast with 4+ lands in the graveyard and a landfall source out, or on the last two turns
   note: activated abilities are paid from mana left after the main phase
+  note: an activated ability on a mana source is used only with mana left after the main phase, so lands and rocks that tap for mana rarely activate
   note: a draw granted by a trigger is a plain draw, never a dredge
   note: reanimation targets the highest-MV eligible card; a reanimation spell is cast only for a creature with MV 7+ or power 4+
   note: a sacrifice cost takes a creature whose death returns lands, else a token, else the smallest creature

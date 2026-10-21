@@ -139,8 +139,9 @@ Since sim v4 the game has a **graveyard** and a land step that follows the cards
 - **Mass land return.** A spell that returns every graveyard land (Splendid Reclamation) is
   cast when the graveyard holds `mass_return_min_lands` or more lands and a landfall source is
   out, or on the last two turns.
-- **Activated abilities.** Fetches and land returns are paid from the mana left after the main
-  phase.
+- **Activated abilities.** Fetches, land returns, draws and reanimations are paid from the mana
+  left after the main phase. A land or rock that taps for mana has usually been tapped by then,
+  so its own activated ability (a costed fetch, Horizon Canopy, Mind Stone) rarely fires.
 
 The board rows add `lands entering this turn` (landfall), `lands in graveyard` and `distinct
 land names` under `lands on battlefield`, each the average across games at the end of the turn.
@@ -153,7 +154,8 @@ Since sim v5 creatures and lands come back from the graveyard:
   cost never comes back. A reanimation **spell** is cast only when the graveyard holds as many
   eligible cards as it has targets (Victimize needs two), at least one of them a creature with
   MV `threat_mv`+ or power `reanimate_min_power`+ (`scoring.toml`), and the cost can be paid. It
-  is held when a creature the cost would sacrifice is worth more than the best target.
+  is held when a creature the cost would sacrifice is worth more than the best target. An
+  activated reanimation follows the same rule.
 - **Sacrifice costs.** A sacrifice cost takes a creature whose death returns lands (World
   Shaper) while the graveyard holds a land, else the lowest-power token, else the smallest
   creature. A cost that cannot be paid in full sacrifices nothing.
@@ -162,7 +164,11 @@ Since sim v5 creatures and lands come back from the graveyard:
   Monster) or a return of the milled lands (Hedge Shredder). A creature's dies effect fires when
   it is sacrificed, after it reaches the graveyard (the goldfish has no other way to die).
 - **Triggered draw.** A draw from a trigger, an enters effect or an activation is a plain draw,
-  never a dredge. A draw activation (Horizon lands) is used only when the hand is empty.
+  never a dredge. A draw activation (Horizon lands) is used only when the hand is empty. A draw
+  spell is cast whenever it can be paid; one with a sacrifice cost (Corrupted Conviction)
+  sacrifices only a token or a small creature (below MV `threat_mv` and power
+  `reanimate_min_power`, counters included), and a draw riding on another effect (Explore)
+  waits for that effect's policy.
 
 The table has three opponents at 40 life each (`opponents`, `life_per_opponent` in
 `scoring.toml`); attackers are assigned greedily to the opponent with the most life, and drain
