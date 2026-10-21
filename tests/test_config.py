@@ -148,3 +148,9 @@ def test_convert_target_must_be_a_known_category_name():
     raw["sim"]["payoffs"]["converts"]["mana"] = ["mana_sinkk"]
     with pytest.raises(ValueError, match="unknown payoff category"):
         config_mod._sim_from(raw["sim"])
+
+
+def test_forge_config_pinned():
+    import re
+    f = load_config().forge
+    assert re.fullmatch(r"[0-9a-f]{40}", f.commit) and f.min_interval == 0.1

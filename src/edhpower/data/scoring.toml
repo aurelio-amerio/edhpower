@@ -121,3 +121,8 @@ lock_only = "^(?:lock|prevent all damage that would be dealt to (?:you|permanent
 lowest_components = 2       # how many weakest components to name
 scorer_gap = 2.0             # |curve power − component total| at which the scorers "disagree"
 idle_share = 0.25           # a turn is part of the idle window when the deck casts nothing in >= this share of games
+
+# ---- Card-Forge card scripts: the effects source for the simulator ------------------------------
+[forge]
+commit = "33aecdd6adac36a42af9eab75d2e654626a0e7db"   # scripts are fetched at this commit and cached under <cache_dir>/forge/<commit>/
+min_interval = 0.1                                      # seconds between raw.githubusercontent.com requests

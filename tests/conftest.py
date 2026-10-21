@@ -87,9 +87,12 @@ def fixture_facts(name: str) -> DeckFacts:
     return load_facts(FIXTURES / f"{name}.facts.json")
 
 
-def sim_facts(decklist: str, cards: list[dict], tags: dict[str, list[str]] | None = None, combos=None) -> DeckFacts:
+def sim_facts(decklist: str, cards: list[dict], tags: dict[str, list[str]] | None = None, combos=None,
+              scripts: dict[str, str] | None = None) -> DeckFacts:
     """DeckFacts for a hand-written deck: `cards` are make_card() objects, `tags` is slug -> names
-    (None means tags unavailable), `combos` a ComboData or None."""
+    (None means tags unavailable), `combos` a ComboData or None, `scripts` name -> Forge script text."""
     res = Resolution({c["name"]: CardData.from_scryfall(c) for c in cards}, [], 0, "2026-09-10T00:00:00Z")
     cache = full_tag_cache(**tags) if tags is not None else None
-    return build_facts(parse_decklist(decklist), res, combos, None if combos else "offline", "sim.txt", tag_cache=cache)
+    return build_facts(parse_decklist(decklist), res, combos, None if combos else "offline", "sim.txt", tag_cache=cache,
+                       forge_scripts=({c["name"]: scripts.get(c["name"]) for c in cards} if scripts is not None else None),
+                       forge_commit="0" * 40 if scripts is not None else None)

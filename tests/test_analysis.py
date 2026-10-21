@@ -27,7 +27,7 @@ def test_analyse_bundles_every_number_and_stamps_config():
     assert set(d) == {"tool", "config", "facts", "payoffs", "bracket", "scores", "tipping", "sim", "narrative", "freshness"}
     assert d["tool"] == {"name": "edhpower", "version": __version__} and d["config"] == load_config().stamp()
     assert d["scores"]["curve"]["power_level"] == a.curve.power_level and d["scores"]["components"]["total"] == a.components.total
-    assert d["facts"]["schema_version"] == 2
+    assert d["facts"]["schema_version"] == 3
 
 
 def test_analyse_without_tags_marks_dependents_unevaluated():

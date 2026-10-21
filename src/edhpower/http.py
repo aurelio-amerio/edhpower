@@ -45,6 +45,10 @@ class HttpClient:
     def get(self, url: str, params: dict | None = None) -> tuple[int, Any]:
         return self._request("GET", url, params, None)
 
+    def get_text(self, url: str) -> tuple[int, str]:
+        """GET returning the raw body (no JSON parse); same pacing and retry as get()."""
+        return self._request("GET", url, None, None, parse=False)
+
     def post(self, url: str, json_body: Any) -> tuple[int, Any]:
         return self._request("POST", url, None, json_body)
 
@@ -59,8 +63,10 @@ class HttpClient:
                 self._sleep(wait)
         self._last = self._clock()
 
-    def _request(self, method: str, url: str, params: dict | None, json_body: Any) -> tuple[int, Any]:
+    def _request(self, method: str, url: str, params: dict | None, json_body: Any, parse: bool = True) -> tuple[int, Any]:
         headers = dict(self._headers)
+        if not parse:
+            headers["Accept"] = "text/plain"
         if json_body is not None:
             headers["Content-Type"] = "application/json"
         for attempt in (1, 2):
@@ -74,7 +80,7 @@ class HttpClient:
                 continue
             if status >= 500:
                 raise HttpError(status, text)
-            return status, _parse_json(text)
+            return status, (_parse_json(text) if parse else text)
         raise AssertionError("unreachable")
 
 

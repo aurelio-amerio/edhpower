@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "tool_version": "0.2.0",
   "source_path": "edhpower/tests/fixtures/decks/zhulodok-bracket3.txt",
   "commanders": [
@@ -34,7 +34,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Zhulodok, Void Gorger\nManaCost:5 C\nTypes:Legendary Creature Eldrazi\nPT:7/4\nS:Mode$ Continuous | Affected$ Card.Colorless+YouCtrl+YouOwn+wasCastFromHand+cmcGE7 | AffectedZone$ Stack | AddKeyword$ Cascade & Cascade | Description$ Colorless spells you cast from your hand with mana value 7 or greater have \"Cascade, cascade.\"\nDeckHints:Type$Eldrazi|Construct|Golem\nOracle:Colorless spells you cast from your hand with mana value 7 or greater have \"Cascade, cascade.\" (When you cast one, exile cards from the top of your library until you exile a nonland card that costs less. You may cast it without paying its mana cost. Put the exiled cards on the bottom in a random order. Then do it again.)\n"
     },
     {
       "name": "Wastes",
@@ -66,7 +67,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Wastes\nManaCost:no cost\nTypes:Basic Land\nA:AB$ Mana | Cost$ T | Produced$ C | SpellDescription$ Add {C}.\nDeckHas:Ability$Mana.Colorless\nOracle:{T}: Add {C}.\n"
     },
     {
       "name": "Eldrazi Temple",
@@ -98,7 +100,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Eldrazi Temple\nManaCost:no cost\nTypes:Land\nA:AB$ Mana | Cost$ T | Produced$ C | SpellDescription$ Add {C}.\nA:AB$ Mana | Cost$ T | Produced$ C | Amount$ 2 | RestrictValid$ Spell.Eldrazi+Colorless,Activated.Eldrazi+Colorless+inZoneBattlefield | SpellDescription$ Add {C}{C}. Spend this mana only to cast colorless Eldrazi spells or activate abilities of colorless Eldrazi.\nAI:RemoveDeck:Random\nOracle:{T}: Add {C}.\\n{T}: Add {C}{C}. Spend this mana only to cast colorless Eldrazi spells or activate abilities of colorless Eldrazi.\n"
     },
     {
       "name": "Eye of Ugin",
@@ -128,7 +131,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Eye of Ugin\nManaCost:no cost\nTypes:Legendary Land\nS:Mode$ ReduceCost | ValidCard$ Eldrazi.Colorless | Type$ Spell | Activator$ You | Amount$ 2 | Description$ Colorless Eldrazi spells you cast cost {2} less to cast.\nA:AB$ ChangeZone | Cost$ 7 T | Origin$ Library | Destination$ Hand | ChangeType$ Creature.Colorless | ChangeTypeDesc$ colorless creature | ChangeNum$ 1 | SpellDescription$ Search your library for a colorless creature card, reveal it, put it into your hand, then shuffle.\nSVar:AILandRemovalMinScore:170\nAI:RemoveDeck:Random\nDeckNeeds:Color$Colorless\nDeckHints:Type$Eldrazi\nOracle:Colorless Eldrazi spells you cast cost {2} less to cast.\\n{7}, {T}: Search your library for a colorless creature card, reveal it, put it into your hand, then shuffle.\n"
     },
     {
       "name": "Shrine of the Forsaken Gods",
@@ -160,7 +164,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Shrine of the Forsaken Gods\nManaCost:no cost\nTypes:Land\nA:AB$ Mana | Cost$ T | Produced$ C | SpellDescription$ Add {C}.\nA:AB$ Mana | Cost$ T | Produced$ C | Amount$ 2 | IsPresent$ Land.YouCtrl | PresentCompare$ GE7 | RestrictValid$ Spell.Colorless | SpellDescription$ Add {C}{C}. Spend this mana only to cast colorless spells. Activate only if you control seven or more lands.\nAI:RemoveDeck:Random\nDeckHas:Ability$Mana.Colorless\nDeckHints:Color$Colorless & Keyword$Devoid\nOracle:{T}: Add {C}.\\n{T}: Add {C}{C}. Spend this mana only to cast colorless spells. Activate only if you control seven or more lands.\n"
     },
     {
       "name": "Sanctum of Ugin",
@@ -192,7 +197,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Sanctum of Ugin\nManaCost:no cost\nTypes:Land\nA:AB$ Mana | Cost$ T | Produced$ C | SpellDescription$ Add {C}.\nT:Mode$ SpellCast | ValidCard$ Card.Colorless+cmcGE7 | ValidActivatingPlayer$ You | Execute$ TrigSearch | TriggerZones$ Battlefield | TriggerDescription$ Whenever you cast a colorless spell with mana value 7 or greater, you may sacrifice CARDNAME. If you do, search your library for a colorless creature card, reveal it, put it into your hand, then shuffle.\nSVar:TrigSearch:AB$ ChangeZone | Cost$ Sac<1/CARDNAME> | Origin$ Library | Destination$ Hand | ChangeType$ Creature.Colorless | ChangeNum$ 1\nDeckHas:Ability$Mana.Colorless\nOracle:{T}: Add {C}.\\nWhenever you cast a colorless spell with mana value 7 or greater, you may sacrifice Sanctum of Ugin. If you do, search your library for a colorless creature card, reveal it, put it into your hand, then shuffle.\n"
     },
     {
       "name": "Ugin's Labyrinth",
@@ -226,7 +232,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Ugin's Labyrinth\nManaCost:no cost\nTypes:Land\nT:Mode$ ChangesZone | ValidCard$ Card.Self | Origin$ Any | Destination$ Battlefield | OptionalDecider$ You | Execute$ TrigExile | TriggerDescription$ Imprint — When CARDNAME enters, you may exile a colorless card with mana value 7 or greater from your hand.\nSVar:TrigExile:DB$ ChangeZone | Origin$ Hand | Destination$ Exile | ChangeType$ Card.Colorless+cmcGE7 | ChangeNum$ 1\nA:AB$ Mana | Cost$ T | Produced$ C | Amount$ X | SpellDescription$ Add {C}. If a card is exiled with CARDNAME, add {C}{C} instead.\nA:AB$ ChangeZone | Cost$ T | Defined$ ExiledWith | Origin$ Exile | Destination$ Hand | AILogic$ ReturnCastable | SpellDescription$ Return the exiled card to its owner's hand.\nSVar:X:Count$Compare Y GE1.2.1\nSVar:Y:Count$ValidExile Card.ExiledWithSource\nOracle:Imprint — When Ugin's Labyrinth enters, you may exile a colorless card with mana value 7 or greater from your hand.\\n{T}: Add {C}. If a card is exiled with Ugin's Labyrinth, add {C}{C} instead.\\n{T}: Return the exiled card to its owner's hand.\n"
     },
     {
       "name": "War Room",
@@ -258,7 +265,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:War Room\nManaCost:no cost\nTypes:Land\nA:AB$ Mana | Cost$ T | Produced$ C | SpellDescription$ Add {C}.\nA:AB$ Draw | Cost$ 3 T PayLife<X> | ActivationGameTypes$ Commander,Brawl,TinyLeaders,Oathbreaker | CostDesc$ {3}, {T}, Pay life equal to the number of colors in your commanders' color identity: | NumCards$ 1 | SpellDescription$ Draw a card.\nSVar:X:Count$ColorsColorIdentity\nAI:RemoveDeck:NonCommander\nOracle:{T}: Add {C}.\\n{3}, {T}, Pay life equal to the number of colors in your commanders' color identity: Draw a card.\n"
     },
     {
       "name": "Bonders' Enclave",
@@ -290,7 +298,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Bonders' Enclave\nManaCost:no cost\nTypes:Land\nA:AB$ Mana | Cost$ T | Produced$ C | SpellDescription$ Add {C}.\nA:AB$ Draw | Cost$ 3 T | NumCards$ 1 | IsPresent$ Creature.YouCtrl+powerGE4 | SpellDescription$ Draw a card. Activate only if you control a creature with power 4 or greater.\nOracle:{T}: Add {C}.\\n{3}, {T}: Draw a card. Activate only if you control a creature with power 4 or greater.\n"
     },
     {
       "name": "Reliquary Tower",
@@ -322,7 +331,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Reliquary Tower\nManaCost:no cost\nTypes:Land\nS:Mode$ Continuous | Affected$ You | SetMaxHandSize$ Unlimited | Description$ You have no maximum hand size.\nA:AB$ Mana | Cost$ T | Produced$ C | SpellDescription$ Add {C}.\nOracle:You have no maximum hand size.\\n{T}: Add {C}.\n"
     },
     {
       "name": "Rogue's Passage",
@@ -354,7 +364,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Rogue's Passage\nManaCost:no cost\nTypes:Land\nA:AB$ Mana | Cost$ T | Produced$ C | SpellDescription$ Add {C}.\nA:AB$ Effect | Cost$ 4 T | ValidTgts$ Creature | RememberObjects$ Targeted | ExileOnMoved$ Battlefield | StaticAbilities$ Unblockable | AILogic$ MakeUnblockable | StackDescription$ {c:Targeted} can't be blocked this turn. | SpellDescription$ Target creature can't be blocked this turn.\nSVar:Unblockable:Mode$ CantBlockBy | ValidAttacker$ Card.IsRemembered | Description$ This creature can't be blocked this turn.\nOracle:{T}: Add {C}.\\n{4}, {T}: Target creature can't be blocked this turn.\n"
     },
     {
       "name": "Tomb of the Spirit Dragon",
@@ -386,7 +397,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Tomb of the Spirit Dragon\nManaCost:no cost\nTypes:Land\nA:AB$ Mana | Cost$ T | Produced$ C | SpellDescription$ Add {C}.\nA:AB$ GainLife | Cost$ 2 T | LifeAmount$ X | SpellDescription$ You gain 1 life for each colorless creature you control.\nSVar:X:Count$Valid Creature.Colorless+YouCtrl\nOracle:{T}: Add {C}.\\n{2}, {T}: You gain 1 life for each colorless creature you control.\n"
     },
     {
       "name": "Scavenger Grounds",
@@ -418,7 +430,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Scavenger Grounds\nManaCost:no cost\nTypes:Land Desert\nA:AB$ Mana | Cost$ T | Produced$ C | SpellDescription$ Add {C}.\nA:AB$ ChangeZoneAll | Cost$ 2 T Sac<1/Desert> | Origin$ Graveyard | Destination$ Exile | ChangeType$ Card | AILogic$ ExileGraveyards | SpellDescription$ Exile all graveyards.\nAI:RemoveDeck:Random\nOracle:{T}: Add {C}.\\n{2}, {T}, Sacrifice a Desert: Exile all graveyards.\n"
     },
     {
       "name": "Arcane Lighthouse",
@@ -450,7 +463,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Arcane Lighthouse\nManaCost:no cost\nTypes:Land\nA:AB$ Mana | Cost$ T | Produced$ C | SpellDescription$ Add {C}.\nA:AB$ AnimateAll | Cost$ 1 T | ValidCards$ Creature.OppCtrl | RemoveKeywords$ Hexproof & Shroud | CantHaveKeyword$ Hexproof & Shroud | StackDescription$ SpellDescription | SpellDescription$ Until end of turn, creatures your opponents control lose hexproof and shroud and can't have hexproof or shroud.\nAI:RemoveDeck:All\nOracle:{T}: Add {C}.\\n{1}, {T}: Until end of turn, creatures your opponents control lose hexproof and shroud and can't have hexproof or shroud.\n"
     },
     {
       "name": "Urza's Cave",
@@ -482,7 +496,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Urza's Cave\nManaCost:no cost\nTypes:Land Urza's Cave\nA:AB$ Mana | Cost$ T | Produced$ C | SpellDescription$ Add {C}.\nA:AB$ ChangeZone | Cost$ 3 T Sac<1/CARDNAME> | Origin$ Library | Destination$ Battlefield | Tapped$ True | ChangeType$ Land | ChangeNum$ 1 | SpellDescription$ Search your library for a land card, put it onto the battlefield tapped, then shuffle.\nOracle:{T}: Add {C}.\\n{3}, {T}, Sacrifice Urza's Cave: Search your library for a land card, put it onto the battlefield tapped, then shuffle.\n"
     },
     {
       "name": "Blast Zone",
@@ -514,7 +529,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Blast Zone\nManaCost:no cost\nTypes:Land\nK:etbCounter:CHARGE:1\nA:AB$ Mana | Cost$ T | Produced$ C | SpellDescription$ Add {C}.\nA:AB$ PutCounter | Cost$ X X T | CounterType$ CHARGE | CounterNum$ X | SpellDescription$ Put X charge counters on CARDNAME.\nSVar:X:Count$xPaid\nA:AB$ DestroyAll | Cost$ 3 T Sac<1/CARDNAME> | ValidCards$ Permanent.nonLand+cmcEQY | SpellDescription$ Destroy each nonland permanent with mana value equal to the number of charge counters on CARDNAME.\nSVar:Y:Count$CardCounters.CHARGE\nAI:RemoveDeck:All\nDeckHas:Ability$Counters\nOracle:Blast Zone enters with a charge counter on it.\\n{T}: Add {C}.\\n{X}{X}, {T}: Put X charge counters on Blast Zone.\\n{3}, {T}, Sacrifice Blast Zone: Destroy each nonland permanent with mana value equal to the number of charge counters on Blast Zone.\n"
     },
     {
       "name": "Ghost Quarter",
@@ -546,7 +562,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Ghost Quarter\nManaCost:no cost\nTypes:Land\nA:AB$ Mana | Cost$ T | Produced$ C | SpellDescription$ Add {C}.\nA:AB$ Destroy | Cost$ T Sac<1/CARDNAME> | ValidTgts$ Land | SubAbility$ DBChange | AILogic$ GhostQuarter | AITgts$ Land.nonBasic | SpellDescription$ Destroy target land. Its controller may search their library for a basic land card, put it onto the battlefield, then shuffle.\nSVar:DBChange:DB$ ChangeZone | Optional$ True | Origin$ Library | Destination$ Battlefield | ChangeType$ Land.Basic | ChangeTypeDesc$ basic land | DefinedPlayer$ TargetedController | ShuffleNonMandatory$ True\nAI:RemoveDeck:Random\nOracle:{T}: Add {C}.\\n{T}, Sacrifice Ghost Quarter: Destroy target land. Its controller may search their library for a basic land card, put it onto the battlefield, then shuffle.\n"
     },
     {
       "name": "Sea Gate Wreckage",
@@ -578,7 +595,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Sea Gate Wreckage\nManaCost:no cost\nTypes:Land\nA:AB$ Mana | Cost$ T | Produced$ C | SpellDescription$ Add {C}.\nA:AB$ Draw | Cost$ 2 C T | NumCards$ 1 | Activation$ Hellbent | SpellDescription$ Draw a card. Activate only if you have no cards in hand.\nDeckHas:Ability$Mana.Colorless\nDeckHints:Ability$Mana.Colorless\nOracle:{T}: Add {C}. ({C} represents colorless mana.)\\n{2}{C}, {T}: Draw a card. Activate only if you have no cards in hand.\n"
     },
     {
       "name": "Urza's Mine",
@@ -610,7 +628,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Urza's Mine\nManaCost:no cost\nTypes:Land Urza's Mine\nA:AB$ Mana | Cost$ T | Produced$ C | Amount$ UrzaAmount | SpellDescription$ Add {C}. If you control an Urza's Power-Plant and an Urza's Tower, add {C}{C} instead.\nSVar:UrzaAmount:Count$UrzaLands.2.1\nAI:RemoveDeck:Random\nDeckNeeds:Name$Urza's Power Plant|Urza's Tower\nDeckHints:Type$Ugin|Karn|Urza|Construct|Assembly-Worker|Golem|Artifact|Eldrazi\nOracle:{T}: Add {C}. If you control an Urza's Power-Plant and an Urza's Tower, add {C}{C} instead.\n"
     },
     {
       "name": "Urza's Power Plant",
@@ -642,7 +661,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Urza's Power Plant\nManaCost:no cost\nTypes:Land Urza's Power-Plant\nA:AB$ Mana | Cost$ T | Produced$ C | Amount$ UrzaAmount | SpellDescription$ Add {C}. If you control an Urza's Mine and an Urza's Tower, add {C}{C} instead.\nSVar:UrzaAmount:Count$UrzaLands.2.1\nAI:RemoveDeck:Random\nDeckNeeds:Name$Urza's Tower|Urza's Mine\nDeckHints:Type$Ugin|Karn|Urza|Construct|Assembly-Worker|Golem|Artifact|Eldrazi\nOracle:{T}: Add {C}. If you control an Urza's Mine and an Urza's Tower, add {C}{C} instead.\n"
     },
     {
       "name": "Urza's Tower",
@@ -674,7 +694,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Urza's Tower\nManaCost:no cost\nTypes:Land Urza's Tower\nA:AB$ Mana | Cost$ T | Produced$ C | Amount$ UrzaAmount | SpellDescription$ Add {C}. If you control an Urza's Mine and an Urza's Power-Plant, add {C}{C}{C} instead.\nSVar:UrzaAmount:Count$UrzaLands.3.1\nAI:RemoveDeck:Random\nDeckNeeds:Name$Urza's Power Plant|Urza's Mine\nDeckHints:Type$Ugin|Karn|Urza|Construct|Assembly-Worker|Golem|Artifact|Eldrazi\nOracle:{T}: Add {C}. If you control an Urza's Mine and an Urza's Power-Plant, add {C}{C}{C} instead.\n"
     },
     {
       "name": "Sol Ring",
@@ -706,7 +727,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Sol Ring\nManaCost:1\nTypes:Artifact\nA:AB$ Mana | Cost$ T | Produced$ C | Amount$ 2 | SpellDescription$ Add {C}{C}.\nOracle:{T}: Add {C}{C}.\n"
     },
     {
       "name": "Mana Vault",
@@ -738,7 +760,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Mana Vault\nManaCost:1\nTypes:Artifact\nR:Event$ Untap | ValidCard$ Card.Self | ValidStepTurnToController$ You | Layer$ CantHappen | Description$ This artifact doesn't untap during your untap step.\nT:Mode$ Phase | Phase$ Upkeep | ValidPlayer$ You | TriggerZones$ Battlefield | OptionalDecider$ You | Execute$ TrigUntap | TriggerDescription$ At the beginning of your upkeep, you may pay {4}. If you do, untap this artifact.\nSVar:TrigUntap:AB$ Untap | Cost$ 4 | Defined$ Self\nT:Mode$ Phase | Phase$ Draw | ValidPlayer$ You | PresentDefined$ Self | IsPresent$ Card.tapped | Execute$ TrigDamage | TriggerDescription$ At the beginning of your draw step, if this artifact is tapped, it deals 1 damage to you.\nSVar:TrigDamage:DB$ DealDamage | Defined$ You | NumDmg$ 1\nA:AB$ Mana | Cost$ T | Produced$ C | Amount$ 3 | SpellDescription$ Add {C}{C}{C}.\nSVar:UntapMe:True\nAI:RemoveDeck:Random\nOracle:This artifact doesn't untap during your untap step.\\nAt the beginning of your upkeep, you may pay {4}. If you do, untap this artifact.\\nAt the beginning of your draw step, if this artifact is tapped, it deals 1 damage to you.\\n{T}: Add {C}{C}{C}.\n"
     },
     {
       "name": "Mind Stone",
@@ -770,7 +793,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Mind Stone\nManaCost:2\nTypes:Artifact\nA:AB$ Mana | Cost$ T | Produced$ C | SpellDescription$ Add {C}.\nA:AB$ Draw | Cost$ 1 T Sac<1/CARDNAME> | NumCards$ 1 | SpellDescription$ Draw a card.\nOracle:{T}: Add {C}.\\n{1}, {T}, Sacrifice Mind Stone: Draw a card.\n"
     },
     {
       "name": "Thought Vessel",
@@ -802,7 +826,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Thought Vessel\nManaCost:2\nTypes:Artifact\nS:Mode$ Continuous | Affected$ You | SetMaxHandSize$ Unlimited | Description$ You have no maximum hand size.\nA:AB$ Mana | Cost$ T | Produced$ C | SpellDescription$ Add {C}.\nOracle:You have no maximum hand size.\\n{T}: Add {C}.\n"
     },
     {
       "name": "Everflowing Chalice",
@@ -836,7 +861,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Everflowing Chalice\nManaCost:0\nTypes:Artifact\nK:Multikicker:2\nK:etbCounter:CHARGE:XKicked:no Condition:CARDNAME enters with a charge counter on it for each time it was kicked.\nA:AB$ Mana | Cost$ T | Produced$ C | Amount$ X | SpellDescription$ Add {C} for each charge counter on CARDNAME.\nSVar:X:Count$CardCounters.CHARGE\nSVar:XKicked:Count$TimesKicked\nSVar:NeedsToPlayKickedVar:Z GE4\nSVar:Z:Count$Valid Land.YouCtrl+untapped\nDeckHas:Ability$Counters\nOracle:Multikicker {2}\\nEverflowing Chalice enters with a charge counter on it for each time it was kicked.\\n{T}: Add {C} for each charge counter on Everflowing Chalice.\n"
     },
     {
       "name": "Worn Powerstone",
@@ -868,7 +894,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Worn Powerstone\nManaCost:3\nTypes:Artifact\nR:Event$ Moved | ValidCard$ Card.Self | Destination$ Battlefield | ReplacementResult$ Updated | ReplaceWith$ ETBTapped | Description$ CARDNAME enters tapped.\nSVar:ETBTapped:DB$ Tap | Defined$ Self | ETB$ True\nA:AB$ Mana | Cost$ T | Produced$ C | Amount$ 2 | SpellDescription$ Add {C}{C}.\nOracle:Worn Powerstone enters tapped.\\n{T}: Add {C}{C}.\n"
     },
     {
       "name": "Hedron Archive",
@@ -900,7 +927,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Hedron Archive\nManaCost:4\nTypes:Artifact\nA:AB$ Mana | Cost$ T | Produced$ C | Amount$ 2 | SpellDescription$ Add {C}{C}.\nA:AB$ Draw | Cost$ 2 T Sac<1/CARDNAME> | NumCards$ 2 | SpellDescription$ Draw two cards.\nDeckHas:Ability$Mana.Colorless\nOracle:{T}: Add {C}{C}.\\n{2}, {T}, Sacrifice Hedron Archive: Draw two cards.\n"
     },
     {
       "name": "Thran Dynamo",
@@ -932,7 +960,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Thran Dynamo\nManaCost:4\nTypes:Artifact\nA:AB$ Mana | Cost$ T | Produced$ C | Amount$ 3 | SpellDescription$ Add {C}{C}{C}.\nOracle:{T}: Add {C}{C}{C}.\n"
     },
     {
       "name": "Fellwar Stone",
@@ -968,7 +997,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Fellwar Stone\nManaCost:2\nTypes:Artifact\nA:AB$ ManaReflected | Cost$ T | ColorOrType$ Color | Valid$ Land.OppCtrl | ReflectProperty$ Produce | SpellDescription$ Add one mana of any color that a land an opponent controls could produce.\nOracle:{T}: Add one mana of any color that a land an opponent controls could produce.\n"
     },
     {
       "name": "Sisay's Ring",
@@ -1000,7 +1030,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Sisay's Ring\nManaCost:4\nTypes:Artifact\nA:AB$ Mana | Cost$ T | Produced$ C | Amount$ 2 | SpellDescription$ Add {C}{C}.\nOracle:{T}: Add {C}{C}.\n"
     },
     {
       "name": "Palladium Myr",
@@ -1032,7 +1063,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Palladium Myr\nManaCost:3\nTypes:Artifact Creature Myr\nPT:2/2\nA:AB$ Mana | Cost$ T | Produced$ C | Amount$ 2 | SpellDescription$ Add {C}{C}.\nOracle:{T}: Add {C}{C}.\n"
     },
     {
       "name": "Coldsteel Heart",
@@ -1068,7 +1100,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Coldsteel Heart\nManaCost:2\nTypes:Snow Artifact\nR:Event$ Moved | ValidCard$ Card.Self | Destination$ Battlefield | ReplacementResult$ Updated | ReplaceWith$ ETBTapped | Description$ CARDNAME enters tapped.\nSVar:ETBTapped:DB$ Tap | Defined$ Self | ETB$ True\nK:ETBReplacement:Other:ChooseColor\nSVar:ChooseColor:DB$ ChooseColor | Defined$ You | AILogic$ MostProminentInComputerDeck | SpellDescription$ As CARDNAME enters, choose a color.\nA:AB$ Mana | Cost$ T | Produced$ Chosen | SpellDescription$ Add one mana of the chosen color.\nOracle:Coldsteel Heart enters tapped.\\nAs Coldsteel Heart enters, choose a color.\\n{T}: Add one mana of the chosen color.\n"
     },
     {
       "name": "Forsaken Monument",
@@ -1100,7 +1133,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Forsaken Monument\nManaCost:5\nTypes:Legendary Artifact\nS:Mode$ Continuous | Affected$ Creature.Colorless+YouCtrl | AddPower$ 2 | AddToughness$ 2 | Description$ Colorless creatures you control get +2/+2.\nT:Mode$ TapsForMana | ValidCard$ Permanent | Activator$ You | Produced$ C | Execute$ TrigMana | TriggerZones$ Battlefield | Static$ True | TriggerDescription$ Whenever you tap a permanent for {C}, add an additional {C}.\nSVar:TrigMana:DB$ Mana | Produced$ C\nT:Mode$ SpellCast | ValidCard$ Card.Colorless | ValidActivatingPlayer$ You | TriggerZones$ Battlefield | Execute$ TrigGainLife | TriggerDescription$ Whenever you cast a colorless spell, you gain 2 life.\nSVar:TrigGainLife:DB$ GainLife | Defined$ You | LifeAmount$ 2\nSVar:PlayMain1:TRUE\nDeckHints:Color$Colorless\nDeckHas:Ability$LifeGain\nOracle:Colorless creatures you control get +2/+2.\\nWhenever you tap a permanent for {C}, add an additional {C}.\\nWhenever you cast a colorless spell, you gain 2 life.\n"
     },
     {
       "name": "Emrakul, the World Anew",
@@ -1134,7 +1168,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Emrakul, the World Anew\nManaCost:12\nTypes:Legendary Creature Eldrazi\nPT:12/12\nK:Flying\nK:Protection:Spell:spells\nK:Protection:Permanent.ThisTurnCast:permanents that were cast this turn\nT:Mode$ SpellCast | ValidCard$ Card.Self | Execute$ TrigGainControl | TriggerDescription$ When you cast this spell, gain control of all creatures target player controls.\nSVar:TrigGainControl:DB$ GainControl | ValidTgts$ Player | TgtPrompt$ Select target player to gain control of all of their creatures | AllValid$ Creature.TargetedPlayerCtrl | NewController$ You\nT:Mode$ ChangesZone | Origin$ Battlefield | Destination$ Any | ValidCard$ Card.Self | Execute$ TrigSacrificeAll | TriggerDescription$ When CARDNAME leaves the battlefield, sacrifice all creatures you control.\nSVar:TrigSacrificeAll:DB$ SacrificeAll | ValidCards$ Creature.YouCtrl\nK:Madness:C C C C C C\nDeckHints:Ability$Discard\nOracle:When you cast this spell, gain control of all creatures target player controls.\\nFlying, protection from spells and from permanents that were cast this turn\\nWhen Emrakul, the World Anew leaves the battlefield, sacrifice all creatures you control.\\nMadness—Pay six {C}.\n"
     },
     {
       "name": "Kozilek, Butcher of Truth",
@@ -1166,7 +1201,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Kozilek, Butcher of Truth\nManaCost:10\nTypes:Legendary Creature Eldrazi\nPT:12/12\nK:Annihilator:4\nT:Mode$ ChangesZone | Origin$ Any | Destination$ Graveyard | ValidCard$ Card.Self | Execute$ TrigShuffle | TriggerDescription$ When CARDNAME is put into a graveyard from anywhere, its owner shuffles their graveyard into their library.\nSVar:TrigShuffle:DB$ ChangeZoneAll | Defined$ TriggeredCardOwner | ChangeType$ Card | Origin$ Graveyard | Destination$ Library | Shuffle$ True\nT:Mode$ SpellCast | ValidCard$ Card.Self | Execute$ TrigDraw | TriggerDescription$ When you cast this spell, draw four cards.\nSVar:TrigDraw:DB$ Draw | Defined$ You | NumCards$ 4\nOracle:When you cast this spell, draw four cards.\\nAnnihilator 4 (Whenever this creature attacks, defending player sacrifices four permanents.)\\nWhen Kozilek, Butcher of Truth is put into a graveyard from anywhere, its owner shuffles their graveyard into their library.\n"
     },
     {
       "name": "Ulamog, the Infinite Gyre",
@@ -1199,7 +1235,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Ulamog, the Infinite Gyre\nManaCost:11\nTypes:Legendary Creature Eldrazi\nPT:10/10\nK:Indestructible\nK:Annihilator:4\nT:Mode$ ChangesZone | Origin$ Any | Destination$ Graveyard | ValidCard$ Card.Self | Execute$ TrigShuffle | TriggerDescription$ When CARDNAME is put into a graveyard from anywhere, its owner shuffles their graveyard into their library.\nSVar:TrigShuffle:DB$ ChangeZoneAll | Defined$ TriggeredCardOwner | ChangeType$ Card | Origin$ Graveyard | Destination$ Library | Shuffle$ True\nT:Mode$ SpellCast | ValidCard$ Card.Self | Execute$ TrigDestroy | TriggerDescription$ When you cast this spell, destroy target permanent.\nSVar:TrigDestroy:DB$ Destroy | ValidTgts$ Permanent\nOracle:When you cast this spell, destroy target permanent.\\nIndestructible\\nAnnihilator 4 (Whenever this creature attacks, defending player sacrifices four permanents.)\\nWhen Ulamog, the Infinite Gyre is put into a graveyard from anywhere, its owner shuffles their graveyard into their library.\n"
     },
     {
       "name": "It That Betrays",
@@ -1231,7 +1268,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:It That Betrays\nManaCost:12\nTypes:Creature Eldrazi\nPT:11/11\nK:Annihilator:2\nT:Mode$ Sacrificed | ValidCard$ Permanent.!token+OppCtrl | Execute$ TrigReturn | TriggerZones$ Battlefield | TriggerDescription$ Whenever an opponent sacrifices a nontoken permanent, put that card onto the battlefield under your control.\nSVar:TrigReturn:DB$ ChangeZone | Origin$ Graveyard | Destination$ Battlefield | GainControl$ True | Defined$ TriggeredCard\nOracle:Annihilator 2 (Whenever this creature attacks, defending player sacrifices two permanents.)\\nWhenever an opponent sacrifices a nontoken permanent, put that card onto the battlefield under your control.\n"
     },
     {
       "name": "Pathrazer of Ulamog",
@@ -1263,7 +1301,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Pathrazer of Ulamog\nManaCost:11\nTypes:Creature Eldrazi\nPT:9/9\nK:Annihilator:3\nS:Mode$ MinMaxBlocker | ValidCard$ Creature.Self | Min$ 3 | Description$ CARDNAME can't be blocked except by three or more creatures.\nOracle:Annihilator 3 (Whenever this creature attacks, defending player sacrifices three permanents.)\\nPathrazer of Ulamog can't be blocked except by three or more creatures.\n"
     },
     {
       "name": "Ulamog's Crusher",
@@ -1295,7 +1334,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Ulamog's Crusher\nManaCost:8\nTypes:Creature Eldrazi\nPT:8/8\nK:Annihilator:2\nS:Mode$ MustAttack | ValidCreature$ Card.Self | Description$ CARDNAME attacks each combat if able.\nOracle:Annihilator 2 (Whenever this creature attacks, defending player sacrifices two permanents.)\\nUlamog's Crusher attacks each combat if able.\n"
     },
     {
       "name": "Spawnsire of Ulamog",
@@ -1329,7 +1369,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Spawnsire of Ulamog\nManaCost:10\nTypes:Creature Eldrazi\nPT:7/11\nK:Annihilator:1\nA:AB$ Token | Cost$ 4 | TokenAmount$ 2 | TokenScript$ c_0_1_eldrazi_spawn_sac | TokenOwner$ You | SpellDescription$ Create two 0/1 colorless Eldrazi Spawn creature tokens. They have \"Sacrifice this creature: Add {C}.\"\nA:AB$ Play | Cost$ 20 | Valid$ Card.Eldrazi+YouOwn | ValidZone$ Sideboard | WithoutManaCost$ True | Amount$ All | Controller$ You | Optional$ True | SpellDescription$ Cast any number of Eldrazi spells from among cards you own outside the game without paying their mana costs.\nDeckHints:Type$Eldrazi\nDeckHas:Ability$Mana.Colorless|Token\nOracle:Annihilator 1 (Whenever this creature attacks, defending player sacrifices a permanent.)\\n{4}: Create two 0/1 colorless Eldrazi Spawn creature tokens. They have \"Sacrifice this creature: Add {C}.\"\\n{20}: Cast any number of Eldrazi spells from among cards you own outside the game without paying their mana costs.\n"
     },
     {
       "name": "Kozilek, the Great Distortion",
@@ -1361,7 +1402,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Kozilek, the Great Distortion\nManaCost:8 C C\nTypes:Legendary Creature Eldrazi\nPT:12/12\nT:Mode$ SpellCast | ValidCard$ Card.Self | Execute$ TrigDraw | CheckSVar$ Y | SVarCompare$ LT7 | TriggerDescription$ When you cast this spell, if you have fewer than seven cards in hand, draw cards equal to the difference.\nSVar:TrigDraw:DB$ Draw | Defined$ You | NumCards$ Difference\nSVar:Y:Count$ValidHand Card.YouOwn\nSVar:Difference:Number$7/Minus.Y\nK:Menace\nA:AB$ Counter | Cost$ Discard<1/Card.cmcEQX/card with mana value X> | TargetType$ Spell | TgtPrompt$ Select target spell | ValidTgts$ Card | AILogic$ Never | SpellDescription$ Counter target spell with mana value X.\nSVar:X:Targeted$CardManaCost\nDeckNeeds:Ability$Mana.Colorless\nOracle:When you cast this spell, if you have fewer than seven cards in hand, draw cards equal to the difference.\\nMenace\\nDiscard a card with mana value X: Counter target spell with mana value X.\n"
     },
     {
       "name": "Kozilek, the Broken Reality",
@@ -1393,7 +1435,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Kozilek, the Broken Reality\nManaCost:9\nTypes:Legendary Creature Eldrazi\nPT:9/9\nT:Mode$ SpellCast | ValidCard$ Card.Self | Execute$ TrigManifest | TriggerDescription$ When you cast this spell, up to two target players each manifest two cards from their hands. For each card manifested this way, you draw a card. (To manifest a card, put it onto the battlefield face down as a 2/2 creature. Turn it face up any time for its mana cost if it's a creature card.)\nSVar:TrigManifest:DB$ Manifest | ValidTgts$ Player | TargetMin$ 0 | Amount$ 2 | TargetMax$ 2 | RememberManifested$ True | SubAbility$ DBDraw | TgtPrompt$ Select up to two target players | Choices$ Card.TargetedPlayerOwn | ChoiceZone$ Hand | DefinedPlayer$ Targeted\nSVar:DBDraw:DB$ Draw | NumCards$ X | SubAbility$ DBCleanup\nSVar:DBCleanup:DB$ Cleanup | ClearRemembered$ True\nSVar:X:Remembered$Amount\nS:Mode$ Continuous | Affected$ Creature.Colorless+YouCtrl+Other | AddPower$ 3 | AddToughness$ 2 | Description$ Other colorless creatures you control get +3/+2.\nDeckHints:Color$Colorless & Type$Construct|Eldrazi|Juggernaut|Scarecrow\nOracle:When you cast this spell, up to two target players each manifest two cards from their hands. For each card manifested this way, you draw a card. (To manifest a card, put it onto the battlefield face down as a 2/2 creature. Turn it face up any time for its mana cost if it's a creature card.)\\nOther colorless creatures you control get +3/+2.\n"
     },
     {
       "name": "Ulamog, the Ceaseless Hunger",
@@ -1425,7 +1468,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Ulamog, the Ceaseless Hunger\nManaCost:10\nTypes:Legendary Creature Eldrazi\nPT:10/10\nT:Mode$ SpellCast | ValidCard$ Card.Self | Execute$ TrigChange | TriggerDescription$ When you cast this spell, exile two target permanents.\nSVar:TrigChange:DB$ ChangeZone | ValidTgts$ Permanent | TargetMin$ 2 | TargetMax$ 2 | Origin$ Battlefield | Destination$ Exile\nK:Indestructible\nT:Mode$ Attacks | ValidCard$ Card.Self | TriggerZones$ Battlefield | Execute$ TrigExile | TriggerDescription$ Whenever CARDNAME attacks, defending player exiles the top twenty cards of their library.\nSVar:TrigExile:DB$ Dig | Defined$ TriggeredDefendingPlayer | DestinationZone$ Exile | DigNum$ 20 | ChangeNum$ All\nSVar:PlayMain1:TRUE\nSVar:HasAttackEffect:TRUE\nOracle:When you cast this spell, exile two target permanents.\\nIndestructible\\nWhenever Ulamog, the Ceaseless Hunger attacks, defending player exiles the top twenty cards of their library.\n"
     },
     {
       "name": "Ulamog, the Defiler",
@@ -1457,7 +1501,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Ulamog, the Defiler\nManaCost:10\nTypes:Legendary Creature Eldrazi\nPT:7/7\nK:Ward:Sac<2/Permanent>\nT:Mode$ SpellCast | ValidCard$ Card.Self | Execute$ TrigExile | TriggerDescription$ When you cast this spell, target opponent exiles the top of half their library, rounded up.\nSVar:TrigExile:DB$ Dig | ValidTgts$ Opponent | DestinationZone$ Exile | DigNum$ Z | ChangeNum$ All\nSVar:Z:TargetedPlayer$CardsInLibrary/HalfUp\nK:etbCounter:P1P1:Y:no Condition:CARDNAME enters with a number of +1/+1 counters on it equal to the greatest mana value among cards in exile.\nSVar:Y:Count$ValidExile Card$GreatestCardManaCost\nS:Mode$ Continuous | AffectedDefined$ Self | AddKeyword$ Annihilator:X | Description$ NICKNAME has annihilator X, where X is the number of +1/+1 counters on it.\nSVar:X:Count$CardCounters.P1P1\nDeckHas:Ability$Sacrifice|Counters\nOracle:When you cast this spell, target opponent exiles the top half of their library, rounded up.\\nWard—Sacrifice two permanents.\\nUlamog, the Defiler enters with a number of +1/+1 counters on it equal to the greatest mana value among cards in exile.\\nUlamog has annihilator X, where X is the number of +1/+1 counters on it.\n"
     },
     {
       "name": "Emrakul, the Promised End",
@@ -1491,7 +1536,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Emrakul, the Promised End\nManaCost:13\nTypes:Legendary Creature Eldrazi\nPT:13/13\nK:Flying\nK:Trample\nK:Protection:Instant:instants\nS:Mode$ ReduceCost | ValidCard$ Card.Self | Type$ Spell | Amount$ X | EffectZone$ All | Description$ This spell costs {1} less to cast for each card type among cards in your graveyard.\nSVar:X:Count$ValidGraveyard Card.YouOwn$CardTypes\nT:Mode$ SpellCast | ValidCard$ Card.Self | Execute$ TrigControlPlayer | TriggerDescription$ When you cast CARDNAME, you gain control of target opponent during that player's next turn. After that turn, that player takes an extra turn.\nSVar:TrigControlPlayer:DB$ ControlPlayer | ValidTgts$ Opponent | SubAbility$ DBDelTrig\nSVar:DBDelTrig:DB$ DelayedTrigger | Mode$ Phase | DelayedTriggerDefinedPlayer$ Targeted | RememberObjects$ Targeted | Phase$ Cleanup | Execute$ DBAddTurn | Static$ True\nSVar:DBAddTurn:DB$ AddTurn | Defined$ DelayTriggerRemembered | NumTurns$ 1\nAI:RemoveDeck:All\nOracle:This spell costs {1} less to cast for each card type among cards in your graveyard.\\nWhen you cast this spell, you gain control of target opponent during that player's next turn. After that turn, that player takes an extra turn.\\nFlying, trample, protection from instants\n"
     },
     {
       "name": "Void Winnower",
@@ -1521,7 +1567,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Void Winnower\nManaCost:9\nTypes:Creature Eldrazi\nPT:11/9\nS:Mode$ CantBeCast | ValidCard$ Card.cmcEven | Caster$ Opponent | Description$ Your opponents can't cast spells with even mana values. (Zero is even.)\nS:Mode$ CantBlockBy | ValidAttacker$ Creature | ValidBlocker$ Creature.OppCtrl+cmcEven | Description$ Your opponents can't block with creatures with even mana values.\nSVar:PlayMain1:TRUE\nOracle:Your opponents can't cast spells with even mana values. (Zero is even.)\\nYour opponents can't block with creatures with even mana values.\n"
     },
     {
       "name": "Artisan of Kozilek",
@@ -1553,7 +1600,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Artisan of Kozilek\nManaCost:9\nTypes:Creature Eldrazi\nPT:10/9\nK:Annihilator:2\nT:Mode$ SpellCast | ValidCard$ Card.Self | Execute$ TrigReturn | OptionalDecider$ You | TriggerDescription$ When you cast this spell, you may return target creature card from your graveyard to the battlefield.\nSVar:TrigReturn:DB$ ChangeZone | ValidTgts$ Creature.YouOwn | TgtPrompt$ Select target creature in your graveyard | Origin$ Graveyard | Destination$ Battlefield\nOracle:When you cast this spell, you may return target creature card from your graveyard to the battlefield.\\nAnnihilator 2 (Whenever this creature attacks, defending player sacrifices two permanents.)\n"
     },
     {
       "name": "Flayer of Loyalties",
@@ -1586,7 +1634,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Flayer of Loyalties\nManaCost:8 C C\nTypes:Creature Eldrazi\nPT:10/10\nK:Annihilator:2\nK:Trample\nT:Mode$ SpellCast | ValidCard$ Card.Self | Execute$ TrigGainControl | TriggerDescription$ When you cast this spell, gain control of target creature until end of turn. Untap that creature. Until end of turn, it has base power and toughness 10/10, and gains trample, annihilator 2, and haste.\nSVar:TrigGainControl:DB$ GainControl | ValidTgts$ Creature | LoseControl$ EOT | Untap$ True | AddKWs$ Haste & Trample & Annihilator:2 | SubAbility$ DBAnimate\nSVar:DBAnimate:DB$ Animate | Defined$ Targeted | Power$ 10 | Toughness$ 10\nOracle:When you cast this spell, gain control of target creature until end of turn. Untap that creature. Until end of turn, it has base power and toughness 10/10, and gains trample, annihilator 2, and haste.\\nAnnihilator 2 (Whenever this creature attacks, defending player sacrifices two permanents.)\\nTrample\n"
     },
     {
       "name": "Desecrate Reality",
@@ -1618,7 +1667,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Desecrate Reality\nManaCost:7\nTypes:Instant\nA:SP$ ChangeZone | Origin$ Battlefield | Destination$ Exile | ValidTgts$ Permanent.OppCtrl+cmcEven | TargetMin$ 0 | TargetMax$ OneEach | TargetsForEachPlayer$ True | TgtPrompt$ Select up to one target permanent with an even mana value each opponent controls | SubAbility$ DBReturn | SpellDescription$ For each opponent, exile up to one target permanent that player controls with an even mana value. (Zero is even.)\nSVar:DBReturn:DB$ ChangeZone | Origin$ Graveyard | Destination$ Battlefield | ChangeType$ Permanent.cmcOdd+YouOwn | Hidden$ True | Mandatory$ True | ChangeTypeDesc$ permanent card with an odd mana value | ChangeNum$ 1 | ConditionCheckSVar$ X | SpellDescription$ Adamant — If at least three colorless mana was spent to cast this spell, return a permanent card with an odd mana value from your graveyard to the battlefield.\nSVar:X:Count$Adamant.Colorless.1.0\nSVar:OneEach:PlayerCountOpponents$Amount\nDeckHas:Ability$Graveyard\nOracle:For each opponent, exile up to one target permanent that player controls with an even mana value. (Zero is even.)\\nAdamant — If at least three colorless mana was spent to cast this spell, return a permanent card with an odd mana value from your graveyard to the battlefield.\n"
     },
     {
       "name": "Rise of the Eldrazi",
@@ -1648,7 +1698,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Rise of the Eldrazi\nManaCost:9 C C C\nTypes:Sorcery\nR:Event$ Counter | ValidCard$ Card.Self | ValidSA$ Spell | Layer$ CantHappen | Description$ This spell can't be countered.\nA:SP$ Destroy | ValidTgts$ Permanent | SubAbility$ DBDraw | SpellDescription$ Destroy target permanent.\nSVar:DBDraw:DB$ Draw | NumCards$ 4 | ValidTgts$ Player | SubAbility$ DBExtraTurn | SpellDescription$ Target player draws four cards.\nSVar:DBExtraTurn:DB$ AddTurn | Defined$ You | NumTurns$ 1 | SubAbility$ DBChange | SpellDescription$ Take an extra turn after this one.\nSVar:DBChange:DB$ ChangeZone | Origin$ Stack | Destination$ Exile | SpellDescription$ Exile CARDNAME.\nOracle:This spell can't be countered.\\nDestroy target permanent. Target player draws four cards. Take an extra turn after this one.\\nExile Rise of the Eldrazi.\n"
     },
     {
       "name": "Darksteel Monolith",
@@ -1680,7 +1731,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Darksteel Monolith\nManaCost:8\nTypes:Artifact\nK:Indestructible\nS:Mode$ Continuous | MayPlay$ True | MayPlayAltManaCost$ 0 | MayPlayLimit$ 1 | MayPlayDontGrantZonePermissions$ True | Affected$ Card.nonLand+Colorless+YouOwn | AffectedZone$ Hand | Description$ Once each turn, you may pay {0} rather than pay the mana cost for a colorless spell that you cast from your hand.\nOracle:Indestructible\\nOnce each turn, you may pay {0} rather than pay the mana cost for a colorless spell that you cast from your hand.\n"
     },
     {
       "name": "Bane of Bala Ged",
@@ -1710,7 +1762,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Bane of Bala Ged\nManaCost:7\nTypes:Creature Eldrazi\nPT:7/5\nT:Mode$ Attacks | ValidCard$ Card.Self | Execute$ TrigExile | TriggerDescription$ Whenever CARDNAME attacks, defending player exiles two permanents they control.\nSVar:TrigExile:DB$ ChangeZone | Origin$ Battlefield | Destination$ Exile | DefinedPlayer$ TriggeredDefendingPlayer | Mandatory$ True | ChangeType$ Permanent | ChangeNum$ 2 | Chooser$ DefendingPlayer | Hidden$ True\nSVar:HasAttackEffect:TRUE\nOracle:Whenever Bane of Bala Ged attacks, defending player exiles two permanents they control.\n"
     },
     {
       "name": "Desolation Twin",
@@ -1740,7 +1793,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Desolation Twin\nManaCost:10\nTypes:Creature Eldrazi\nPT:10/10\nT:Mode$ SpellCast | ValidCard$ Card.Self | Execute$ TrigToken | TriggerDescription$ When you cast this spell, create a 10/10 colorless Eldrazi creature token.\nSVar:TrigToken:DB$ Token | TokenScript$ c_10_10_eldrazi | TokenOwner$ You\nOracle:When you cast this spell, create a 10/10 colorless Eldrazi creature token.\n"
     },
     {
       "name": "Sire of Seven Deaths",
@@ -1778,7 +1832,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Sire of Seven Deaths\nManaCost:7\nTypes:Creature Eldrazi\nPT:7/7\nK:First Strike\nK:Vigilance\nK:Menace\nK:Trample\nK:Reach\nK:Lifelink\nK:Ward:PayLife<7>\nOracle:First strike, vigilance\\nMenace, trample\\nReach, lifelink\\nWard—Pay 7 life.\n"
     },
     {
       "name": "All Is Dust",
@@ -1808,7 +1863,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:All Is Dust\nManaCost:7\nTypes:Kindred Sorcery Eldrazi\nA:SP$ SacrificeAll | ValidCards$ Permanent.nonColorless | SpellDescription$ Each player sacrifices all permanents they control that are one or more colors.\nOracle:Each player sacrifices all permanents they control that are one or more colors.\n"
     },
     {
       "name": "Eldrazi Confluence",
@@ -1840,7 +1896,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Eldrazi Confluence\nManaCost:2 C C\nTypes:Instant\nA:SP$ Charm | Choices$ DBSpatialContortion,DBEldraziDisplacer,DBEldraziScion | CharmNum$ 3 | CanRepeatModes$ True\nSVar:DBSpatialContortion:DB$ Pump | ValidTgts$ Creature | NumAtt$ +3 | NumDef$ -3 | IsCurse$ True | SpellDescription$ Target creature gets +3/-3 until end of turn.\nSVar:DBEldraziDisplacer:DB$ ChangeZone | TargetMin$ 1 | ValidTgts$ Permanent.nonLand | TgtPrompt$ Select target nonland permanent | RememberChanged$ True | Origin$ Battlefield | Destination$ Exile | SubAbility$ DBReturn | SpellDescription$ Exile target nonland permanent, then return it to the battlefield tapped under its owner's control.\nSVar:DBReturn:DB$ ChangeZone | Defined$ Remembered | Origin$ Exile | Tapped$ True | SubAbility$ DBCleanup | Destination$ Battlefield\nSVar:DBCleanup:DB$ Cleanup | ClearRemembered$ True\nSVar:DBEldraziScion:DB$ Token | TokenScript$ c_1_1_eldrazi_scion_sac | TokenOwner$ You | SpellDescription$ Create a 1/1 colorless Eldrazi Scion creature token with \"Sacrifice this creature: Add {C}.\"\nDeckHas:Ability$Token\nOracle:Choose three. You may choose the same mode more than once.\\n• Target creature gets +3/-3 until end of turn.\\n• Exile target nonland permanent, then return it to the battlefield tapped under its owner's control.\\n• Create a 1/1 colorless Eldrazi Scion creature token with \"Sacrifice this creature: Add {C}.\"\n"
     },
     {
       "name": "Calamity of the Titans",
@@ -1870,7 +1927,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Calamity of the Titans\nManaCost:4 C C\nTypes:Sorcery\nA:SP$ ChangeZoneAll | Cost$ 4 C C Reveal<1/Creature.Colorless/colorless creature> | ChangeType$ Creature.cmcLTX,Planeswalker.cmcLTX | Origin$ Battlefield | Destination$ Exile | SpellDescription$ Exile each creature and planeswalker with mana value less than the revealed card's mana value.\nSVar:X:Revealed$CardManaCost\nOracle:As an additional cost to cast this spell, reveal a colorless creature card from your hand.\\nExile each creature and planeswalker with mana value less than the revealed card's mana value.\n"
     },
     {
       "name": "Titan's Presence",
@@ -1900,7 +1958,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Titan's Presence\nManaCost:3\nTypes:Instant\nA:SP$ ChangeZone | Cost$ 3 Reveal<1/Creature.Colorless> | ValidTgts$ Creature | Origin$ Battlefield | Destination$ Exile | ConditionCheckSVar$ X | ConditionSVarCompare$ LEY | SpellDescription$ Exile target creature if its power is less than or equal to the revealed card's power.\nSVar:Y:Revealed$CardPower\nSVar:X:Targeted$CardPower\nAI:RemoveDeck:All\nDeckHints:Color$Colorless & Keyword$Devoid\nOracle:As an additional cost to cast this spell, reveal a colorless creature card from your hand.\\nExile target creature if its power is less than or equal to the revealed card's power.\n"
     },
     {
       "name": "Warping Wail",
@@ -1932,7 +1991,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Warping Wail\nManaCost:1 C\nTypes:Instant\nA:SP$ Charm | Choices$ DBExile,DBCounter,DBToken\nSVar:DBExile:DB$ ChangeZone | ValidTgts$ Creature.powerLE1,Creature.toughnessLE1 | TgtPrompt$ Choose target creature with power or toughness 1 or less | Origin$ Battlefield | Destination$ Exile | SpellDescription$ Exile target creature with power or toughness 1 or less.\nSVar:DBCounter:DB$ Counter | TargetType$ Spell | ValidTgts$ Card.Sorcery | TgtPrompt$ Counter target sorcery spell | SpellDescription$ Counter target sorcery spell.\nSVar:DBToken:DB$ Token | TokenScript$ c_1_1_eldrazi_scion_sac | TokenOwner$ You | SpellDescription$ Create a 1/1 colorless Eldrazi Scion creature token. It has \"Sacrifice this creature: Add {C}.\"\nDeckHas:Ability$Token\nDeckNeeds:Ability$Mana.Colorless\nOracle:({C} represents colorless mana.)\\nChoose one —\\n• Exile target creature with power or toughness 1 or less.\\n• Counter target sorcery spell.\\n• Create a 1/1 colorless Eldrazi Scion creature token. It has \"Sacrifice this creature: Add {C}.\"\n"
     },
     {
       "name": "Not of This World",
@@ -1962,7 +2022,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Not of This World\nManaCost:7\nTypes:Kindred Instant Eldrazi\nS:Mode$ ReduceCost | ValidCard$ Card.Self | Type$ Spell | Amount$ CostReduction | Relative$ True | EffectZone$ All | Description$ This spell costs {7} less to cast if it targets a spell or ability that targets a creature you control with power 7 or greater.\nA:SP$ Counter | TargetType$ Spell,Activated,Triggered | TgtPrompt$ Select target spell or ability that targets a permanent you control | ValidTgts$ Card,Emblem | TargetValidTargeting$ Permanent.YouCtrl+inRealZoneBattlefield | SpellDescription$ Counter target spell or ability that targets a permanent you control.\nSVar:CostReduction:Count$Compare CheckTgt GE1.7.0\nSVar:CheckTgt:TargetedByTarget$Valid Card.powerGE7+YouCtrl\nOracle:Counter target spell or ability that targets a permanent you control.\\nThis spell costs {7} less to cast if it targets a spell or ability that targets a creature you control with power 7 or greater.\n"
     },
     {
       "name": "Scour from Existence",
@@ -1992,7 +2053,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Scour from Existence\nManaCost:7\nTypes:Instant\nA:SP$ ChangeZone | ValidTgts$ Permanent | Origin$ Battlefield | Destination$ Exile | SpellDescription$ Exile target permanent.\nOracle:Exile target permanent.\n"
     },
     {
       "name": "Spatial Contortion",
@@ -2022,7 +2084,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Spatial Contortion\nManaCost:1 C\nTypes:Instant\nA:SP$ Pump | ValidTgts$ Creature | NumAtt$ +3 | NumDef$ -3 | IsCurse$ True | SpellDescription$ Target creature gets +3/-3 until end of turn.\nDeckNeeds:Ability$Mana.Colorless\nOracle:({C} represents colorless mana.)\\nTarget creature gets +3/-3 until end of turn.\n"
     },
     {
       "name": "Kozilek's Command",
@@ -2056,7 +2119,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Kozilek's Command\nManaCost:X C C\nTypes:Kindred Instant Eldrazi\nA:SP$ Charm | Choices$ DBToken,DBScry,DBExile,DBExileGraveyard | CharmNum$ 2 | Announce$ X\nSVar:DBToken:DB$ Token | ValidTgts$ Player | TokenAmount$ X | TokenScript$ c_0_1_eldrazi_spawn_sac | TokenOwner$ TargetedPlayer | StackDescription$ SpellDescription | SpellDescription$ Target player creates X 0/1 colorless Eldrazi Spawn creature tokens with \"Sacrifice this creature: Add {C}.\"\nSVar:DBScry:DB$ Scry | ScryNum$ X | ValidTgts$ Player | SubAbility$ DBDraw | SpellDescription$ Target player scries X, then draws a card.\nSVar:DBDraw:DB$ Draw | Defined$ ParentTarget\nSVar:DBExile:DB$ ChangeZone | ValidTgts$ Creature.cmcLEX | TgtPrompt$ Choose target creature with mana value X or less | Origin$ Battlefield | Destination$ Exile | SpellDescription$ Exile target creature with mana value X or less.\nSVar:DBExileGraveyard:DB$ ChangeZone | TargetMin$ 0 | TargetMax$ X | Origin$ Graveyard | Destination$ Exile | TgtPrompt$ Choose target card in a graveyard | ValidTgts$ Card | SpellDescription$ Exile up to X target cards from graveyards.\nSVar:X:Count$xPaid\nOracle:Choose two —\\n• Target player creates X 0/1 colorless Eldrazi Spawn creature tokens with \"Sacrifice this creature: Add {C}.\"\\n• Target player scries X, then draws a card.\\n• Exile target creature with mana value X or less.\\n• Exile up to X target cards from graveyards.\n"
     },
     {
       "name": "Ugin, the Spirit Dragon",
@@ -2086,7 +2150,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Ugin, the Spirit Dragon\nManaCost:8\nTypes:Legendary Planeswalker Ugin\nLoyalty:7\nA:AB$ DealDamage | Cost$ AddCounter<2/LOYALTY> | Planeswalker$ True | ValidTgts$ Any | NumDmg$ 3 | SpellDescription$ CARDNAME deals 3 damage to any target.\nA:AB$ ChangeZoneAll | Cost$ SubCounter<X/LOYALTY> | UseAllOriginZones$ True | Planeswalker$ True | ChangeType$ Permanent.nonColorless+cmcLEX | Origin$ Battlefield | Destination$ Exile | SpellDescription$ Exile each permanent with mana value X or less that's one or more colors.\nSVar:X:Count$xPaid\nA:AB$ GainLife | Cost$ SubCounter<10/LOYALTY> | Planeswalker$ True | Ultimate$ True | LifeAmount$ 7 | SubAbility$ DBDraw | SpellDescription$ You gain 7 life, draw seven cards, then put up to seven permanent cards from your hand onto the battlefield.\nSVar:DBDraw:DB$ Draw | NumCards$ 7 | SubAbility$ DBChangeZone\nSVar:DBChangeZone:DB$ ChangeZone | Origin$ Hand | Destination$ Battlefield | ChangeType$ Permanent | ChangeNum$ 7\nOracle:[+2]: Ugin, the Spirit Dragon deals 3 damage to any target.\\n[-X]: Exile each permanent with mana value X or less that's one or more colors.\\n[-10]: You gain 7 life, draw seven cards, then put up to seven permanent cards from your hand onto the battlefield.\n"
     },
     {
       "name": "Ugin, the Ineffable",
@@ -2116,7 +2181,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Ugin, the Ineffable\nManaCost:6\nTypes:Legendary Planeswalker Ugin\nLoyalty:4\nS:Mode$ ReduceCost | ValidCard$ Card.Colorless | Type$ Spell | Activator$ You | Amount$ 2 | Description$ Colorless spells you cast cost {2} less to cast.\nA:AB$ Dig | Cost$ AddCounter<1/LOYALTY> | Planeswalker$ True | DigNum$ 1 | ChangeNum$ 1 | DestinationZone$ Exile | RememberChanged$ True | ExileFaceDown$ True | SubAbility$ DBToken | StackDescription$ SpellDescription | SpellDescription$ Exile the top card of your library face down and look at it. Create a 2/2 colorless Spirit creature token. When that token leaves the battlefield, put the exiled card into your hand.\nSVar:DBToken:DB$ Token | TokenScript$ c_2_2_spirit | ImprintTokens$ True | SubAbility$ DBEffect\nSVar:DBEffect:DB$ Effect | Triggers$ TrigLeavesBattlefield | StaticAbilities$ MayLook | RememberObjects$ RememberedLKI | ForgetOnMoved$ Exile | ImprintCards$ Imprinted | Duration$ Permanent | SubAbility$ DBCleanup\nSVar:DBCleanup:DB$ Cleanup | ClearRemembered$ True | ClearImprinted$ True\nSVar:TrigLeavesBattlefield:Mode$ ChangesZone | Origin$ Battlefield | Destination$ Any | ValidCard$ Card.IsImprinted | Execute$ DBReturn | TriggerZones$ Command | TriggerDescription$ When that token leaves the battlefield, put the exiled card into your hand.\nSVar:DBReturn:DB$ ChangeZone | Defined$ RememberedLKI | Origin$ Exile | Destination$ Hand | SubAbility$ DBExile\nSVar:DBExile:DB$ ChangeZone | Defined$ Self | Origin$ Command | Destination$ Exile\nSVar:MayLook:Mode$ Continuous | MayLookAt$ You | Affected$ Card.IsRemembered | AffectedZone$ Exile | Description$ You may look at the exiled face-down card again any time you wish. If another player gains control of the Spirit token, that player can't look at the exiled card.\nA:AB$ Destroy | Cost$ SubCounter<3/LOYALTY> | ValidTgts$ Permanent.nonColorless | TgtPrompt$ Select target permanent that's one or more colors | Planeswalker$ True | SpellDescription$ Destroy target permanent that's one or more colors.\nDeckHas:Ability$Token\nDeckHints:Color$Colorless\nOracle:Colorless spells you cast cost {2} less to cast.\\n[+1]: Exile the top card of your library face down and look at it. Create a 2/2 colorless Spirit creature token. When that token leaves the battlefield, put the exiled card into your hand.\\n[-3]: Destroy target permanent that's one or more colors.\n"
     },
     {
       "name": "Ugin, Eye of the Storms",
@@ -2148,7 +2214,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Ugin, Eye of the Storms\nManaCost:7\nTypes:Legendary Planeswalker Ugin\nLoyalty:7\nT:Mode$ SpellCast | ValidCard$ Card.Self | Execute$ TrigChange | TriggerDescription$ When you cast this spell, exile up to one target permanent that's one or more colors.\nT:Mode$ SpellCast | ValidCard$ Card.Colorless | ValidActivatingPlayer$ You | TriggerZones$ Battlefield | Execute$ TrigChange | TriggerDescription$ Whenever you cast a colorless spell, exile up to one target permanent that's one or more colors.\nSVar:TrigChange:DB$ ChangeZone | ValidTgts$ Permanent.nonColorless | TargetMin$ 0 | TargetMax$ 1 | TgtPrompt$ Select up to one target permanent that's one or more colors | Origin$ Battlefield | Destination$ Exile\nA:AB$ GainLife | Cost$ AddCounter<2/LOYALTY> | LifeAmount$ 3 | Planeswalker$ True | SubAbility$ DBDraw | SpellDescription$ You gain 3 life and draw a card.\nSVar:DBDraw:DB$ Draw | Defined$ You | NumCards$ 1\nA:AB$ Mana | Cost$ AddCounter<0/LOYALTY> | Planeswalker$ True | Produced$ C | Amount$ 3 | SpellDescription$ Add {C}{C}{C}.\nA:AB$ ChangeZone | Cost$ SubCounter<11/LOYALTY> | Origin$ Library | Destination$ Exile | ChangeType$ Card.nonLand+Colorless | ChangeNum$ X | Planeswalker$ True | Ultimate$ True | RememberChanged$ True | SubAbility$ DBEffect | StackDescription$ SpellDescription | SpellDescription$ Search your library for any number of colorless nonland cards, exile them, then shuffle. Until end of turn, you may cast those cards without paying their mana costs.\nSVar:DBEffect:DB$ Effect | StaticAbilities$ STPlay | RememberObjects$ Remembered | ForgetOnMoved$ Exile | SubAbility$ DBCleanup\nSVar:STPlay:Mode$ Continuous | Affected$ Card.IsRemembered+nonLand | AffectedZone$ Exile | MayPlay$ True | MayPlayWithoutManaCost$ True | Description$ Until end of turn, you may cast those cards without paying their mana costs.\nSVar:DBCleanup:DB$ Cleanup | ClearRemembered$ True\nSVar:X:Count$ValidLibrary Card.YouOwn+nonLand+Colorless\nOracle:When you cast this spell, exile up to one target permanent that's one or more colors.\\nWhenever you cast a colorless spell, exile up to one target permanent that's one or more colors.\\n[+2]: You gain 3 life and draw a card.\\n[0]: Add {C}{C}{C}.\\n[-11]: Search your library for any number of colorless nonland cards, exile them, then shuffle. Until end of turn, you may cast those cards without paying their mana costs.\n"
     },
     {
       "name": "Conduit of Ruin",
@@ -2178,7 +2245,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Conduit of Ruin\nManaCost:6\nTypes:Creature Eldrazi\nPT:5/5\nT:Mode$ SpellCast | ValidCard$ Card.Self | Execute$ TrigSearch | OptionalDecider$ You | TriggerDescription$ When you cast CARDNAME, you may search your library for a colorless creature card with mana value 7 or greater, reveal it, then shuffle and put that card on top of it.\nSVar:TrigSearch:DB$ ChangeZone | Origin$ Library | Destination$ Library | LibraryPosition$ 0 | ChangeType$ Creature.Colorless+cmcGE7 | ChangeNum$ 1 | ShuffleNonMandatory$ True\nS:Mode$ ReduceCost | EffectZone$ Battlefield | ValidCard$ Card.Creature | Activator$ You | Type$ Spell | OnlyFirstSpell$ True | Amount$ 2 | Description$ The first creature spell you cast each turn costs {2} less to cast.\nAI:RemoveDeck:Random\nOracle:When you cast this spell, you may search your library for a colorless creature card with mana value 7 or greater, reveal it, then shuffle and put that card on top.\\nThe first creature spell you cast each turn costs {2} less to cast.\n"
     },
     {
       "name": "Endbringer",
@@ -2208,7 +2276,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Endbringer\nManaCost:5 C\nTypes:Creature Eldrazi\nPT:5/5\nS:Mode$ UntapOtherPlayer | ValidCard$ Card.Self | Description$ Untap CARDNAME during each other player's untap step.\nA:AB$ DealDamage | Cost$ T | ValidTgts$ Any | NumDmg$ 1 | SpellDescription$ CARDNAME deals 1 damage to any target.\nA:AB$ Pump | Cost$ C T | ValidTgts$ Creature | IsCurse$ True | KW$ HIDDEN CARDNAME can't attack or block. | SpellDescription$ Target creature can't attack or block this turn.\nA:AB$ Draw | Cost$ C C T | NumCards$ 1 | SpellDescription$ Draw a card.\nDeckNeeds:Ability$Mana.Colorless\nOracle:Untap Endbringer during each other player's untap step.\\n{T}: Endbringer deals 1 damage to any target.\\n{C}, {T}: Target creature can't attack or block this turn.\\n{C}{C}, {T}: Draw a card.\n"
     },
     {
       "name": "Urza's Incubator",
@@ -2238,7 +2307,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Urza's Incubator\nManaCost:3\nTypes:Artifact\nK:ETBReplacement:Other:ChooseCT\nSVar:ChooseCT:DB$ ChooseType | Defined$ You | Type$ Creature | AILogic$ MostProminentInComputerDeckNonToken | SpellDescription$ As CARDNAME enters, choose a creature type.\nS:Mode$ ReduceCost | ValidCard$ Creature.ChosenType | Type$ Spell | Amount$ 2 | Description$ Creature spells of the chosen type cost {2} less to cast.\nAI:RemoveDeck:Random\nOracle:As Urza's Incubator enters, choose a creature type.\\nCreature spells of the chosen type cost {2} less to cast.\n"
     },
     {
       "name": "Eldrazi Conscription",
@@ -2270,7 +2340,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Eldrazi Conscription\nManaCost:8\nTypes:Kindred Enchantment Eldrazi Aura\nK:Enchant:Creature\nSVar:AttachAILogic:Pump\nS:Mode$ Continuous | AffectedDefined$ Enchanted | Affected$ Creature | AddPower$ 10 | AddToughness$ 10 | AddKeyword$ Trample & Annihilator:2 | Description$ Enchanted creature gets +10/+10 and has trample and annihilator 2. (Whenever it attacks, defending player sacrifices two permanents.)\nOracle:Enchant creature\\nEnchanted creature gets +10/+10 and has trample and annihilator 2. (Whenever it attacks, defending player sacrifices two permanents.)\n"
     },
     {
       "name": "Lightning Greaves",
@@ -2302,7 +2373,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Lightning Greaves\nManaCost:2\nTypes:Artifact Equipment\nK:Equip:0\nS:Mode$ Continuous | AffectedDefined$ Equipped | Affected$ Creature | AddKeyword$ Haste & Shroud | Description$ Equipped creature has haste and shroud.\nOracle:Equipped creature has haste and shroud. (It can't be the target of spells or abilities.)\\nEquip {0}\n"
     },
     {
       "name": "Mystic Forge",
@@ -2332,7 +2404,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Mystic Forge\nManaCost:4\nTypes:Artifact\nS:Mode$ Continuous | Affected$ Card.TopLibrary+YouCtrl | AffectedZone$ Library | MayLookAt$ You | Description$ You may look at the top card of your library any time.\nS:Mode$ Continuous | Affected$ Artifact.TopLibrary+YouCtrl+nonLand,Card.TopLibrary+Colorless+YouCtrl+nonLand | AffectedZone$ Library | MayPlay$ True | Description$ You may cast artifact spells and colorless spells from the top of your library.\nAI:RemoveDeck:Random\nA:AB$ Dig | Cost$ T PayLife<1> | Defined$ You | DigNum$ 1 | ChangeNum$ All | DestinationZone$ Exile | SpellDescription$ Exile the top card of your library.\nOracle:You may look at the top card of your library any time.\\nYou may cast artifact spells and colorless spells from the top of your library.\\n{T}, Pay 1 life: Exile the top card of your library.\n"
     },
     {
       "name": "Echoes of Eternity",
@@ -2362,7 +2435,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Echoes of Eternity\nManaCost:3 C C C\nTypes:Kindred Enchantment Eldrazi\nS:Mode$ Panharmonicon | ValidCard$ Card.YouCtrl+Colorless+Other | ValidZone$ Battlefield,Stack | Description$ If a triggered ability of a colorless spell you control or another colorless permanent you control triggers, that ability triggers an additional time.\nT:Mode$ SpellCast | ValidCard$ Card.Colorless | ValidActivatingPlayer$ You | Execute$ TrigCopySpell | TriggerZones$ Battlefield | TriggerDescription$ Whenever you cast a colorless spell, copy it and you may choose new targets for the copy.\nSVar:TrigCopySpell:DB$ CopySpellAbility | Defined$ TriggeredSpellAbility | MayChooseTarget$ True\nDeckHints:Type$Eldrazi|Construct\nOracle:If a triggered ability of a colorless spell you control or another colorless permanent you control triggers, that ability triggers an additional time.\\nWhenever you cast a colorless spell, copy it and you may choose new targets for the copy.\n"
     },
     {
       "name": "Expedition Map",
@@ -2392,7 +2466,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:20Z"
-      }
+      },
+      "forge_script": "Name:Expedition Map\nManaCost:1\nTypes:Artifact\nA:AB$ ChangeZone | Cost$ 2 T Sac<1/CARDNAME> | Origin$ Library | Destination$ Hand | ChangeType$ Land | ChangeNum$ 1 | SpellDescription$ Search your library for a land card, reveal it, put it into your hand, then shuffle.\nOracle:{2}, {T}, Sacrifice Expedition Map: Search your library for a land card, reveal it, put it into your hand, then shuffle.\n"
     },
     {
       "name": "Thought-Knot Seer",
@@ -2422,7 +2497,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:21Z"
-      }
+      },
+      "forge_script": "Name:Thought-Knot Seer\nManaCost:3 C\nTypes:Creature Eldrazi\nPT:4/4\nT:Mode$ ChangesZone | Origin$ Any | Destination$ Battlefield | ValidCard$ Card.Self | Execute$ TrigReveal | TriggerDescription$ When CARDNAME enters, target opponent reveals their hand. You choose a nonland card from it and exile that card.\nSVar:TrigReveal:DB$ RevealHand | ValidTgts$ Opponent | SubAbility$ DBExile\nSVar:DBExile:DB$ ChangeZone | Origin$ Hand | Destination$ Exile | DefinedPlayer$ Targeted | Chooser$ You | ChangeType$ Card.nonLand\nT:Mode$ ChangesZone | Origin$ Battlefield | Destination$ Any | ValidCard$ Card.Self | Execute$ TrigDraw | TriggerDescription$ When CARDNAME leaves the battlefield, target opponent draws a card.\nSVar:TrigDraw:DB$ Draw | ValidTgts$ Opponent\nDeckNeeds:Ability$Mana.Colorless\nOracle:({C} represents colorless mana.)\\nWhen Thought-Knot Seer enters, target opponent reveals their hand. You choose a nonland card from it and exile that card.\\nWhen Thought-Knot Seer leaves the battlefield, target opponent draws a card.\n"
     },
     {
       "name": "Oblivion Sower",
@@ -2452,7 +2528,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:21Z"
-      }
+      },
+      "forge_script": "Name:Oblivion Sower\nManaCost:6\nTypes:Creature Eldrazi\nPT:5/8\nT:Mode$ SpellCast | ValidCard$ Card.Self | Execute$ TrigExile | TriggerDescription$ When you cast this spell, target opponent exiles the top four cards of their library, then you may put any number of land cards that player owns from exile onto the battlefield under your control.\nSVar:TrigExile:DB$ Dig | DigNum$ 4 | ChangeNum$ All | DestinationZone$ Exile | ValidTgts$ Opponent | SubAbility$ DBSower | TgtPrompt$ Choose target opponent\nSVar:DBSower:DB$ ChangeZone | Origin$ Exile | Destination$ Battlefield | Hidden$ True | ChangeType$ Land.TargetedPlayerOwn | GainControl$ True | ChangeNum$ X\nSVar:X:Count$ValidExile Land.TargetedPlayerOwn\nOracle:When you cast this spell, target opponent exiles the top four cards of their library, then you may put any number of land cards that player owns from exile onto the battlefield under your control.\n"
     },
     {
       "name": "Abstruse Archaic",
@@ -2484,7 +2561,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:21Z"
-      }
+      },
+      "forge_script": "Name:Abstruse Archaic\nManaCost:4\nTypes:Creature Avatar\nPT:3/4\nK:Vigilance\nA:AB$ CopySpellAbility | Cost$ 1 T | TgtPrompt$ Select target activated or triggered ability you control from a colorless source | TargetType$ Activated.YouCtrl,Triggered.YouCtrl | ValidTgts$ Card.Colorless,Emblem | AILogic$ AlwaysCopyActivatedAbilities | MayChooseTarget$ True | SpellDescription$ Copy target activated or triggered ability you control from a colorless source. You may choose new targets for the copy. (Mana abilities can't be targeted.)\nDeckHints:Type$Artifact|Eldrazi\nOracle:Vigilance\\n{1}, {T}: Copy target activated or triggered ability you control from a colorless source. You may choose new targets for the copy. (Mana abilities can't be targeted.)\n"
     },
     {
       "name": "Skittering Cicada",
@@ -2516,7 +2594,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:21Z"
-      }
+      },
+      "forge_script": "Name:Skittering Cicada\nManaCost:3\nTypes:Creature Insect\nPT:2/2\nK:Flash\nS:Mode$ CastWithFlash | ValidCard$ Card.Colorless | ValidSA$ Spell | EffectZone$ Battlefield | Caster$ You | Description$ You may cast colorless spells as though they had flash.\nT:Mode$ SpellCast | ValidCard$ Card.Colorless | ValidActivatingPlayer$ You | TriggerZones$ Battlefield | Execute$ TrigPump | TriggerDescription$ Whenever you cast a colorless spell, until end of turn, CARDNAME gains trample and gets +X/+X, where X is that spell's mana value.\nSVar:TrigPump:DB$ Pump | Defined$ Self | NumAtt$ +X | NumDef$ +X | KW$ Trample\nSVar:X:TriggeredSpellAbility$CardManaCostLKI\nOracle:Flash\\nYou may cast colorless spells as though they had flash.\\nWhenever you cast a colorless spell, until end of turn, Skittering Cicada gains trample and gets +X/+X, where X is that spell's mana value.\n"
     },
     {
       "name": "Solemn Simulacrum",
@@ -2546,7 +2625,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:21Z"
-      }
+      },
+      "forge_script": "Name:Solemn Simulacrum\nManaCost:4\nTypes:Artifact Creature Golem\nPT:2/2\nT:Mode$ ChangesZone | Origin$ Any | Destination$ Battlefield | ValidCard$ Card.Self | Execute$ TrigChange | OptionalDecider$ You | TriggerDescription$ When CARDNAME enters, you may search your library for a basic land card, put that card onto the battlefield tapped, then shuffle.\nSVar:TrigChange:DB$ ChangeZone | Origin$ Library | Destination$ Battlefield | Tapped$ True | ChangeType$ Land.Basic | ChangeTypeDesc$ basic land | ShuffleNonMandatory$ True\nT:Mode$ ChangesZone | Origin$ Battlefield | Destination$ Graveyard | ValidCard$ Card.Self | Execute$ TrigDraw | OptionalDecider$ TriggeredCardController | TriggerDescription$ When CARDNAME dies, you may draw a card.\nSVar:TrigDraw:DB$ Draw | Defined$ TriggeredCardController | NumCards$ 1\nSVar:SacMe:1\nOracle:When Solemn Simulacrum enters, you may search your library for a basic land card, put that card onto the battlefield tapped, then shuffle.\\nWhen Solemn Simulacrum dies, you may draw a card.\n"
     },
     {
       "name": "It That Heralds the End",
@@ -2576,7 +2656,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:21Z"
-      }
+      },
+      "forge_script": "Name:It That Heralds the End\nManaCost:1 C\nTypes:Creature Eldrazi Drone\nPT:2/2\nS:Mode$ ReduceCost | ValidCard$ Card.Colorless+cmcGE7 | Type$ Spell | Activator$ You | Amount$ 1 | Description$ Colorless spells you cast with mana value 7 or greater cost {1} less to cast.\nS:Mode$ Continuous | Affected$ Creature.Colorless+Other+YouCtrl | AddPower$ 1 | AddToughness$ 1 | Description$ Other colorless creatures you control get +1/+1.\nSVar:PlayMain1:TRUE\nDeckHints:Color$Colorless\nOracle:Colorless spells you cast with mana value 7 or greater cost {1} less to cast.\\nOther colorless creatures you control get +1/+1.\n"
     },
     {
       "name": "Roaming Throne",
@@ -2608,7 +2689,8 @@
         "layout": "normal",
         "faces": [],
         "fetched_at": "2026-09-10T16:52:21Z"
-      }
+      },
+      "forge_script": "Name:Roaming Throne\nManaCost:4\nTypes:Artifact Creature Golem\nPT:4/4\nK:Ward:2\nK:ETBReplacement:Other:ChooseCT\nSVar:ChooseCT:DB$ ChooseType | Type$ Creature | AILogic$ MostProminentInComputerDeck | SpellDescription$ As CARDNAME enters, choose a creature type.\nS:Mode$ Continuous | AffectedDefined$ Self | AddType$ ChosenType | Description$ CARDNAME is the chosen type in addition to its other types.\nS:Mode$ Panharmonicon | ValidCard$ Creature.Other+YouCtrl+ChosenType | Description$ If a triggered ability of another creature you control of the chosen type triggers, it triggers an additional time.\nOracle:Ward {2}\\nAs Roaming Throne enters, choose a creature type.\\nRoaming Throne is the chosen type in addition to its other types.\\nIf a triggered ability of another creature you control of the chosen type triggers, it triggers an additional time.\n"
     },
     {
       "name": "Wandering Archaic // Explore the Vastlands",
@@ -2651,7 +2733,8 @@
           }
         ],
         "fetched_at": "2026-09-10T16:52:21Z"
-      }
+      },
+      "forge_script": "Name:Wandering Archaic\nManaCost:5\nTypes:Creature Avatar\nPT:4/4\nT:Mode$ SpellCast | ValidCard$ Instant,Sorcery | ValidActivatingPlayer$ Opponent | TriggerZones$ Battlefield | Execute$ TrigCopySpell | TriggerDescription$ Whenever an opponent casts an instant or sorcery spell, they may pay {2}. If they don't, you may copy that spell. You may choose new targets for the copy.\nSVar:TrigCopySpell:DB$ CopySpellAbility | UnlessCost$ 2 | UnlessPayer$ TriggeredActivator | Controller$ You | Defined$ TriggeredSpellAbility | AILogic$ Always | Optional$ True | MayChooseTarget$ True\nAlternateMode:Modal\nOracle:Whenever an opponent casts an instant or sorcery spell, they may pay {2}. If they don't, you may copy that spell. You may choose new targets for the copy.\n\nALTERNATE\n\nName:Explore the Vastlands\nManaCost:3\nTypes:Sorcery\nA:SP$ DigMultiple | Defined$ Player | DigNum$ 5 | Optional$ True | ChangeValid$ Land,Spell.!Aura | RestRandomOrder$ True | SubAbility$ DBGainLife | SpellDescription$ Each player looks at the top five cards of their library and may reveal a land card and/or an instant or sorcery card from among them. Each player puts the cards they revealed this way into their hand and the rest on the bottom of their library in a random order. Each player gains 3 life.\nSVar:DBGainLife:DB$ GainLife | Defined$ Player | LifeAmount$ 3 | StackDescription$ None\nDeckHas:Ability$LifeGain\nDeckHints:Type$Instant|Sorcery\nOracle:Each player looks at the top five cards of their library and may reveal a land card and/or an instant or sorcery card from among them. Each player puts the cards they revealed this way into their hand and the rest on the bottom of their library in a random order. Each player gains 3 life.\n"
     }
   ],
   "unresolved": [],
@@ -5212,6 +5295,9 @@
     "spellbook": "2026-09-10T16:57:04Z",
     "spellbook_api_version": "6.4.0",
     "tags_oldest": "2026-09-10T16:52:51Z",
-    "tags_newest": "2026-09-10T16:57:01Z"
+    "tags_newest": "2026-09-10T16:57:01Z",
+    "forge_commit": "33aecdd6adac36a42af9eab75d2e654626a0e7db",
+    "forge_status": "ok",
+    "forge_missing": ""
   }
 }

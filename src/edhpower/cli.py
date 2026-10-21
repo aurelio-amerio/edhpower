@@ -13,8 +13,10 @@ from typing import IO
 
 from edhpower import __version__
 from edhpower.analysis import analyse
+from edhpower.config import load_config
 from edhpower.decklist import load_decklist
 from edhpower.facts import build_facts, load_facts, save_facts
+from edhpower.forge import ForgeClient, ForgeError
 from edhpower.http import HttpClient, HttpError, SendFn
 from edhpower.report import render_text
 from edhpower.scryfall import ScryfallClient
@@ -38,6 +40,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--from-facts", type=Path, metavar="PATH", help="skip parsing and network; analyse a saved DeckFacts file")
     p.add_argument("--allow-unresolved", action="store_true", help="continue when some cards cannot be resolved")
     p.add_argument("--no-combos", action="store_true", help="skip Commander Spellbook")
+    p.add_argument("--no-forge", action="store_true", help="skip Card-Forge scripts (the simulator then models no card effects from them)")
     p.add_argument("--no-tags", action="store_true", help="skip the oracle-tag cache (component score and tutor criterion become unevaluated)")
     p.add_argument("--refresh-tags", action="store_true", help="refetch every oracle-tag set (about 150 requests at 1/s)")
     p.add_argument("--iterations", type=int, default=None, metavar="N", help="goldfish simulation games (default: [sim].iterations in scoring.toml, 20000)")
@@ -122,6 +125,19 @@ def main(
                 out.write(f"  - {n}\n")
             return EXIT_UNRESOLVED
 
+        forge_scripts: dict[str, str | None] | None = None
+        forge_reason: str | None = None
+        forge_cfg = load_config().forge
+        if args.no_forge:
+            forge_reason = "skipped (--no-forge)"
+        else:
+            forge_http = http.with_min_interval(forge_cfg.min_interval)
+            forge = ForgeClient(forge_http, cache_dir / "forge" / forge_cfg.commit, forge_cfg.commit, progress=lambda m: err.write(m + "\n"))
+            try:
+                forge_scripts = forge.fetch_many([resolution.cards[e.name].name for e in parsed.entries if e.name in resolution.cards])
+            except (ForgeError, OSError) as exc:
+                forge_scripts, forge_reason = None, f"Forge unreachable: {exc}"
+
         try:
             tag_cache, tags_reason = _tags(args, http, cache_dir, err)
         except TagConfigError as exc:
@@ -140,7 +156,8 @@ def main(
             except (SpellbookError, OSError) as exc:
                 reason = f"Spellbook unreachable: {exc}"
 
-        facts = build_facts(parsed, resolution, combos, reason, str(path), tag_cache=tag_cache, tags_unavailable_reason=tags_reason)
+        facts = build_facts(parsed, resolution, combos, reason, str(path), tag_cache=tag_cache, tags_unavailable_reason=tags_reason,
+                             forge_scripts=forge_scripts, forge_commit=forge_cfg.commit, forge_unavailable_reason=forge_reason)
         if args.facts_json:
             Path(args.facts_json).parent.mkdir(parents=True, exist_ok=True)
             save_facts(facts, args.facts_json)

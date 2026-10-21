@@ -288,3 +288,27 @@ def test_iterations_must_be_positive(tmp_path: Path, fake_send):
     out = io.StringIO()
     assert main(["--from-facts", "x.json", "--iterations", "0"], send=fake_send, stdout=out, sleep=lambda s: None) == 1
     assert "--iterations must be at least 1" in out.getvalue()
+
+
+def test_no_forge_flag_sets_status(tmp_path: Path, fake_send):
+    _wire(fake_send, ["Ulalek, Fused Atrocity", "Ancient Tomb", "Basalt Monolith", "Forsaken Monument"])
+    deck = tmp_path / "d.txt"
+    deck.write_text("1 Ulalek, Fused Atrocity\n\n1 Ancient Tomb\n")
+    facts_path = tmp_path / "facts.json"
+    code = main([str(deck), "--no-forge", "--facts-json", str(facts_path), "--cache-dir", str(tmp_path)], send=fake_send,
+                stdout=io.StringIO(), stderr=io.StringIO(), sleep=lambda s: None)
+    assert code == 0
+    assert json.loads(facts_path.read_text())["fetched"]["forge_status"] == "skipped (--no-forge)"
+    assert not any("raw.githubusercontent.com" in c["url"] for c in fake_send.calls)
+
+
+def test_forge_unreachable_degrades_with_note(tmp_path: Path, fake_send):
+    _wire(fake_send, ["Ulalek, Fused Atrocity", "Ancient Tomb", "Basalt Monolith", "Forsaken Monument"])
+    fake_send.route("GET", "https://raw.githubusercontent.com/", lambda p, b: (500, {}, "down"))
+    deck = tmp_path / "d.txt"
+    deck.write_text("1 Ulalek, Fused Atrocity\n\n1 Ancient Tomb\n")
+    facts_path = tmp_path / "facts.json"
+    code = main([str(deck), "--facts-json", str(facts_path), "--cache-dir", str(tmp_path)], send=fake_send,
+                stdout=io.StringIO(), stderr=io.StringIO(), sleep=lambda s: None)
+    assert code == 0
+    assert json.loads(facts_path.read_text())["fetched"]["forge_status"].startswith("Forge unreachable")

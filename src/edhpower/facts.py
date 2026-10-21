@@ -15,7 +15,7 @@ from edhpower.spellbook import ComboData
 from edhpower.stats import CurveStats, PriceTotals, color_identity_violations, game_changers, mana_curve, pip_counts, price_totals
 from edhpower.tags import TAG_TABLE, TagCache
 
-SCHEMA_VERSION = 2
+SCHEMA_VERSION = 3
 
 
 @dataclass
@@ -25,6 +25,7 @@ class FactEntry:
     is_commander: bool
     as_written: str
     card: CardData
+    forge_script: str | None = None
 
 
 @dataclass
@@ -79,7 +80,7 @@ class DeckFacts:
             tool_version=d["tool_version"],
             source_path=d["source_path"],
             commanders=list(d["commanders"]),
-            entries=[FactEntry(e["name"], e["count"], e["is_commander"], e["as_written"], CardData.from_dict(e["card"])) for e in d["entries"]],
+            entries=[FactEntry(e["name"], e["count"], e["is_commander"], e["as_written"], CardData.from_dict(e["card"]), e.get("forge_script")) for e in d["entries"]],
             unresolved=list(d["unresolved"]),
             parse_warnings=list(d["parse_warnings"]),
             parse_errors=list(d["parse_errors"]),
@@ -109,13 +110,16 @@ def build_facts(
     source_path: str,
     tag_cache: TagCache | None = None,
     tags_unavailable_reason: str | None = None,
+    forge_scripts: dict[str, str | None] | None = None,
+    forge_commit: str | None = None,
+    forge_unavailable_reason: str | None = None,
 ) -> DeckFacts:
     entries: list[FactEntry] = []
     for e in parsed.entries:
         card = resolution.cards.get(e.name)
         if card is None:
             continue
-        entries.append(FactEntry(card.name, e.count, e.is_commander, e.raw, card))
+        entries.append(FactEntry(card.name, e.count, e.is_commander, e.raw, card, (forge_scripts or {}).get(card.name)))
 
     commanders = [e.name for e in entries if e.is_commander]
     deck = [(e.card, e.count) for e in entries]
@@ -157,6 +161,11 @@ def build_facts(
         "tags_oldest": tags_oldest,
         "tags_newest": tags_newest,
     }
+    forge_ok = forge_scripts is not None and forge_unavailable_reason is None
+    fetched["forge_commit"] = forge_commit if forge_ok else None
+    fetched["forge_status"] = "ok" if forge_ok else (forge_unavailable_reason or "forge not requested")
+    if forge_ok:
+        fetched["forge_missing"] = ",".join(e.name for e in entries if e.forge_script is None)
     if tags_ok:
         fetched["tag_table"] = ",".join(sorted(TAG_TABLE))
 

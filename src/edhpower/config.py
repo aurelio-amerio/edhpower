@@ -89,6 +89,12 @@ class SimConfig:
 
 
 @dataclass(frozen=True)
+class ForgeConfig:
+    commit: str
+    min_interval: float
+
+
+@dataclass(frozen=True)
 class NarrativeConfig:
     lowest_components: int
     scorer_gap: float
@@ -103,6 +109,7 @@ class ScoringConfig:
     tipping: TippingConfig
     sim: SimConfig
     narrative: NarrativeConfig
+    forge: ForgeConfig
 
     def stamp(self) -> dict[str, Any]:
         return {
@@ -232,6 +239,13 @@ def _narrative_from(raw: dict[str, Any]) -> NarrativeConfig:
     )
 
 
+def _forge_from(raw: dict[str, Any]) -> ForgeConfig:
+    commit = str(raw["commit"])
+    if not re.fullmatch(r"[0-9a-f]{40}", commit):
+        raise ValueError(f"[forge] commit must be a 40-character hex sha, got '{commit}'")
+    return ForgeConfig(commit=commit, min_interval=float(raw["min_interval"]))
+
+
 def load_config(curve_profile: str | None = None, components_profile: str | None = None) -> ScoringConfig:
     with resources.files("edhpower.data").joinpath("scoring.toml").open("rb") as fh:
         raw = tomllib.load(fh)
@@ -248,4 +262,5 @@ def load_config(curve_profile: str | None = None, components_profile: str | None
         tipping=_tipping_from(raw["tipping"]),
         sim=_sim_from(raw["sim"]),
         narrative=_narrative_from(raw["narrative"]),
+        forge=_forge_from(raw["forge"]),
     )

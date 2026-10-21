@@ -1,6 +1,8 @@
 import json
 from pathlib import Path
 
+import pytest
+
 from edhpower.decklist import parse_decklist
 from edhpower.facts import DeckFacts, build_facts, load_facts, save_facts
 from edhpower.scryfall import CardData, Resolution
@@ -78,7 +80,7 @@ def test_json_round_trip(tmp_path: Path):
     save_facts(facts, p)
     loaded = load_facts(p)
     assert loaded == facts
-    assert json.loads(p.read_text())["schema_version"] == 2
+    assert json.loads(p.read_text())["schema_version"] == 3
 
 
 def test_build_facts_with_tags_partitions_and_flags_untagged():
@@ -114,7 +116,7 @@ def test_load_facts_rejects_other_schema_versions(tmp_path: Path):
     p = tmp_path / "f.json"
     save_facts(facts, p)
     d = json.loads(p.read_text())
-    assert d["schema_version"] == 2
+    assert d["schema_version"] == 3
     d["schema_version"] = 1
     p.write_text(json.dumps(d))
     import pytest
@@ -135,3 +137,27 @@ def test_fetched_records_the_tag_table_when_tags_are_ok():
     assert "mana-sink" in with_tags.fetched["tag_table"].split(",")
     without = build_facts(parse_decklist("1 Sol Ring\n"), res, None, "offline", "t.txt")
     assert "tag_table" not in without.fetched
+
+
+def test_schema_version_is_3_and_entries_carry_scripts():
+    from edhpower.facts import SCHEMA_VERSION
+    assert SCHEMA_VERSION == 3
+    parsed = parse_decklist("1 Sol Ring\n1 Mana Vault\n")
+    res = _resolution(make_card("Sol Ring"), make_card("Mana Vault"))
+    facts = build_facts(parsed, res, None, None, "d.txt", forge_scripts={"Sol Ring": "Name:Sol Ring\n", "Mana Vault": None}, forge_commit="c" * 40)
+    by = {e.name: e for e in facts.entries}
+    assert by["Sol Ring"].forge_script == "Name:Sol Ring\n" and by["Mana Vault"].forge_script is None
+    assert facts.fetched["forge_commit"] == "c" * 40 and facts.fetched["forge_status"] == "ok"
+    assert facts.fetched["forge_missing"] == "Mana Vault"
+    again = DeckFacts.from_dict(facts.to_dict())
+    assert [e.forge_script for e in again.entries] == ["Name:Sol Ring\n", None]
+    off = build_facts(parsed, res, None, None, "d.txt", forge_unavailable_reason="skipped (--no-forge)")
+    assert off.fetched["forge_status"] == "skipped (--no-forge)" and off.fetched["forge_commit"] is None
+    assert all(e.forge_script is None for e in off.entries)
+
+
+def test_load_facts_rejects_schema_2(tmp_path: Path):
+    p = tmp_path / "old.json"
+    p.write_text(json.dumps({"schema_version": 2}))
+    with pytest.raises(ValueError, match="schema 2"):
+        load_facts(p)
