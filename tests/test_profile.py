@@ -22,6 +22,7 @@ def test_special_table_loads_and_is_small():
     eye = table["Eye of Ugin"]
     assert eye.mana == 0 and eye.params["reduces"] == 2 and eye.params["tutor_cost"] == 7
     assert table["Mana Vault"].params["untap_cost"] == 4
+    assert table["Victimize"].effects[0].do == "reanimate" and table["Victimize"].effects[0].n == 2
     assert all(b.kind in {None, "land", "rock", "doubler", "untap"} for b in table.values())
 
 

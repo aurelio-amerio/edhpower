@@ -108,3 +108,7 @@ scope = "one_artifact"
 [cards."Cultivator Colossus"]
 effects = [{ on = "etb", do = "chain_lands_from_hand" }]
 note = "puts every land in hand onto the battlefield tapped, drawing (or dredging) after each; the script's Repeat loop is outside the reader's vocabulary"
+
+[cards."Victimize"]
+effects = [{ on = "cast", do = "reanimate", n = 2, type = "creature", cost = "Sac<1/Creature>" }]
+note = "sacrifice a creature, return two creature cards tapped; the script's 'if you do' condition is outside the reader's vocabulary"

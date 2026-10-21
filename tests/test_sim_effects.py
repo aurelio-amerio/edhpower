@@ -505,6 +505,111 @@ DeckHas:Ability$Sacrifice
 Oracle:First strike, deathtouch\nYou may play an additional land on each of your turns.\nCreatures and nonbasic lands your opponents control enter tapped.\nWhenever Thalia and The Gitrog Monster attacks, sacrifice a creature or land, then draw a card.
 """
 
+DREAD_RETURN = r"""Name:Dread Return
+ManaCost:2 B B
+Types:Sorcery
+K:Flashback:Sac<3/Creature>
+A:SP$ ChangeZone | Origin$ Graveyard | Destination$ Battlefield | TgtPrompt$ Choose target creature card in your graveyard | ValidTgts$ Creature.YouCtrl | SpellDescription$ Return target creature card from your graveyard to the battlefield.
+Oracle:Return target creature card from your graveyard to the battlefield.\nFlashback—Sacrifice three creatures. (You may cast this card from your graveyard for its flashback cost. Then exile it.)
+"""
+
+SUN_TITAN = r"""Name:Sun Titan
+ManaCost:4 W W
+Types:Creature Giant
+PT:6/6
+K:Vigilance
+T:Mode$ ChangesZone | Origin$ Any | Destination$ Battlefield | ValidCard$ Card.Self | Execute$ TrigChange | OptionalDecider$ You | TriggerDescription$ Whenever CARDNAME enters or attacks, you may return target permanent card with mana value 3 or less from your graveyard to the battlefield.
+T:Mode$ Attacks | ValidCard$ Card.Self | Execute$ TrigChange | TriggerZones$ Battlefield | OptionalDecider$ You | Secondary$ True | TriggerDescription$ Whenever CARDNAME enters or attacks, you may return target permanent card with mana value 3 or less from your graveyard to the battlefield.
+SVar:TrigChange:DB$ ChangeZone | Origin$ Graveyard | Destination$ Battlefield | ValidTgts$ Permanent.YouCtrl+cmcLE3
+SVar:HasAttackEffect:TRUE
+Oracle:Vigilance\nWhenever Sun Titan enters or attacks, you may return target permanent card with mana value 3 or less from your graveyard to the battlefield.
+"""
+
+SEVINNES_RECLAMATION = r"""Name:Sevinne's Reclamation
+ManaCost:2 W
+Types:Sorcery
+A:SP$ ChangeZone | Origin$ Graveyard | Destination$ Battlefield | TgtPrompt$ Choose target permanent card with mana value 3 or less from your graveyard | ValidTgts$ Permanent.cmcLE3+YouCtrl | SubAbility$ DBCopy | SpellDescription$ Return target permanent card with mana value 3 or less from your graveyard to the battlefield. If this spell was cast from a graveyard, you may copy this spell and may choose a new target for the copy.
+SVar:DBCopy:DB$ CopySpellAbility | Defined$ Parent | Optional$ True | MayChooseTarget$ True | ConditionDefined$ Self | ConditionPresent$ Card.wasCastFromGraveyard
+AI:RemoveDeck:Random
+K:Flashback:4 W
+Oracle:Return target permanent card with mana value 3 or less from your graveyard to the battlefield. If this spell was cast from a graveyard, you may copy this spell and may choose a new target for the copy.\nFlashback {4}{W} (You may cast this card from your graveyard for its flashback cost. Then exile it.)
+"""
+
+WORLD_SHAPER = r"""Name:World Shaper
+ManaCost:3 G
+Types:Creature Merfolk Shaman
+PT:3/3
+T:Mode$ Attacks | ValidCard$ Card.Self | Execute$ TrigMill | TriggerDescription$ Whenever CARDNAME attacks, you may mill three cards.
+SVar:TrigMill:DB$ Mill | NumCards$ 3 | Defined$ You | Optional$ True
+T:Mode$ ChangesZone | Origin$ Battlefield | Destination$ Graveyard | ValidCard$ Card.Self | Execute$ TrigChangeZoneAll | TriggerDescription$ When CARDNAME dies, put all land cards from your graveyard onto the battlefield tapped.
+SVar:TrigChangeZoneAll:DB$ ChangeZoneAll | ChangeType$ Land.YouCtrl | Origin$ Graveyard | Destination$ Battlefield | Tapped$ True
+DeckHints:Ability$Graveyard
+Oracle:Whenever World Shaper attacks, you may mill three cards.\nWhen World Shaper dies, return all land cards from your graveyard to the battlefield tapped.
+"""
+
+HEDGE_SHREDDER = r"""Name:Hedge Shredder
+ManaCost:2 G G
+Types:Artifact Vehicle
+PT:5/5
+T:Mode$ Attacks | ValidCard$ Card.Self | Execute$ TrigMill | TriggerDescription$ Whenever CARDNAME attacks, you may mill two cards.
+SVar:TrigMill:DB$ Mill | NumCards$ 2 | Defined$ You | Optional$ True
+T:Mode$ ChangesZoneAll | ValidCards$ Land.YouOwn | Origin$ Library | Destination$ Graveyard | TriggerZones$ Battlefield | Execute$ TrigChangeZoneAll | TriggerDescription$ Whenever one or more land cards are put into your graveyard from your library, put them onto the battlefield tapped.
+SVar:TrigChangeZoneAll:DB$ ChangeZoneAll | ChangeType$ Card.TriggeredCards | Origin$ Graveyard | Destination$ Battlefield | Tapped$ True
+K:Crew:1
+Oracle:Whenever Hedge Shredder attacks, you may mill two cards.\nWhenever one or more land cards are put into your graveyard from your library, put them onto the battlefield tapped.\nCrew 1 (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)
+"""
+
+EERIE_ULTIMATUM = r"""Name:Eerie Ultimatum
+ManaCost:W W B B B G G
+Types:Sorcery
+A:SP$ ChangeZone | Origin$ Graveyard | Destination$ Battlefield | ChangeType$ Permanent.YouOwn | ChangeNumDesc$ any number of | ChangeTypeDesc$ permanent cards with different names | DifferentNames$ True | ChangeNum$ X | Hidden$ True | SpellDescription$ Return any number of permanent cards with different names from your graveyard to the battlefield.
+SVar:X:Count$ValidGraveyard Permanent.YouOwn$DifferentCardNames
+SVar:IsReanimatorCard:TRUE
+DeckHas:Ability$Graveyard
+Oracle:Return any number of permanent cards with different names from your graveyard to the battlefield.
+"""
+
+INSIDIOUS_ROOTS = r"""Name:Insidious Roots
+ManaCost:B G
+Types:Enchantment
+S:Mode$ Continuous | Affected$ Creature.token+YouCtrl | AddAbility$ AnyMana | Description$ Creature tokens you control have "{T}: Add one mana of any color."
+SVar:AnyMana:AB$ Mana | Cost$ T | Produced$ Any | Amount$ 1 | SpellDescription$ Add one mana of any color.
+T:Mode$ ChangesZoneAll | ValidCards$ Creature.YouOwn | Origin$ Graveyard | Destination$ Any | TriggerZones$ Battlefield | Execute$ TrigToken | TriggerDescription$ Whenever one or more creature cards leave your graveyard, create a 0/1 green Plant creature token, then put a +1/+1 counter on each Plant you control.
+SVar:TrigToken:DB$ Token | TokenScript$ g_0_1_plant | SubAbility$ DBCounters
+SVar:DBCounters:DB$ PutCounterAll | ValidCards$ Plant.YouCtrl | CounterType$ P1P1 | CounterNum$ 1
+DeckHas:Ability$Graveyard|Token|Counters & Type$Plant
+DeckHints:Type$Plant
+Oracle:Creature tokens you control have "{T}: Add one mana of any color."\nWhenever one or more creature cards leave your graveyard, create a 0/1 green Plant creature token, then put a +1/+1 counter on each Plant you control.
+"""
+
+CORRUPTED_CONVICTION = r"""Name:Corrupted Conviction
+ManaCost:B
+Types:Instant
+A:SP$ Draw | Cost$ B Sac<1/Creature> | NumCards$ 2 | SpellDescription$ Draw two cards.
+DeckHas:Ability$Sacrifice
+Oracle:As an additional cost to cast this spell, sacrifice a creature.\nDraw two cards.
+"""
+
+REANIMATE = r"""Name:Reanimate
+ManaCost:B
+Types:Sorcery
+A:SP$ ChangeZone | Origin$ Graveyard | Destination$ Battlefield | GainControl$ True | TgtPrompt$ Choose target creature card in a graveyard | ValidTgts$ Creature | ChangeNum$ 1 | RememberLKI$ True | SubAbility$ DBLoseLifeYou | SpellDescription$ Put target creature card from a graveyard onto the battlefield under your control. You lose life equal to its mana value.
+SVar:DBLoseLifeYou:DB$ LoseLife | Defined$ You | LifeAmount$ X | SubAbility$ DBCleanup
+SVar:DBCleanup:DB$ Cleanup | ClearRemembered$ True
+SVar:X:RememberedLKI$CardManaCost
+Oracle:Put target creature card from a graveyard onto the battlefield under your control. You lose life equal to its mana value.
+"""
+
+HORIZON_CANOPY = r"""Name:Horizon Canopy
+ManaCost:no cost
+Types:Land
+A:AB$ Mana | Cost$ T PayLife<1> | Produced$ Combo G W | SpellDescription$ Add {G} or {W}.
+A:AB$ Draw | Cost$ 1 T Sac<1/CARDNAME> | NumCards$ 1 | SpellDescription$ Draw a card.
+Oracle:{T}, Pay 1 life: Add {G} or {W}.\n{1}, {T}, Sacrifice Horizon Canopy: Draw a card.
+"""
+
+HEDGE_SHREDDER_OPP = HEDGE_SHREDDER.replace("ValidCards$ Land.YouOwn", "ValidCards$ Land.OppCtrl")
+
 AZUSA_NOT_YOU = AZUSA.replace("Affected$ You", "Affected$ Player")
 SPRINGBLOOM_WITH_MANA = SPRINGBLOOM_DRUID.replace("Cost$ Sac<1/Land>", "Cost$ 1 Sac<1/Land>")
 
@@ -810,19 +915,20 @@ def test_ramp_with_sacrifice_step():
     assert not _read(LIFE_FROM_THE_LOAM).land_search and not _read(SPLENDID_RECLAMATION).land_search
 
 
-def test_gitrog_stage2():
+def test_gitrog_full():
     ce = _read(GITROG)
-    assert ce.effects == (Effect("upkeep", "sacrifice_land", 1), Effect("static", "extra_land", 1))
-    assert len(ce.unread) == 1 and ce.partial is True
+    assert ce.effects == (Effect("upkeep", "sacrifice_land", 1), Effect("land_milled", "draw", 1),
+                          Effect("land_sacrificed", "draw", 1), Effect("static", "extra_land", 1))
+    assert ce.unread == () and ce.partial is False
 
 
 def test_titania():
     assert _read(TITANIA).effects == (Effect("etb", "return_lands", 1), Effect("land_sacrificed", "token", 1, 5, 3, "Elemental"))
 
 
-def test_explore_stage2():
+def test_explore_draws():
     ce = _read(EXPLORE)
-    assert ce.effects == (Effect("cast", "extra_land", 1),) and len(ce.unread) == 1 and "DBDraw" in ce.unread[0] and ce.partial is True
+    assert ce.effects == (Effect("cast", "extra_land", 1), Effect("cast", "draw", 1)) and ce.unread == ()
 
 
 def test_stage2_negatives():
@@ -842,3 +948,58 @@ def test_parse_effects_table_stage2():
            {"on": "static", "do": "dredge", "n": 2, "type": "lands"}]
     assert parse_effects_table(raw) == (Effect("activated", "return_lands", "all", cost="3 G Sac<1/CARDNAME>"),
                                         Effect("static", "dredge", 2, type="lands"))
+
+
+def test_land_milled_return():
+    ce = _read(HEDGE_SHREDDER)
+    assert ce.effects == (Effect("land_milled", "return_lands", "milled"),) and ce.partial is True
+    assert any("Attacks" in u for u in ce.unread) and any(u.startswith("K:Crew") for u in ce.unread)
+    opp = _read(HEDGE_SHREDDER_OPP)
+    assert opp.effects == () and any("Land.OppCtrl" in u for u in opp.unread)
+
+
+def test_dies_trigger():
+    ce = _read(WORLD_SHAPER)
+    assert ce.effects == (Effect("dies", "return_lands", "all"),) and ce.partial is True
+
+
+def test_reanimation():
+    creature = (Effect("cast", "reanimate", 1, type="creature"),)
+    dread = _read(DREAD_RETURN)
+    assert dread.effects == creature and dread.partial is True and any(u.startswith("K:Flashback") for u in dread.unread)
+    ce = _read(REANIMATE)
+    assert ce.effects == creature and ce.unread == ()
+    titan = _read(SUN_TITAN)
+    assert titan.effects == (Effect("etb", "reanimate", 1, type="permanent", mv_max=3),) and titan.partial is True
+    sevinne = _read(SEVINNES_RECLAMATION)
+    assert sevinne.effects == (Effect("cast", "reanimate", 1, type="permanent", mv_max=3),) and sevinne.partial is True
+    assert _read(EERIE_ULTIMATUM).effects == ()
+    uncapped = _read(SUN_TITAN.replace("Permanent.YouCtrl+cmcLE3", "Permanent.YouCtrl"))
+    assert uncapped.effects == (Effect("etb", "reanimate", 1, type="permanent"),)
+
+
+def test_draw_abilities():
+    canopy = _read(HORIZON_CANOPY)
+    assert canopy.effects == (Effect("activated", "draw", 1, cost="1 T Sac<1/CARDNAME>"),) and canopy.unread == ()
+    assert _read(CORRUPTED_CONVICTION).effects == (Effect("cast", "draw", 2, cost="B Sac<1/Creature>"),)
+    other = _read(GITROG.replace("Defined$ You | NumCards$ 1", "Defined$ Player | NumCards$ 1"))
+    assert not any(e.do == "draw" for e in other.effects) and other.unread
+
+
+def test_stage3_negatives():
+    roots = _read(INSIDIOUS_ROOTS)
+    assert roots.effects == () and len(roots.unread) == 2
+    zuran = "Name:Zuran Orb\nTypes:Artifact\nA:AB$ GainLife | Cost$ Sac<1/Land> | LifeAmount$ 2\n"
+    assert _read(zuran).effects == () and _read(zuran).unread
+
+
+def test_parse_effects_table_stage3():
+    raw = [{"on": "cast", "do": "reanimate", "n": 2, "type": "creature", "cost": "Sac<1/Creature>"},
+           {"on": "etb", "do": "reanimate", "type": "permanent", "mv_max": 3},
+           {"on": "land_milled", "do": "return_lands", "n": "milled"}]
+    assert parse_effects_table(raw) == (Effect("cast", "reanimate", 2, type="creature", cost="Sac<1/Creature>"),
+                                        Effect("etb", "reanimate", 1, type="permanent", mv_max=3),
+                                        Effect("land_milled", "return_lands", "milled"))
+    for bad in ({"on": "etb", "do": "return_lands", "n": "milled"}, {"on": "land_milled", "do": "draw", "n": "milled"}):
+        with pytest.raises(ValueError, match="milled"):
+            parse_effects_table([bad])

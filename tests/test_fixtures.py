@@ -77,7 +77,7 @@ def test_necrobloom_effects_come_from_forge_not_table():
     sim = analyse(load_facts(FIXTURES / "necrobloom-v3.facts.json"), iterations=100).sim
     assert sim is not None
     assert {"The Necrobloom", "Avenger of Zendikar"} <= set(sim.effects_sources["forge"])
-    assert sim.effects_sources["table"] == []
+    assert sim.effects_sources["table"] == ["Victimize"]   # the one table entry the deck uses (stage 3)
 
 
 def test_necrobloom_engine_is_alive_in_stage2():
@@ -86,4 +86,4 @@ def test_necrobloom_engine_is_alive_in_stage2():
     assert sim.graveyard_lands_by_turn[8] >= 1.0
     assert sim.tokens_by_turn["Zombie"][12] > 3.4   # stage 1 measured 3.4 at 20 000 games
     assert "Life from the Loam" in sim.effects_sources["forge"] and "Life from the Loam" not in sim.unmodelled
-    assert sim.effects_sources["table"] == []
+    assert sim.effects_sources["table"] == ["Victimize"]   # the one table entry the deck uses (stage 3)

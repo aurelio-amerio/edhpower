@@ -17,10 +17,11 @@ from edhpower.sim.mana import parse_activation_cost
 if TYPE_CHECKING:
     from edhpower.profile import SpecialBehaviour
 
-TRIGGERS = ("landfall", "etb", "creature_etb", "token_created", "static", "cast", "activated", "upkeep", "land_sacrificed")
+TRIGGERS = ("landfall", "etb", "creature_etb", "token_created", "static", "cast", "activated", "upkeep", "land_sacrificed",
+            "land_milled", "dies")
 ACTIONS = ("token", "counters", "anthem", "pump", "mana", "drain", "mill", "dredge", "extra_land",
            "play_lands_from_graveyard", "return_lands", "return_lands_to_hand", "fetch", "sacrifice_land",
-           "chain_lands_from_hand")
+           "chain_lands_from_hand", "reanimate", "draw")
 UNREAD_CHARS = 60
 
 
@@ -28,15 +29,17 @@ UNREAD_CHARS = 60
 class Effect:
     on: str
     do: str
-    n: int | str = 1  # "lands" = lands you control at resolution; "all" = every land card in the graveyard (return_lands)
+    n: int | str = 1  # "lands" = lands you control at resolution; "all" = every land card in the graveyard (return_lands);
+    #                   "milled" = the lands of the triggering mill (return_lands on land_milled)
     power: int = 0
     toughness: int = 0
-    type: str = ""  # token creature type; scope for anthem/pump/counters ("" all creatures, "tokens", or a creature type);
+    type: str = ""  # reanimate: "creature" | "permanent"; token creature type; scope for anthem/pump/counters ("" all creatures, "tokens", or a creature type);
     #                 dredge: "" = this card has dredge n, "lands" = land cards in your graveyard have dredge n
     each_opponent: bool = True
     when: str = ""  # "" | "distinct_lands >= N" | "lands >= N" | "tokens >= N"
     upgrade: Effect | None = None
     cost: str = ""  # activation or additional cost in Forge spelling ("3 G Sac<1/CARDNAME>"); "" = none
+    mv_max: int = 0  # reanimate target filter: mana value cap, 0 = no cap
 
 
 @dataclass(frozen=True)
@@ -148,6 +151,7 @@ _LANDS_COUNT = "Valid Land.YouCtrl"
 _DISTINCT_LANDS_COUNT = "Valid Land.YouCtrl$DifferentCardNames"
 _OPPONENTS_ALL = ("Player.Opponent", "Opponent")
 _IGNORED_STEPS = ("GainLife", "Cleanup")
+_LIFE_STEPS = ("LoseLife", "GainLife", "DealDamage")
 _BASIC_TYPES = ("Land", "Plains", "Island", "Swamp", "Mountain", "Forest")
 
 
@@ -198,7 +202,7 @@ class _Reader:
 
     def step(self, name: str, d: dict[str, str], on: str, seen: frozenset[str]) -> tuple[list[Effect], list[str]]:
         api = d.get("DB") or d.get("SP") or d.get("AB") or ""
-        if api in _IGNORED_STEPS:
+        if api in _IGNORED_STEPS or (api in _LIFE_STEPS and d.get("Defined") == "You"):  # life is not a resource
             return [], []
         if api == "Sacrifice" and on == "upkeep":
             effect = _upkeep_sacrifice(d)
@@ -253,33 +257,48 @@ class _Reader:
         return picked[0], picked[1] + unread
 
     def trigger(self, t: dict[str, str]) -> None:
-        on = _trigger_kind(t)
+        kinds = _trigger_kinds(t)
         execute = t.get("Execute", "")
-        if on is None or not execute:
+        if not kinds or not execute:
             self.unread.append(_clip("T:" + _text(t)))
             return
-        fx, un = self.chain(execute, on, frozenset())
-        if not fx:
-            self.unread.append(_clip("T:" + _text(t)))
-            return
-        self.effects.extend(fx)
-        self.unread.extend(un)
+        for i, on in enumerate(kinds):  # a trigger that fires from several events yields one effect list per event
+            fx, un = self.chain(execute, on, frozenset())
+            if not fx:
+                self.unread.append(_clip("T:" + _text(t)))
+                return
+            self.effects.extend(fx)
+            if i == 0:
+                self.unread.extend(un)
 
 
 _TRIGGER_KEYS = frozenset({"Mode", "Origin", "Destination", "ValidCard", "ValidPlayer", "ValidToken", "TriggerZones", "Execute",
-                           "TriggerDescription", "OptionalDecider", "Secondary", "Phase"})
+                           "TriggerDescription", "OptionalDecider", "Secondary", "Phase", "ValidCards"})
 _YOUR_TOKENS = ("Card.token+YouCtrl", "Creature.token+YouCtrl")
 
 
+_YOUR_LAND_CARDS = ("Land.YouOwn", "Land.YouOwn+!token")
+
+
+def _trigger_kinds(t: dict[str, str]) -> tuple[str, ...]:
+    """The trigger's kinds (empty when any key or value is outside the read vocabulary: fail closed). Lands put into
+    your graveyard "from anywhere" are both milled and sacrificed, hence several."""
+    if t.get("Mode") == "ChangesZoneAll" and t.get("Destination") == "Graveyard" and t.get("ValidCards") in _YOUR_LAND_CARDS \
+            and not set(t) - _TRIGGER_KEYS and t.get("TriggerZones", "Battlefield") == "Battlefield":
+        return {"Library": ("land_milled",), "Any": ("land_milled", "land_sacrificed")}.get(t.get("Origin", "Any"), ())
+    kind = _trigger_kind(t)
+    return (kind,) if kind else ()
+
+
 def _trigger_kind(t: dict[str, str]) -> str | None:
-    """The trigger's kind, or None when any key or value is outside the read vocabulary (fail closed)."""
-    if set(t) - _TRIGGER_KEYS or t.get("TriggerZones", "Battlefield") != "Battlefield":
+    """The kind of a single-event trigger, or None when any key or value is outside the read vocabulary (fail closed)."""
+    if set(t) - _TRIGGER_KEYS or t.get("TriggerZones", "Battlefield") != "Battlefield" or "ValidCards" in t:
         return None
     if "ValidToken" in t and t["ValidToken"] not in _YOUR_TOKENS:
         return None
     mode, origin = t.get("Mode"), t.get("Origin", "Any")
     if mode == "ChangesZone" and (origin, t.get("Destination")) == ("Battlefield", "Graveyard"):
-        return "land_sacrificed" if t.get("ValidCard") == "Land.YouCtrl" else None
+        return {"Land.YouCtrl": "land_sacrificed", "Card.Self": "dies"}.get(t.get("ValidCard", ""))
     if origin != "Any":
         return None
     if mode == "Phase" and t.get("Phase") == "Upkeep" and t.get("ValidPlayer") == "You":
@@ -354,6 +373,12 @@ def _action(api: str, d: dict[str, str], on: str, svars: dict[str, dict[str, str
         return _extra_land_effect(on, d, svars)
     if api in ("ChangeZone", "ChangeZoneAll"):
         return _zone_action(api, on, d)
+    if api == "Draw":
+        n = _int(d.get("NumCards"), 1)
+        cost = _zone_cost(d, allow_mana=True)
+        if n is None or n <= 0 or cost is None or d.get("Defined", "You") != "You" or "ValidTgts" in d:
+            return None
+        return Effect(on, "draw", n, cost=cost)
     if api in ("LoseLife", "DealDamage"):
         n = _int(d.get("LifeAmount" if api == "LoseLife" else "NumDmg"))
         if n is None:
@@ -410,13 +435,36 @@ def _fetch_count(d: dict[str, str]) -> int | None:
     return _int(d.get("ChangeNum"), 1) if _is_land_type(change_type) else None
 
 
+_REANIMATE_CREATURE = ("Creature", "Creature.YouCtrl", "Creature.YouOwn")
+_REANIMATE_PERMANENT = re.compile(r"^Permanent(?:\.YouCtrl(?:\+cmcLE(\d+))?|\.cmcLE(\d+)\+YouCtrl)$")
+
+
+def _reanimate(on: str, d: dict[str, str]) -> Effect | None:
+    """`ChangeZone` from your graveyard to the battlefield, one targeted creature or (mana-value capped) permanent card."""
+    valid, n, cost = d.get("ValidTgts", ""), _int(d.get("TargetMax"), 1), _zone_cost(d, allow_mana=True)
+    if not n or cost is None or _int(d.get("ChangeNum"), 1) != 1:
+        return None
+    if valid in _REANIMATE_CREATURE:
+        return Effect(on, "reanimate", n, type="creature", cost=cost)
+    m = _REANIMATE_PERMANENT.match(valid)
+    if m is None:
+        return None
+    return Effect(on, "reanimate", n, type="permanent", cost=cost, mv_max=int(m.group(1) or m.group(2) or 0))
+
+
 def _zone_action(api: str, on: str, d: dict[str, str]) -> Effect | None:
     origin, dest = d.get("Origin"), d.get("Destination")
     if api == "ChangeZoneAll":
         if (origin, dest, d.get("ChangeType")) in (("Graveyard", "Battlefield", "Land.YouCtrl"), ("Graveyard", "Battlefield", "Land.YouOwn")):
             cost = _zone_cost(d, allow_mana=on == "activated")
             return None if cost is None else Effect(on, "return_lands", "all", cost=cost)
+        if (origin, dest, d.get("ChangeType"), on) == ("Graveyard", "Battlefield", "Card.TriggeredCards", "land_milled"):
+            return Effect(on, "return_lands", "milled")
         return None
+    if origin == "Graveyard" and dest == "Battlefield" and api == "ChangeZone":
+        reanimate = _reanimate(on, d)
+        if reanimate is not None:
+            return reanimate
     if origin == "Library" and dest == "Battlefield":
         n = _fetch_count(d)
         cost = _zone_cost(d, allow_mana=on == "activated")
@@ -641,7 +689,7 @@ def condition_holds(when: str, distinct_lands: int, lands: int, tokens: int) -> 
     return value >= int(m.group(2))
 
 
-_TABLE_KEYS = {"on", "do", "n", "power", "toughness", "type", "each_opponent", "when", "upgrade", "cost"}
+_TABLE_KEYS = {"on", "do", "n", "power", "toughness", "type", "each_opponent", "when", "upgrade", "cost", "mv_max"}
 
 
 def _table_effect(raw: dict[str, Any]) -> Effect:
@@ -654,10 +702,12 @@ def _table_effect(raw: dict[str, Any]) -> Effect:
     if do not in ACTIONS:
         raise ValueError(f"effect key 'do' = {do!r} is not one of {ACTIONS}")
     n = raw.get("n", 1)
-    if not (isinstance(n, int) or n in ("lands", "all")):
-        raise ValueError(f"effect key 'n' = {n!r} must be an integer, \"lands\" or \"all\"")
+    if not (isinstance(n, int) or n in ("lands", "all", "milled")):
+        raise ValueError(f"effect key 'n' = {n!r} must be an integer, \"lands\", \"all\" or \"milled\"")
     if n == "all" and do != "return_lands":
         raise ValueError(f"effect key 'n' = \"all\" is only for do = \"return_lands\", not {do!r}")
+    if n == "milled" and not (do == "return_lands" and on == "land_milled"):
+        raise ValueError(f"effect key 'n' = \"milled\" is only for do = \"return_lands\" on = \"land_milled\", not {do!r} on {on!r}")
     if raw.get("type") == "lands" and do != "dredge":
         raise ValueError(f"effect key 'type' = \"lands\" is only for do = \"dredge\", not {do!r}")
     cost = str(raw.get("cost", ""))
@@ -667,7 +717,7 @@ def _table_effect(raw: dict[str, Any]) -> Effect:
         raise ValueError(f"effect key 'when' = {when!r} is not a known condition")
     upgrade = _table_effect(raw["upgrade"]) if "upgrade" in raw else None
     return Effect(on, do, n, int(raw.get("power", 0)), int(raw.get("toughness", 0)), str(raw.get("type", "")),
-                  bool(raw.get("each_opponent", True)), when, upgrade, cost)
+                  bool(raw.get("each_opponent", True)), when, upgrade, cost, int(raw.get("mv_max", 0)))
 
 
 def parse_effects_table(raw: list[dict]) -> tuple[Effect, ...]:
