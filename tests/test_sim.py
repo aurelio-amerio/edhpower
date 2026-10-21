@@ -146,6 +146,22 @@ def test_result_carries_new_rows():
     json.dumps(r.to_dict())
 
 
+def test_result_carries_stage2_rows():
+    r = simulate(fixture_facts("necrobloom-v3"), CFG, 40, 4)
+    turns = set(range(1, CFG.max_turn + 1))
+    for rows in (r.landfall_by_turn, r.graveyard_lands_by_turn, r.distinct_lands_by_turn):
+        assert set(rows) == turns and all(isinstance(v, float) for v in rows.values())
+    for text in ("lands returned from the graveyard enter tapped, one at a time",
+                 "fetch lands find a 1-mana land, tapped; free fetches are cracked the turn they enter",
+                 "dredge replaces the draw only when the hand lacks a land for this turn's drops, never the opening hand",
+                 f"mass land return is cast with {CFG.mass_return_min_lands}+ lands in the graveyard and a landfall source out, or on the last two turns",
+                 "activated abilities are paid from mana left after the main phase",
+                 "a draw granted by a trigger is a plain draw, never a dredge",
+                 "no maximum hand size"):
+        assert text in r.notes, text
+    json.dumps(r.to_dict())
+
+
 def test_win_ok_without_spellbook():
     facts = dataclasses.replace(fixture_facts("ulalek-bracket3-v2"), combos=None, combos_unavailable_reason="down")
     r = simulate(facts, CFG, 20, 4)

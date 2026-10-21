@@ -22,8 +22,9 @@ from edhpower.sim.engine import CLOCKS, play_game
 from edhpower.sim.model import build_sim_deck
 
 # Interactions this stage of the engine does not play (spec: "a `not modelled:` line per stage").
-NOT_MODELLED: tuple[str, ...] = ("graveyard", "dredge", "extra land drops", "land recursion", "fetch cracking", "reanimation",
-                                 "blockers/interaction")
+NOT_MODELLED: tuple[str, ...] = ("fetch then dredge in one turn (Gitrog loop)", "Sylvan Library dredges",
+                                 "Field of the Dead counting lands that enter with it", "Saga chapters", "attack triggers",
+                                 "life as a resource", "Room cards", "reanimation", "blockers/interaction")
 
 
 @dataclass
@@ -57,6 +58,9 @@ class SimResult:
     damage_by_turn: dict[int, float]
     board_power_by_turn: dict[int, float]
     lands_by_turn: dict[int, float]
+    landfall_by_turn: dict[int, float]
+    graveyard_lands_by_turn: dict[int, float]
+    distinct_lands_by_turn: dict[int, float]
     tokens_by_turn: dict[str, dict[int, float]]
     max_swing_median: int
     win_route: dict[str, float]
@@ -122,7 +126,7 @@ def simulate(facts: DeckFacts, cfg: SimConfig, iterations: int, tipping_target: 
     mana_sum = [0.0] * (cfg.max_turn + 1)
     idle_sum = [0] * (cfg.max_turn + 1)
     turns = range(1, cfg.max_turn + 1)
-    dmg_sum, power_sum, lands_sum = ([0] * (cfg.max_turn + 1) for _ in range(3))
+    dmg_sum, power_sum, lands_sum, landfall_sum, gy_lands_sum, distinct_sum = ([0] * (cfg.max_turn + 1) for _ in range(6))
     token_sum: dict[str, list[int]] = {}
     swings: list[int] = []
     routes = {"combat": 0, "combo": 0, "none": 0}
@@ -136,6 +140,9 @@ def simulate(facts: DeckFacts, cfg: SimConfig, iterations: int, tipping_target: 
             dmg_sum[t] += rec.damage_by_turn[t]
             power_sum[t] += rec.board_power_by_turn[t]
             lands_sum[t] += rec.lands_by_turn[t]
+            landfall_sum[t] += rec.landfall_by_turn[t]
+            gy_lands_sum[t] += rec.graveyard_lands_by_turn[t]
+            distinct_sum[t] += rec.distinct_lands_by_turn[t]
         for type_, per_turn in rec.tokens_by_turn.items():
             acc = token_sum.setdefault(type_, [0] * (cfg.max_turn + 1))
             for t in turns:
@@ -165,6 +172,13 @@ def simulate(facts: DeckFacts, cfg: SimConfig, iterations: int, tipping_target: 
         "attackers are assigned greedily to the opponent with the most life, not optimally",
         "at most one pump spell is cast per turn, and only when it kills an opponent",
         "a pump spell cast for another role (a threat, a draw tag) does not apply its pump",
+        "lands returned from the graveyard enter tapped, one at a time",
+        "fetch lands find a 1-mana land, tapped; free fetches are cracked the turn they enter",
+        "dredge replaces the draw only when the hand lacks a land for this turn's drops, never the opening hand",
+        f"mass land return is cast with {cfg.mass_return_min_lands}+ lands in the graveyard and a landfall source out, or on the last two turns",
+        "activated abilities are paid from mana left after the main phase",
+        "a draw granted by a trigger is a plain draw, never a dredge",
+        "no maximum hand size",
     ]
     notes.extend(deck.notes)
     notes.extend(payoffs.notes)
@@ -199,6 +213,9 @@ def simulate(facts: DeckFacts, cfg: SimConfig, iterations: int, tipping_target: 
         damage_by_turn={t: round(dmg_sum[t] / n, 3) for t in turns},
         board_power_by_turn={t: round(power_sum[t] / n, 3) for t in turns},
         lands_by_turn={t: round(lands_sum[t] / n, 3) for t in turns},
+        landfall_by_turn={t: round(landfall_sum[t] / n, 3) for t in turns},
+        graveyard_lands_by_turn={t: round(gy_lands_sum[t] / n, 3) for t in turns},
+        distinct_lands_by_turn={t: round(distinct_sum[t] / n, 3) for t in turns},
         tokens_by_turn={k: {t: round(v[t] / n, 3) for t in turns} for k, v in sorted(token_sum.items())},
         max_swing_median=int(statistics.median_low(swings)) if swings else 0,
         win_route={k: round(v / n, 6) for k, v in routes.items()},

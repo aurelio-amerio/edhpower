@@ -151,6 +151,8 @@ def render_text(analysis: Analysis) -> str:
         out.append(f"  {'avg mana produced':<52} {'':<7} {'':<7} " + " ".join(f"{sim.mana_by_turn[t]:4.1f} " for t in turns))
         out.append(f"  {'share of games casting nothing':<52} {'':<7} {'':<7} " + " ".join(f"{sim.idle_by_turn[t]:4.0%} " for t in turns))
         for label, series in [("damage this turn", sim.damage_by_turn), ("board power", sim.board_power_by_turn), ("lands on battlefield", sim.lands_by_turn),
+                              ("lands entering this turn", sim.landfall_by_turn), ("lands in graveyard", sim.graveyard_lands_by_turn),
+                              ("distinct land names", sim.distinct_lands_by_turn),
                               *((f"tokens: {k}", sim.tokens_by_turn[k]) for k in sorted(sim.tokens_by_turn))]:
             out.append(f"  {label:<52} {'':<7} {'':<7} " + " ".join(f"{series[t]:4.1f} " for t in turns))
         wr = sim.win_route

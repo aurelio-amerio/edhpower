@@ -111,11 +111,39 @@ Card effects beyond mana — tokens, landfall and enters triggers, +1/+1 counter
 spells, drain — are read from each card's Card-Forge script (see *Data sources*). The reader
 (`sim/effects.py`) understands a fixed vocabulary of script lines and nothing else: a card none
 of whose lines it reads is **unmodelled**, a card with some lines read and some skipped is
-**partial**, so coverage is exact rather than heuristic. Stage 1 applies no instant or sorcery
-effect other than a pump, so a spell whose only read effect is, say, a token or drain counts as
-unmodelled. The `special_behaviours` table
-overrides a card's script where an entry carries `effects`. Tokens attack from the turn after
-they enter; there are no blockers and no haste.
+**partial**, so coverage is exact rather than heuristic. An instant or sorcery with a read
+effect (a token, a drain, a mill, a land return) is a `spell`: it is cast in the main phase
+when its effect is wanted and every read effect resolves. An instant or sorcery with nothing
+read is never cast. The `special_behaviours` table overrides a card's script where an entry
+carries `effects`. Tokens attack from the turn after they enter; there are no blockers and no
+haste.
+
+Since sim v4 the game has a **graveyard** and a land step that follows the cards:
+
+- **Land drops.** Static extra-land effects (Azusa, Oracle of Mul Daya) add drops. The land
+  step plays the best land from the hand, or from the graveyard when a permanent allows it
+  (Ramunap Excavator), until the turn's drops are used.
+- **Fetch lands.** A fetch land finds a 1-mana land from the library, tapped. A free fetch
+  (one that costs no mana) is cracked the turn it enters. A fetch replayed
+  from the graveyard uses one land drop each time.
+- **Graveyard.** Sacrifice and mill put cards there; an upkeep land sacrifice (The Gitrog
+  Monster) sacrifices the permanent itself when no land can be paid. Single returns put lands
+  back onto the battlefield tapped, one at a time.
+- **Dredge.** The draw is replaced by a dredge only when the hand holds fewer lands than this
+  turn's drops, and never for the opening hand. The dredge brings back a graveyard land through
+  a permanent that gives lands dredge, or else a card with its own dredge (Life from the Loam)
+  that would be cast now. A dredge needs at least that many cards in the library. A draw
+  granted by a trigger is a plain draw.
+- **Land chains.** A land chain (Cultivator Colossus-style) puts each land in hand onto the
+  battlefield tapped, with a draw or land dredge after each, up to `chain_cap`.
+- **Mass land return.** A spell that returns every graveyard land (Splendid Reclamation) is
+  cast when the graveyard holds `mass_return_min_lands` or more lands and a landfall source is
+  out, or on the last two turns.
+- **Activated abilities.** Fetches and land returns are paid from the mana left after the main
+  phase.
+
+The board rows add `lands entering this turn` (landfall), `lands in graveyard` and `distinct
+land names` under `lands on battlefield`, each the average across games at the end of the turn.
 
 The table has three opponents at 40 life each (`opponents`, `life_per_opponent` in
 `scoring.toml`); attackers are assigned greedily to the opponent with the most life, and drain
@@ -138,7 +166,7 @@ A game that never reaches a clock counts as turn 13 for the median; a clock is p
 when fewer than half of games reach it by turn 12. `fast` is the turn by which 5% of games have
 reached the clock (the 5th percentile, comparable with scrollvault's "ceiling").
 
-Known limits of sim v3 (each a source of systematic bias, not noise; the report's `note:` lines
+Known limits of sim v4 (each a source of systematic bias, not noise; the report's `note:` lines
 add the effect-model simplifications):
 
 - Mana payment is greedy by colour; it does not hold up a wrong-coloured source hoping for a
@@ -151,7 +179,10 @@ add the effect-model simplifications):
   of what the deck actually wants.
 - Command Tower-style lands are read as five-colour sources regardless of the commander's actual
   colour identity.
-- Cheat-into-play, reanimation, extra combats and copy effects are not modelled.
+- Cheat-into-play, reanimation, extra combats and copy effects are not modelled; neither are
+  the Gitrog fetch-then-dredge loop, attack triggers, Saga chapters, Room cards and life as a
+  resource (the report's `not modelled:` line lists them).
+- There is no maximum hand size.
 - Commander tax is not modelled.
 - The Mox Opal `requires` gap (see above) is fixed in the simulator's mana model but still open
   in the static `fast_mana` component.
@@ -161,7 +192,7 @@ add the effect-model simplifications):
 
 `[sim]` in `src/edhpower/data/scoring.toml` holds the simulator's tuning constants; `sim_version`
 is stamped into the JSON alongside `config_version`. Golden tests run the simulator at 500 games;
-production defaults to 20 000 (`--iterations` overrides either). sim v2 (2026-10-18) gates the lethal-combo clock on a detected payoff and drops lock-only lines from the combo clock; v1 and v2 combo numbers are not comparable. sim v3 (2026-10-21) adds Forge-read effects, tokens and triggers, three opponents and the `win`, `lethal_table` and `first_opponent` clocks; its `combat` clock counts tokens, counters, anthems and pumps, so a v3 combat median can be earlier than the v2 one for a token deck.
+production defaults to 20 000 (`--iterations` overrides either). sim v2 (2026-10-18) gates the lethal-combo clock on a detected payoff and drops lock-only lines from the combo clock; v1 and v2 combo numbers are not comparable. sim v3 (2026-10-21) adds Forge-read effects, tokens and triggers, three opponents and the `win`, `lethal_table` and `first_opponent` clocks; its `combat` clock counts tokens, counters, anthems and pumps, so a v3 combat median can be earlier than the v2 one for a token deck. sim v4 (2026-10-21) adds the graveyard, dredge, several land drops, lands played from the graveyard, fetch lands, activated abilities, land chains, mass land return and the `spell` role; a deck with fetch lands or newly read instants and sorceries can have earlier v4 clocks than v3 ones, because sim v3 played a fetch land as a land with no mana.
 
 ## Data sources and caching
 
