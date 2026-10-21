@@ -9,10 +9,13 @@ from __future__ import annotations
 import tomllib
 from dataclasses import asdict, dataclass, field
 from importlib import resources
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from edhpower.extract import OracleNumbers, extract
 from edhpower.scryfall import CardData
+
+if TYPE_CHECKING:
+    from edhpower.sim.effects import Effect
 
 FAST_MANA_MAX_MV = 2
 
@@ -20,20 +23,31 @@ FAST_MANA_MAX_MV = 2
 @dataclass(frozen=True)
 class SpecialBehaviour:
     name: str
-    kind: str
+    kind: str | None  # None for an effects-only entry
     mana: int
     params: dict[str, Any] = field(default_factory=dict)
     note: str = ""
+    effects: tuple[Effect, ...] = ()
+
+
+def special_behaviours_from(raw: dict[str, Any]) -> dict[str, SpecialBehaviour]:
+    # Imported here: edhpower.sim imports facts, which imports this module.
+    from edhpower.sim.effects import parse_effects_table
+
+    table: dict[str, SpecialBehaviour] = {}
+    for name, entry in raw["cards"].items():
+        if "kind" not in entry and "effects" not in entry:
+            raise ValueError(f"special behaviour {name!r} has neither kind nor effects")
+        params = {k: v for k, v in entry.items() if k not in ("kind", "mana", "note", "effects")}
+        kind = str(entry["kind"]) if "kind" in entry else None
+        effects = parse_effects_table(entry.get("effects", []))
+        table[name] = SpecialBehaviour(name, kind, int(entry.get("mana", 0)), params, str(entry.get("note", "")), effects)
+    return table
 
 
 def load_special_behaviours() -> dict[str, SpecialBehaviour]:
     with resources.files("edhpower.data").joinpath("special_behaviours.toml").open("rb") as fh:
-        raw = tomllib.load(fh)
-    table: dict[str, SpecialBehaviour] = {}
-    for name, entry in raw["cards"].items():
-        params = {k: v for k, v in entry.items() if k not in ("kind", "mana", "note")}
-        table[name] = SpecialBehaviour(name, str(entry["kind"]), int(entry.get("mana", 0)), params, str(entry.get("note", "")))
-    return table
+        return special_behaviours_from(tomllib.load(fh))
 
 
 @dataclass(frozen=True)

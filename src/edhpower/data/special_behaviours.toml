@@ -3,7 +3,13 @@
 # `mana`: the number the model uses (lands: mana class 0/1/2; rocks: mana per activation).
 # Other keys are passed through as `params` for the simulator (Plan C): untap_cost, tron, scales_with,
 # reduces, reduces_scope, tutor_cost, requires, scope, sacrifice_on_land_drop.
-version = 1
+# `effects` (optional; an entry may carry effects and no `kind`): board effects for the simulator, taking
+# precedence over the card's Forge script. Each is a table with `on` ∈ landfall | etb | creature_etb |
+# token_created | static | cast, `do` ∈ token | counters | anthem | pump | mana | drain, and optional
+# n (integer or "lands"), power, toughness, type, each_opponent, when ("distinct_lands >= N" |
+# "lands >= N" | "tokens >= N") and upgrade (a nested effect used when its `when` holds), e.g.
+#   effects = [{ on = "landfall", do = "token", power = 1, toughness = 1, type = "Goat" }]
+version = 2
 
 [cards."Ancient Tomb"]
 kind = "land"

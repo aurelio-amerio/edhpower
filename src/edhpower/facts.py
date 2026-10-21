@@ -148,7 +148,7 @@ def build_facts(
         special = specials.get(e.name)
         profiles[e.name] = build_profile(e.card, tags, special, tags_known=tags_ok)
         if special is not None:
-            hits.append(f"{e.name} ({special.kind}, mana {special.mana})")
+            hits.append(f"{e.name} (effects)" if special.kind is None else f"{e.name} ({special.kind}, mana {special.mana})")
     names, counts = partition([(profiles[e.name], e.count) for e in entries])
     tags_oldest, tags_newest = tag_cache.fetched_range() if tags_ok else (None, None)
 

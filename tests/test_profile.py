@@ -1,6 +1,9 @@
+import pytest
+
 from edhpower.extract import extract
-from edhpower.profile import CardProfile, build_profile, is_fast_mana, load_special_behaviours
+from edhpower.profile import CardProfile, build_profile, is_fast_mana, load_special_behaviours, special_behaviours_from
 from edhpower.scryfall import CardData
+from edhpower.sim.effects import Effect
 
 from .conftest import make_card
 
@@ -130,3 +133,16 @@ def test_city_of_traitors_declares_its_sacrifice():
     entry = table["City of Traitors"]
     assert entry.kind == "land" and entry.mana == 2
     assert entry.params == {"sacrifice_on_land_drop": True}
+
+
+def test_effects_only_entry_has_no_kind():
+    raw = {"version": 2, "cards": {"Some Landfall Card": {
+        "effects": [{"on": "landfall", "do": "token", "power": 1, "toughness": 1, "type": "Goat"}], "note": "table override"}}}
+    entry = special_behaviours_from(raw)["Some Landfall Card"]
+    assert entry.kind is None and entry.mana == 0 and entry.params == {} and entry.note == "table override"
+    assert entry.effects == (Effect("landfall", "token", 1, 1, 1, "Goat"),)
+
+
+def test_entry_without_kind_or_effects_is_rejected():
+    with pytest.raises(ValueError, match="Nothing Card"):
+        special_behaviours_from({"version": 2, "cards": {"Nothing Card": {"mana": 1, "note": "x"}}})
