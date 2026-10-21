@@ -266,6 +266,249 @@ SAC_COST_DAMAGE = OVERRUN.replace(
     "A:SP$ DealDamage | Cost$ 2 G G G Sac<1/Creature> | Defined$ Player.Opponent | NumDmg$ 3")
 
 
+# ---- stage 2 scripts (verbatim; Windswept Heath, Exploration and Crucible of Worlds fetched from the pinned commit) ----
+
+LIFE_FROM_THE_LOAM = r"""Name:Life from the Loam
+ManaCost:1 G
+Types:Sorcery
+A:SP$ ChangeZone | Origin$ Graveyard | Destination$ Hand | TargetMin$ 0 | TargetMax$ 3 | TgtPrompt$ Choose target land card in your graveyard | ValidTgts$ Land.YouCtrl | SpellDescription$ Return up to three target land cards from your graveyard to your hand.
+K:Dredge:3
+Oracle:Return up to three target land cards from your graveyard to your hand.\nDredge 3 (If you would draw a card, you may mill three cards instead. If you do, return this card from your graveyard to your hand.)
+"""
+
+AZUSA = r"""Name:Azusa, Lost but Seeking
+ManaCost:2 G
+Types:Legendary Creature Human Monk
+PT:1/2
+S:Mode$ Continuous | Affected$ You | AdjustLandPlays$ 2 | Description$ You may play two additional lands on each of your turns.
+Oracle:You may play two additional lands on each of your turns.
+"""
+
+RAMUNAP_EXCAVATOR = r"""Name:Ramunap Excavator
+ManaCost:2 G
+Types:Creature Snake Cleric
+PT:2/3
+S:Mode$ Continuous | Affected$ Land.YouOwn | MayPlay$ True | AffectedZone$ Graveyard | Description$ You may play lands from your graveyard.
+SVar:NonStackingEffect:True
+Oracle:You may play lands from your graveyard.
+"""
+
+SPLENDID_RECLAMATION = r"""Name:Splendid Reclamation
+ManaCost:3 G
+Types:Sorcery
+A:SP$ ChangeZoneAll | ChangeType$ Land.YouCtrl | Origin$ Graveyard | Destination$ Battlefield | Tapped$ True | SpellDescription$ Return all land cards from your graveyard to the battlefield tapped.
+DeckHints:Ability$Graveyard
+Oracle:Return all land cards from your graveyard to the battlefield tapped.
+"""
+
+EVOLVING_WILDS = r"""Name:Evolving Wilds
+ManaCost:no cost
+Types:Land
+A:AB$ ChangeZone | Cost$ T Sac<1/CARDNAME> | Origin$ Library | Destination$ Battlefield | Tapped$ True | ChangeType$ Land.Basic | ChangeTypeDesc$ basic land | SpellDescription$ Search your library for a basic land card, put it onto the battlefield tapped, then shuffle.
+Oracle:{T}, Sacrifice Evolving Wilds: Search your library for a basic land card, put it onto the battlefield tapped, then shuffle.
+"""
+
+MYRIAD_LANDSCAPE = r"""Name:Myriad Landscape
+ManaCost:no cost
+Types:Land
+R:Event$ Moved | ValidCard$ Card.Self | Destination$ Battlefield | ReplacementResult$ Updated | ReplaceWith$ ETBTapped | Description$ CARDNAME enters tapped.
+SVar:ETBTapped:DB$ Tap | Defined$ Self | ETB$ True
+A:AB$ Mana | Cost$ T | Produced$ C | SpellDescription$ Add {C}.
+A:AB$ ChangeZone | Cost$ 2 T Sac<1/CARDNAME> | Origin$ Library | Destination$ Battlefield | ChangeType$ Land.Basic | ChangeTypeDesc$ basic land | Tapped$ True | ChangeNum$ 2 | ShareLandType$ True | SpellDescription$ Search your library for up to two basic land cards that share a land type, put them onto the battlefield tapped, then shuffle.
+Oracle:Myriad Landscape enters tapped.\n{T}: Add {C}.\n{2}, {T}, Sacrifice Myriad Landscape: Search your library for up to two basic land cards that share a land type, put them onto the battlefield tapped, then shuffle.
+"""
+
+KROSAN_VERGE = r"""Name:Krosan Verge
+ManaCost:no cost
+Types:Land
+R:Event$ Moved | ValidCard$ Card.Self | Destination$ Battlefield | ReplacementResult$ Updated | ReplaceWith$ ETBTapped | Description$ CARDNAME enters tapped.
+SVar:ETBTapped:DB$ Tap | Defined$ Self | ETB$ True
+A:AB$ Mana | Cost$ T | Produced$ C | SpellDescription$ Add {C}.
+A:AB$ ChangeZone | Cost$ 2 T Sac<1/CARDNAME> | Origin$ Library | Destination$ Battlefield | ChangeType$ EACH Forest & Plains | Tapped$ True | SpellDescription$ Search your library for a Forest card and a Plains card, put them onto the battlefield tapped, then shuffle.
+Oracle:Krosan Verge enters tapped.\n{T}: Add {C}.\n{2}, {T}, Sacrifice Krosan Verge: Search your library for a Forest card and a Plains card, put them onto the battlefield tapped, then shuffle.
+"""
+
+WINDSWEPT_HEATH = r"""Name:Windswept Heath
+ManaCost:no cost
+Types:Land
+A:AB$ ChangeZone | Cost$ T PayLife<1> Sac<1/CARDNAME> | Origin$ Library | Destination$ Battlefield | ChangeType$ Forest,Plains | SpellDescription$ Search your library for a Forest or Plains card, put it onto the battlefield, then shuffle.
+Oracle:{T}, Pay 1 life, Sacrifice Windswept Heath: Search your library for a Forest or Plains card, put it onto the battlefield, then shuffle.
+"""
+
+AFTERMATH_ANALYST = r"""Name:Aftermath Analyst
+ManaCost:1 G
+Types:Creature Elf Detective
+PT:1/3
+T:Mode$ ChangesZone | Origin$ Any | Destination$ Battlefield | ValidCard$ Card.Self | Execute$ TrigMill | TriggerDescription$ When CARDNAME enters, mill three cards.
+SVar:TrigMill:DB$ Mill | Defined$ You | NumCards$ 3
+A:AB$ ChangeZoneAll | Cost$ 3 G Sac<1/CARDNAME> | ChangeType$ Land.YouCtrl | Origin$ Graveyard | Destination$ Battlefield | Tapped$ True | SpellDescription$ Return all land cards from your graveyard to the battlefield tapped.
+DeckHas:Ability$Mill|Sacrifice|Graveyard
+DeckHints:Ability$Mill|Graveyard
+Oracle:When Aftermath Analyst enters, mill three cards.\n{3}{G}, Sacrifice Aftermath Analyst: Return all land cards from your graveyard to the battlefield tapped.
+"""
+
+GITROG = r"""Name:The Gitrog Monster
+ManaCost:3 B G
+Types:Legendary Creature Frog Horror
+PT:6/6
+K:Deathtouch
+T:Mode$ Phase | Phase$ Upkeep | ValidPlayer$ You | TriggerZones$ Battlefield | Execute$ TrigUpkeep | TriggerDescription$ At the beginning of your upkeep, sacrifice CARDNAME unless you sacrifice a land.
+SVar:TrigUpkeep:DB$ Sacrifice | UnlessPayer$ You | UnlessCost$ Sac<1/Land>
+S:Mode$ Continuous | Affected$ You | AdjustLandPlays$ 1 | Description$ You may play an additional land on each of your turns.
+T:Mode$ ChangesZoneAll | ValidCards$ Land.YouOwn+!token | Origin$ Any | Destination$ Graveyard | TriggerZones$ Battlefield | Execute$ TrigDraw | TriggerDescription$ Whenever one or more land cards are put into your graveyard from anywhere, draw a card.
+SVar:TrigDraw:DB$ Draw | Defined$ You | NumCards$ 1
+DeckHas:Ability$Graveyard
+Oracle:Deathtouch\nAt the beginning of your upkeep, sacrifice The Gitrog Monster unless you sacrifice a land.\nYou may play an additional land on each of your turns.\nWhenever one or more land cards are put into your graveyard from anywhere, draw a card.
+"""
+
+TITANIA = r"""Name:Titania, Protector of Argoth
+ManaCost:3 G G
+Types:Legendary Creature Elemental
+PT:5/3
+T:Mode$ ChangesZone | Origin$ Any | Destination$ Battlefield | ValidCard$ Card.Self | Execute$ TrigChangeZone | TriggerDescription$ When CARDNAME enters, return target land card from your graveyard to the battlefield.
+SVar:TrigChangeZone:DB$ ChangeZone | Origin$ Graveyard | Destination$ Battlefield | ValidTgts$ Land.YouCtrl
+T:Mode$ ChangesZone | Origin$ Battlefield | Destination$ Graveyard | ValidCard$ Land.YouCtrl | TriggerZones$ Battlefield | Execute$ TrigToken | TriggerDescription$ Whenever a land you control is put into a graveyard from the battlefield, create a 5/3 green Elemental creature token.
+SVar:TrigToken:DB$ Token | TokenScript$ g_5_3_elemental | TokenOwner$ You
+Oracle:When Titania, Protector of Argoth enters, return target land card from your graveyard to the battlefield.\nWhenever a land you control is put into a graveyard from the battlefield, create a 5/3 green Elemental creature token.
+"""
+
+ROILING_REGROWTH = r"""Name:Roiling Regrowth
+ManaCost:2 G
+Types:Instant
+A:SP$ Sacrifice | Defined$ You | SacValid$ Land | SubAbility$ DBChangeZone | StackDescription$ SpellDescription | SpellDescription$ Sacrifice a land. Search your library for up to two basic land cards, put them onto the battlefield tapped, then shuffle.
+SVar:DBChangeZone:DB$ ChangeZone | Origin$ Library | Destination$ Battlefield | ChangeType$ Land.Basic | ChangeTypeDesc$ basic land | ChangeNum$ 2 | Tapped$ True | StackDescription$ None
+SVar:AIPreference:SacCost$Land.Basic+tapped
+Oracle:Sacrifice a land. Search your library for up to two basic land cards, put them onto the battlefield tapped, then shuffle.
+"""
+
+ENTISH_RESTORATION = r"""Name:Entish Restoration
+ManaCost:2 G
+Types:Instant
+A:SP$ Sacrifice | Defined$ You | SacValid$ Land | SubAbility$ DBChangeZone | SpellDescription$ Sacrifice a land. Search your library for up to two basic land cards, put them onto the battlefield tapped, then shuffle. If you control a creature with power 4 or greater, instead search your library for up to three basic land cards, put them onto the battlefield tapped, then shuffle.
+SVar:DBChangeZone:DB$ ChangeZone | Origin$ Library | Destination$ Battlefield | ChangeType$ Land.Basic | ChangeTypeDesc$ basic land | ChangeNum$ X | Tapped$ True
+SVar:AIPreference:SacCost$Land.Basic+tapped
+SVar:X:Count$Compare Y GE1.3.2
+SVar:Y:Count$Valid Creature.YouCtrl+powerGE4
+DeckHas:Ability$Sacrifice
+Oracle:Sacrifice a land. Search your library for up to two basic land cards, put them onto the battlefield tapped, then shuffle. If you control a creature with power 4 or greater, instead search your library for up to three basic land cards, put them onto the battlefield tapped, then shuffle.
+"""
+
+SPRINGBLOOM_DRUID = r"""Name:Springbloom Druid
+ManaCost:2 G
+Types:Creature Elf Druid
+PT:1/1
+T:Mode$ ChangesZone | Origin$ Any | Destination$ Battlefield | ValidCard$ Card.Self | Execute$ TrigRamp | TriggerDescription$ When CARDNAME enters, you may sacrifice a land. If you do, search your library for up to two basic land cards, put them onto the battlefield tapped, then shuffle.
+SVar:TrigRamp:AB$ ChangeZone | Cost$ Sac<1/Land> | Origin$ Library | Destination$ Battlefield | Tapped$ True | ChangeType$ Land.Basic | ChangeTypeDesc$ basic land | ChangeNum$ 2 | ShuffleNonMandatory$ True
+Oracle:When Springbloom Druid enters, you may sacrifice a land. If you do, search your library for up to two basic land cards, put them onto the battlefield tapped, then shuffle.
+"""
+
+SAKURA_TRIBE_ELDER = r"""Name:Sakura-Tribe Elder
+ManaCost:1 G
+Types:Creature Snake Shaman
+PT:1/1
+A:AB$ ChangeZone | Cost$ Sac<1/CARDNAME> | Origin$ Library | Destination$ Battlefield | Tapped$ True | ChangeType$ Land.Basic | ChangeTypeDesc$ basic land | SpellDescription$ Search your library for a basic land card, put it onto the battlefield tapped, then shuffle.
+SVar:SacMeAfterBlock:TRUE
+Oracle:Sacrifice Sakura-Tribe Elder: Search your library for a basic land card, put that card onto the battlefield tapped, then shuffle.
+"""
+
+EXPLORE = r"""Name:Explore
+ManaCost:1 G
+Types:Sorcery
+A:SP$ Effect | StaticAbilities$ Exploration | AILogic$ Always | SubAbility$ DBDraw | SpellDescription$ You may play an additional land this turn. Draw a card.
+SVar:Exploration:Mode$ Continuous | Affected$ You | AdjustLandPlays$ 1 | Description$ You may play an additional land this turn.
+SVar:NeedsToPlayVar:ZZ GE1
+SVar:ZZ:Count$ValidHand Land.YouOwn
+SVar:DBDraw:DB$ Draw | Defined$ You | NumCards$ 1
+Oracle:You may play an additional land this turn.\nDraw a card.
+"""
+
+ORACLE_OF_MUL_DAYA = r"""Name:Oracle of Mul Daya
+ManaCost:3 G
+Types:Creature Elf Shaman
+PT:2/2
+S:Mode$ Continuous | Affected$ You | AdjustLandPlays$ 1 | Description$ You may play an additional land on each of your turns.
+S:Mode$ Continuous | Affected$ Card.TopLibrary+YouCtrl | AffectedZone$ Library | MayLookAt$ Player | Description$ Play with the top card of your library revealed.
+S:Mode$ Continuous | Affected$ Land.TopLibrary+YouCtrl | AffectedZone$ Library | MayPlay$ True | Description$ You may play lands from the top of your library.
+Oracle:You may play an additional land on each of your turns.\nPlay with the top card of your library revealed.\nYou may play lands from the top of your library.
+"""
+
+ANCIENT_GREENWARDEN = r"""Name:Ancient Greenwarden
+ManaCost:4 G G
+Types:Creature Elemental
+PT:5/7
+K:Reach
+S:Mode$ Continuous | Affected$ Land.YouCtrl | MayPlay$ True | AffectedZone$ Graveyard | Description$ You may play lands from your graveyard.
+S:Mode$ Panharmonicon | ValidMode$ ChangesZone,ChangesZoneAll | ValidCard$ Permanent.YouCtrl | ValidCause$ Land | Destination$ Battlefield | Description$ If a land entering causes a triggered ability of a permanent you control to trigger, that ability triggers an additional time.
+Oracle:Reach\nYou may play lands from your graveyard.\nIf a land entering causes a triggered ability of a permanent you control to trigger, that ability triggers an additional time.
+"""
+
+EXPLORATION = r"""Name:Exploration
+ManaCost:G
+Types:Enchantment
+S:Mode$ Continuous | Affected$ You | AdjustLandPlays$ 1 | Description$ You may play an additional land on each of your turns.
+Oracle:You may play an additional land on each of your turns.
+"""
+
+CRUCIBLE_OF_WORLDS = r"""Name:Crucible of Worlds
+ManaCost:3
+Types:Artifact
+S:Mode$ Continuous | Affected$ Land.YouOwn | MayPlay$ True | AffectedZone$ Graveyard | Description$ You may play lands from your graveyard.
+SVar:NonStackingEffect:True
+Oracle:You may play lands from your graveyard.
+"""
+
+THE_MENDING_OF_DOMINARIA = r"""Name:The Mending of Dominaria
+ManaCost:3 G G
+Types:Enchantment Saga
+K:Chapter:3:TrigMill,TrigMill,DBChangeZoneAll
+SVar:TrigMill:DB$ Mill | NumCards$ 2 | Defined$ You | SubAbility$ DBChangeZone | SpellDescription$ Mill two cards, then you may return a creature card from your graveyard to your hand.
+SVar:DBChangeZone:DB$ ChangeZone | Hidden$ True | Origin$ Graveyard | Destination$ Hand | ChangeType$ Creature.YouOwn
+SVar:DBChangeZoneAll:DB$ ChangeZoneAll | ChangeType$ Land.YouCtrl | Origin$ Graveyard | Destination$ Battlefield | SubAbility$ DBShuffle | SpellDescription$ Return all land cards from your graveyard to the battlefield, then shuffle your graveyard into your library.
+SVar:DBShuffle:DB$ ChangeZoneAll | ChangeType$ Card.YouOwn | Origin$ Graveyard | Destination$ Library | Shuffle$ True
+DeckHints:Ability$Graveyard
+Oracle:(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)\nI, II — Mill two cards, then you may return a creature card from your graveyard to your hand.\nIII — Return all land cards from your graveyard to the battlefield, then shuffle your graveyard into your library.
+"""
+
+ETERNAL_WITNESS = r"""Name:Eternal Witness
+ManaCost:1 G G
+Types:Creature Human Shaman
+PT:2/1
+T:Mode$ ChangesZone | Origin$ Any | Destination$ Battlefield | ValidCard$ Card.Self | Execute$ TrigChangeZone | OptionalDecider$ You | TriggerDescription$ When CARDNAME enters, you may return target card from your graveyard to your hand.
+SVar:TrigChangeZone:DB$ ChangeZone | Origin$ Graveyard | Destination$ Hand | ValidTgts$ Card.YouCtrl
+Oracle:When Eternal Witness enters, you may return target card from your graveyard to your hand.
+"""
+
+KNIGHT_OF_THE_RELIQUARY = r"""Name:Knight of the Reliquary
+ManaCost:1 G W
+Types:Creature Human Knight
+PT:2/2
+A:AB$ ChangeZone | Cost$ T Sac<1/Forest;Plains/Forest or Plains> | Origin$ Library | Destination$ Battlefield | ChangeType$ Land | ChangeNum$ 1 | SpellDescription$ Search your library for a land card, put it onto the battlefield, then shuffle.
+S:Mode$ Continuous | AffectedDefined$ Self | AddPower$ X | AddToughness$ X | Description$ CARDNAME gets +1/+1 for each land card in your graveyard.
+SVar:X:Count$ValidGraveyard Land.YouOwn
+Oracle:Knight of the Reliquary gets +1/+1 for each land card in your graveyard.\n{T}, Sacrifice a Forest or Plains: Search your library for a land card, put it onto the battlefield, then shuffle.
+"""
+
+THALIA_AND_GITROG = r"""Name:Thalia and The Gitrog Monster
+ManaCost:1 W B G
+Types:Legendary Creature Human Frog Horror
+PT:4/4
+K:First Strike
+K:Deathtouch
+S:Mode$ Continuous | Affected$ You | AdjustLandPlays$ 1 | Description$ You may play an additional land on each of your turns.
+R:Event$ Moved | ValidCard$ Creature.OppCtrl,Land.nonBasic+OppCtrl | Destination$ Battlefield | ReplaceWith$ ETBTapped | ReplacementResult$ Updated | ActiveZones$ Battlefield | Description$ Creatures and nonbasic lands your opponents control enter tapped.
+SVar:ETBTapped:DB$ Tap | ETB$ True | Defined$ ReplacedCard
+T:Mode$ Attacks | ValidCard$ Card.Self | Execute$ TrigSac | TriggerDescription$ Whenever CARDNAME attacks, sacrifice a creature or land, then draw a card.
+SVar:TrigSac:DB$ Sacrifice | Defined$ You | SacValid$ Land,Creature | SubAbility$ DBDraw
+SVar:DBDraw:DB$ Draw
+SVar:HasAttackEffect:TRUE
+DeckHas:Ability$Sacrifice
+Oracle:First strike, deathtouch\nYou may play an additional land on each of your turns.\nCreatures and nonbasic lands your opponents control enter tapped.\nWhenever Thalia and The Gitrog Monster attacks, sacrifice a creature or land, then draw a card.
+"""
+
+AZUSA_NOT_YOU = AZUSA.replace("Affected$ You", "Affected$ Player")
+SPRINGBLOOM_WITH_MANA = SPRINGBLOOM_DRUID.replace("Cost$ Sac<1/Land>", "Cost$ 1 Sac<1/Land>")
+
+
 def _card(name: str, type_line: str = "Creature") -> CardData:
     return CardData.from_scryfall(make_card(name, type_line=type_line))
 
@@ -286,9 +529,8 @@ def test_parse_script_splits_fields():
 def test_necrobloom_branch_upgrades_plant_to_zombie():
     ce = _read(NECROBLOOM)
     zombie = Effect("landfall", "token", 1, 2, 2, "Zombie", when="distinct_lands >= 7")
-    assert ce.effects == (Effect("landfall", "token", 1, 0, 1, "Plant", upgrade=zombie),)
-    assert ce.source == "forge" and len(ce.unread) == 1 and ce.unread[0].startswith("S:Mode$ Continuous | AffectedZone$ Graveyard")
-    assert all(len(u) <= 60 for u in ce.unread)
+    assert ce.effects == (Effect("landfall", "token", 1, 0, 1, "Plant", upgrade=zombie), Effect("static", "dredge", 2, type="lands"))
+    assert ce.source == "forge" and ce.unread == ()
 
 
 def test_avenger_tokens_per_land_and_plant_counters():
@@ -404,8 +646,11 @@ def test_parse_effects_table_with_upgrade():
     )
 
 
-@pytest.mark.parametrize("bad, key", [({"on": "upkeep", "do": "token"}, "on"), ({"on": "landfall", "do": "mill"}, "do"),
-                                      ({"on": "landfall", "do": "token", "colour": "g"}, "colour")])
+@pytest.mark.parametrize("bad, key", [({"on": "bogus", "do": "token"}, "on"), ({"on": "landfall", "do": "bogus"}, "do"),
+                                      ({"on": "landfall", "do": "token", "colour": "g"}, "colour"),
+                                      ({"on": "landfall", "do": "token", "n": "all"}, "n"),
+                                      ({"on": "landfall", "do": "token", "type": "lands"}, "type"),
+                                      ({"on": "activated", "do": "return_lands", "n": "all", "cost": "X"}, "cost")])
 def test_parse_effects_table_rejects_unknown(bad, key):
     with pytest.raises(ValueError, match=key):
         parse_effects_table([bad])
@@ -440,8 +685,8 @@ def test_back_face_is_unread_unless_it_is_a_land():
 def test_true_only_branch_keeps_its_condition():
     ce = _read(TRUE_ONLY_BRANCH)
     assert TRUE_ONLY_BRANCH != NECROBLOOM
-    assert ce.effects == (Effect("landfall", "token", 1, 2, 2, "Zombie", when="distinct_lands >= 7"),)
-    assert len(ce.unread) == 1 and ce.unread[0].startswith("S:")  # only the dredge static
+    assert ce.effects == (Effect("landfall", "token", 1, 2, 2, "Zombie", when="distinct_lands >= 7"), Effect("static", "dredge", 2, type="lands"))
+    assert ce.unread == ()
 
 
 def test_ramp_land_sacrifice_cost():
@@ -507,3 +752,93 @@ def test_payoffs_and_effects_agree(name):
             if detected != _matches(want, fx, e.forge_script):
                 disagree.append(f"{e.name}: payoffs {cat}={detected}, effects {[(x.on, x.do) for x in fx.effects]}")
     assert disagree == []
+
+
+def test_necrobloom_lands_have_dredge_two():
+    assert Effect("static", "dredge", 2, type="lands") in _read(NECROBLOOM).effects
+
+
+def test_loam_returns_lands_and_has_dredge():
+    ce = _read(LIFE_FROM_THE_LOAM)
+    assert ce.effects == (Effect("cast", "return_lands_to_hand", 3), Effect("static", "dredge", 3)) and ce.unread == ()
+
+
+def test_extra_land_statics():
+    assert _read(AZUSA).effects == (Effect("static", "extra_land", 2),)
+    assert _read(EXPLORATION).effects == (Effect("static", "extra_land", 1),)
+    ce = _read(ORACLE_OF_MUL_DAYA)
+    assert ce.effects == (Effect("static", "extra_land", 1),) and len(ce.unread) == 1 and ce.partial is True
+
+
+def test_play_lands_from_graveyard():
+    for script in (RAMUNAP_EXCAVATOR, CRUCIBLE_OF_WORLDS):
+        ce = _read(script)
+        assert ce.effects == (Effect("static", "play_lands_from_graveyard"),) and ce.unread == ()
+    ce = _read(ANCIENT_GREENWARDEN)
+    assert ce.effects == (Effect("static", "play_lands_from_graveyard"),) and len(ce.unread) == 1 and "Panharmonicon" in ce.unread[0]
+
+
+def test_mass_return():
+    assert _read(SPLENDID_RECLAMATION).effects == (Effect("cast", "return_lands", "all"),)
+    ce = _read(AFTERMATH_ANALYST)
+    assert ce.effects == (Effect("etb", "mill", 3), Effect("activated", "return_lands", "all", cost="3 G Sac<1/CARDNAME>"))
+    assert ce.unread == ()
+
+
+def test_fetch_lands():
+    assert _read(EVOLVING_WILDS).effects == (Effect("activated", "fetch", 1, cost="T Sac<1/CARDNAME>"),)
+    assert _read(MYRIAD_LANDSCAPE).effects == (Effect("activated", "fetch", 2, cost="2 T Sac<1/CARDNAME>"),)
+    assert _read(KROSAN_VERGE).effects == (Effect("activated", "fetch", 2, cost="2 T Sac<1/CARDNAME>"),)
+    assert _read(WINDSWEPT_HEATH).effects == (Effect("activated", "fetch", 1, cost="T PayLife<1> Sac<1/CARDNAME>"),)
+    for script in (EVOLVING_WILDS, MYRIAD_LANDSCAPE, KROSAN_VERGE, WINDSWEPT_HEATH):
+        assert _read(script).unread == ()
+
+
+def test_triggered_and_creature_fetches():
+    assert _read(SPRINGBLOOM_DRUID).effects == (Effect("etb", "fetch", 2, cost="Sac<1/Land>"),)
+    assert _read(SAKURA_TRIBE_ELDER).effects == (Effect("activated", "fetch", 1, cost="Sac<1/CARDNAME>"),)
+
+
+def test_ramp_with_sacrifice_step():
+    roiling = _read(ROILING_REGROWTH)
+    assert (roiling.ramp_to_battlefield, roiling.ramp_to_hand, roiling.ramp_sacrifice_lands) == (2, 0, 1)
+    assert roiling.land_search and roiling.effects == () and roiling.unread == ()
+    entish = _read(ENTISH_RESTORATION)
+    assert (entish.ramp_to_battlefield, entish.ramp_to_hand, entish.ramp_sacrifice_lands) == (2, 0, 1)
+    assert len(entish.unread) == 1 and "read as 2" in entish.unread[0] and entish.land_search
+    assert _read(HARROW).land_search and _read(CULTIVATE).land_search
+    assert not _read(LIFE_FROM_THE_LOAM).land_search and not _read(SPLENDID_RECLAMATION).land_search
+
+
+def test_gitrog_stage2():
+    ce = _read(GITROG)
+    assert ce.effects == (Effect("upkeep", "sacrifice_land", 1), Effect("static", "extra_land", 1))
+    assert len(ce.unread) == 1 and ce.partial is True
+
+
+def test_titania():
+    assert _read(TITANIA).effects == (Effect("etb", "return_lands", 1), Effect("land_sacrificed", "token", 1, 5, 3, "Elemental"))
+
+
+def test_explore_stage2():
+    ce = _read(EXPLORE)
+    assert ce.effects == (Effect("cast", "extra_land", 1),) and len(ce.unread) == 1 and "DBDraw" in ce.unread[0] and ce.partial is True
+
+
+def test_stage2_negatives():
+    mending = _read(THE_MENDING_OF_DOMINARIA)
+    assert mending.effects == () and any(u.startswith("K:Chapter") for u in mending.unread)
+    assert _read(ETERNAL_WITNESS).effects == ()
+    knight = _read(KNIGHT_OF_THE_RELIQUARY)
+    assert knight.effects == () and len(knight.unread) == 2
+    thalia = _read(THALIA_AND_GITROG)
+    assert thalia.effects == (Effect("static", "extra_land", 1),) and thalia.partial is True
+    assert _read(AZUSA_NOT_YOU).effects == () and _read(AZUSA_NOT_YOU).unread
+    assert _read(SPRINGBLOOM_WITH_MANA).effects == () and _read(SPRINGBLOOM_WITH_MANA).unread
+
+
+def test_parse_effects_table_stage2():
+    raw = [{"on": "activated", "do": "return_lands", "n": "all", "cost": "3 G Sac<1/CARDNAME>"},
+           {"on": "static", "do": "dredge", "n": 2, "type": "lands"}]
+    assert parse_effects_table(raw) == (Effect("activated", "return_lands", "all", cost="3 G Sac<1/CARDNAME>"),
+                                        Effect("static", "dredge", 2, type="lands"))

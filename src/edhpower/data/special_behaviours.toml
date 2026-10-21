@@ -5,9 +5,12 @@
 # reduces, reduces_scope, tutor_cost, requires, scope, sacrifice_on_land_drop.
 # `effects` (optional; an entry may carry effects and no `kind`): board effects for the simulator, taking
 # precedence over the card's Forge script. Each is a table with `on` ∈ landfall | etb | creature_etb |
-# token_created | static | cast, `do` ∈ token | counters | anthem | pump | mana | drain, and optional
-# n (integer or "lands"), power, toughness, type, each_opponent, when ("distinct_lands >= N" |
-# "lands >= N" | "tokens >= N") and upgrade (a nested effect used when its `when` holds), e.g.
+# token_created | static | cast | activated | upkeep | land_sacrificed, `do` ∈ token | counters | anthem | pump |
+# mana | drain | mill | dredge | extra_land | play_lands_from_graveyard | return_lands | return_lands_to_hand |
+# fetch | sacrifice_land | chain_lands_from_hand, and optional n (integer, "lands", or "all" with return_lands),
+# power, toughness, type ("lands" with dredge: land cards in your graveyard have dredge n), each_opponent,
+# when ("distinct_lands >= N" | "lands >= N" | "tokens >= N"), upgrade (a nested effect used when its `when`
+# holds) and cost (an activation or additional cost in Forge spelling, e.g. "3 G Sac<1/CARDNAME>"), e.g.
 #   effects = [{ on = "landfall", do = "token", power = 1, toughness = 1, type = "Goat" }]
 version = 2
 
@@ -101,3 +104,7 @@ scope = "permanents"
 kind = "untap"
 mana = 0
 scope = "one_artifact"
+
+[cards."Cultivator Colossus"]
+effects = [{ on = "etb", do = "chain_lands_from_hand" }]
+note = "puts every land in hand onto the battlefield tapped, drawing (or dredging) after each; the script's Repeat loop is outside the reader's vocabulary"

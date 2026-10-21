@@ -22,7 +22,7 @@ def test_special_table_loads_and_is_small():
     eye = table["Eye of Ugin"]
     assert eye.mana == 0 and eye.params["reduces"] == 2 and eye.params["tutor_cost"] == 7
     assert table["Mana Vault"].params["untap_cost"] == 4
-    assert all(b.kind in {"land", "rock", "doubler", "untap"} for b in table.values())
+    assert all(b.kind in {None, "land", "rock", "doubler", "untap"} for b in table.values())
 
 
 def test_profile_of_sol_ring_is_fast_mana_rock():
@@ -146,3 +146,8 @@ def test_effects_only_entry_has_no_kind():
 def test_entry_without_kind_or_effects_is_rejected():
     with pytest.raises(ValueError, match="Nothing Card"):
         special_behaviours_from({"version": 2, "cards": {"Nothing Card": {"mana": 1, "note": "x"}}})
+
+
+def test_colossus_table_entry():
+    entry = load_special_behaviours()["Cultivator Colossus"]
+    assert entry.effects == (Effect("etb", "chain_lands_from_hand"),) and entry.kind is None

@@ -84,3 +84,45 @@ def pay(cost: ManaCost, units: list[Unit], reduction: int = 0) -> list[Unit] | N
 
 def can_pay(cost: ManaCost, units: list[Unit], reduction: int = 0) -> bool:
     return pay(cost, units, reduction) is not None
+
+
+@dataclass(frozen=True)
+class ActivationCost:
+    mana: ManaCost
+    tap: bool = False
+    sacrifice_self: bool = False
+    sacrifice_lands: int = 0
+    sacrifice_creatures: int = 0
+
+
+_COST_PART = re.compile(r"[^\s<>]+(?:<[^>]*>)?")
+_MANA_PART = re.compile(r"^(?:\d+|[WUBRGC](?:/[WUBRGCP])?)$")
+_SAC_PART = re.compile(r"^Sac<(\d+)/(CARDNAME|Land|Creature)(?:/[^>]*)?>$")
+_LIFE_PART = re.compile(r"^PayLife<\d+>$")
+
+
+def parse_activation_cost(text: str) -> ActivationCost:
+    """Parse a Forge `Cost$` ("3 G Sac<1/CARDNAME>"). Life is not a resource, so PayLife<N> is accepted and
+    dropped; any part outside mana, T, PayLife<N> and Sac<N/CARDNAME|Land|Creature> raises ValueError naming it."""
+    mana: list[str] = []
+    tap = sacrifice_self = False
+    lands = creatures = 0
+    for part in _COST_PART.findall(text or ""):
+        if part == "T":
+            tap = True
+        elif _MANA_PART.match(part):
+            mana.append("{" + part + "}")
+        elif _LIFE_PART.match(part):
+            continue
+        elif (m := _SAC_PART.match(part)) is not None:
+            n, what = int(m.group(1)), m.group(2)
+            if what == "CARDNAME":
+                sacrifice_self = True
+            elif what == "Land":
+                lands += n
+            else:
+                creatures += n
+        else:
+            raise ValueError(f"unsupported activation cost part {part!r} in {text!r}")
+    return ActivationCost(parse_cost("".join(mana)),
+                          tap, sacrifice_self, lands, creatures)

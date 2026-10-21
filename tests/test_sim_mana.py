@@ -1,6 +1,8 @@
+import re
+
 import pytest
 
-from edhpower.sim.mana import ANY_COLOR, COLORLESS, ManaCost, Pip, can_pay, parse_cost, pay
+from edhpower.sim.mana import ANY_COLOR, COLORLESS, ActivationCost, ManaCost, Pip, can_pay, parse_activation_cost, parse_cost, pay
 
 G, U, W = frozenset({"G"}), frozenset({"U"}), frozenset({"W"})
 
@@ -58,3 +60,20 @@ def test_phyrexian_pips_never_consume_a_mana_unit():
     # A Phyrexian-only cost needs no mana at all, and leaves any pool untouched.
     assert pay(parse_cost("{W/P}{W/P}"), []) == []
     assert pay(parse_cost("{G/P}"), [G, ANY_COLOR]) == [G, ANY_COLOR]
+
+
+def test_parse_activation_cost():
+    assert parse_activation_cost("3 G Sac<1/CARDNAME>") == ActivationCost(parse_cost("{3}{G}"), False, True, 0, 0)
+    assert parse_activation_cost("T PayLife<1> Sac<1/CARDNAME>") == ActivationCost(parse_cost(""), True, True, 0, 0)
+    assert parse_activation_cost("Sac<1/Land>").sacrifice_lands == 1
+    assert parse_activation_cost("Sac<2/Creature>").sacrifice_creatures == 2
+    assert parse_activation_cost("2 T Sac<1/CARDNAME>") == ActivationCost(parse_cost("{2}"), True, True, 0, 0)
+    assert parse_activation_cost("") == ActivationCost(parse_cost(""), False, False, 0, 0)
+
+
+@pytest.mark.parametrize("text, part", [("X T", "X"), ("T Sac<1/Forest;Plains/Forest or Plains>", "Sac<1/Forest;Plains/Forest or Plains>"),
+                                        ("Discard<1/Card>", "Discard<1/Card>"),
+                                        ("Sac<1/Creature.Other/another creature>", "Sac<1/Creature.Other/another creature>")])
+def test_parse_activation_cost_rejects_unknown(text, part):
+    with pytest.raises(ValueError, match=re.escape(repr(part))):
+        parse_activation_cost(text)
