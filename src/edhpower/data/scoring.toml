@@ -79,6 +79,7 @@ opponents = 3               # opponents at the table: lethal_table needs every o
 metalcraft_count = 3        # artifacts needed for requires = "metalcraft" sources
 max_two_card_lines = 8      # scrollvault's caps on simulated Spellbook lines
 max_three_card_lines = 6
+mass_return_min_lands = 4    # a mass land return is cast with this many lands in the graveyard and a landfall source out (or on the last two turns)
 lethal_features = ["infinite damage", "win the game", "loses the game", "lifeloss", "life loss", "infinite mill", "poison"]
 
 [sim.payoffs]

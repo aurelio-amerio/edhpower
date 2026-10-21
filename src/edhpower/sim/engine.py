@@ -9,14 +9,15 @@ from dataclasses import dataclass, field
 from edhpower.config import SimConfig
 from edhpower.sim.combos import SimLine, missing_pieces, payoff_ready, pieces_to_cast
 from edhpower.sim.effects import Effect, condition_holds
-from edhpower.sim.mana import ANY_COLOR, COLORLESS, ManaCost, Unit, pay
+from edhpower.sim.mana import ANY_COLOR, COLORLESS, ActivationCost, ManaCost, Unit, parse_activation_cost, pay
 from edhpower.sim.model import SimCard, SimDeck, reduction_applies, token_card
 
 CLOCKS: tuple[str, ...] = ("commander", "mana_threshold", "tipping_target", "threat", "combat", "combo", "lethal_combo",
                            "lethal_table", "first_opponent", "win")
-MAIN_ORDER: tuple[str, ...] = ("rock", "dork", "reducer", "ramp_spell", "draw_spell", "commander", "tutor", "combo",
+MAIN_ORDER: tuple[str, ...] = ("rock", "dork", "reducer", "ramp_spell", "spell", "draw_spell", "commander", "tutor", "combo",
                                "threat", "creature", "engine", "permanent")
-CHEAPEST_FIRST = {"rock", "dork", "reducer", "engine", "permanent", "ramp_spell", "draw_spell", "tutor"}
+CHEAPEST_FIRST = {"rock", "dork", "reducer", "engine", "permanent", "ramp_spell", "spell", "draw_spell", "tutor"}
+ALWAYS_WANTED = {"mill", "token", "counters", "drain"}   # cast effects worth casting whenever the spell is payable
 UNTAP_RANK = {"permanents": 3, "artifacts": 2, "one_artifact": 1}
 
 
@@ -49,6 +50,7 @@ class Game:
         self.rng.shuffle(self.library)
         self.hand: list[str] = []
         self.board: list[Perm] = []
+        self.graveyard: list[str] = []
         self.command_zone: set[str] = {c.name for c in deck.commanders}
         self.pool: list[Unit] = []
         self.turn = 0
@@ -240,20 +242,22 @@ class Game:
             have |= p.card.produces
         return frozenset(needed - have)
 
-    def _land_priority(self, c: SimCard, needed: frozenset[str]) -> int:
+    def _land_priority(self, c: SimCard, needed: frozenset[str], tapped: bool = False) -> int:
+        """How much a land is worth playing now; `tapped`: it enters tapped whatever the card says (a return)."""
+        enters_tapped = c.enters_tapped or tapped
         if c.params.get("sacrifice_on_land_drop"):
             return 8 if self.turn <= 2 else 1
         if "tron" in c.params:
             have = len(self._tron_names())
             return 9 if have == 2 else 7 if have == 1 else 5
-        if c.mana >= 2 and not c.enters_tapped:
+        if c.mana >= 2 and not enters_tapped:
             return 10
         if c.params.get("scales_with") == "creatures":
             return 3 + self._creature_count()
         if c.mana == 0:
             return 4 if self.turn >= 4 else 1
         fixes = bool(c.produces & needed)
-        if c.enters_tapped:
+        if enters_tapped:
             return 3 if fixes else 2
         return 6 if fixes else 5
 
@@ -263,14 +267,17 @@ class Game:
             return
         needed = self._needed_colors()
         pick = max(lands, key=lambda n: (self._land_priority(self.cards[n], needed), -self.hand.index(n)))
-        if any(p.card.params.get("sacrifice_on_land_drop") for p in self.board):
-            self.board = [p for p in self.board if not p.card.params.get("sacrifice_on_land_drop")]
-            self._lands_left()
-        self.hand.remove(pick)
-        card = self.cards[pick]
-        perm = Perm(card, self.turn, tapped=card.enters_tapped)
+        for p in [p for p in self.board if p.card.params.get("sacrifice_on_land_drop")]:
+            self._sacrifice(p)
+        self._put_land(pick, self.cards[pick].enters_tapped, "hand")
+
+    def _put_land(self, name: str, tapped: bool, zone: str) -> Perm:
+        """Move the land `name` from `zone` ("hand" | "graveyard" | "library") onto the battlefield; it enters (landfall)."""
+        {"hand": self.hand, "graveyard": self.graveyard, "library": self.library}[zone].remove(name)
+        perm = Perm(self.cards[name], self.turn, tapped=tapped)
         self.board.append(perm)
         self._land_entered(perm)
+        return perm
 
     def _basic_in_library(self) -> int | None:
         """Index of the first 1-mana land in the library (what a land-search spell finds), or None."""
@@ -280,21 +287,44 @@ class Game:
         idx = self._basic_in_library()
         if idx is None:
             return False
-        name = self.library.pop(idx)
-        perm = Perm(self.cards[name], self.turn, tapped=True)
-        self.board.append(perm)
-        self._land_entered(perm)
+        self._put_land(self.library[idx], True, "library")   # the first copy of a name is the one at idx
         return True
 
     def _lands_left(self) -> None:
         self.distinct_lands = {p.card.name for p in self.board if p.card.is_land}
 
-    def _sacrifice_lands(self, n: int) -> None:
-        """Sacrifice `n` lands, lowest land priority first, keeping the last source of a colour that is still wanted."""
+    # ---- graveyard -----------------------------------------------------------------------------
+    def _gy_lands(self) -> list[str]:
+        return [n for n in self.graveyard if self.cards[n].is_land]
+
+    def _to_graveyard(self, name: str) -> None:
+        self.graveyard.append(name)
+
+    def _sacrifice(self, perm: Perm) -> None:
+        """Board -> graveyard (a token just leaves). A land also updates the distinct names and fires the
+        `land_sacrificed` effects of every other permanent on the board."""
+        idx = next(i for i, p in enumerate(self.board) if p is perm)
+        del self.board[idx]
+        if perm.card.role != "token":
+            self._to_graveyard(perm.card.name)
+        if perm.card.is_land:
+            self._lands_left()
+            for p, e in self._triggered("land_sacrificed"):
+                if p is not perm:
+                    self._fire(e, p)
+
+    def _crackable(self, p: Perm) -> bool:
+        """A land whose activated fetch is still worth cracking: it is two landfalls, not one."""
+        return self._basic_in_library() is not None and any(e.on == "activated" and e.do == "fetch" for e in p.card.effects)
+
+    def _sacrifice_lands(self, n: int) -> int:
+        """Sacrifice `n` lands, lowest land priority first, keeping the last source of a colour that is still wanted
+        and an uncracked fetch while another land qualifies. Returns how many were sacrificed."""
+        done = 0
         for _ in range(n):
             lands = [p for p in self.board if p.card.is_land]
             if not lands:
-                return
+                break
             wanted = self._pip_colors((*self.hand, *self.command_zone))
             needed = frozenset(wanted)
 
@@ -305,9 +335,59 @@ class Game:
                         others |= q.card.produces
                 return bool((p.card.produces & wanted) - others)
 
-            victim = min(lands, key=lambda p: (strands(p), self._land_priority(p.card, needed)))
-            self.board.remove(victim)
-        self._lands_left()
+            victim = min(lands, key=lambda p: (strands(p), self._crackable(p), self._land_priority(p.card, needed)))
+            self._sacrifice(victim)
+            done += 1
+        return done
+
+    def _mill(self, n: int) -> list[str]:
+        """The top `n` cards of the library (its end, as `_draw`) into the graveyard, in that order."""
+        out: list[str] = []
+        for _ in range(n):
+            if not self.library:
+                break
+            out.append(self.library.pop())
+            self._to_graveyard(out[-1])
+        return out
+
+    def _best_gy_land(self, tapped: bool) -> str:
+        needed = self._needed_colors()
+        gy = self._gy_lands()
+        return max(gy, key=lambda n: (self._land_priority(self.cards[n], needed, tapped), -gy.index(n)))
+
+    def _return_lands(self, n: int | str) -> int:
+        """Graveyard lands onto the battlefield tapped, one at a time, best land priority first; "all" = every one."""
+        count = 0
+        while self._gy_lands() and (n == "all" or count < int(n)):
+            self._put_land(self._best_gy_land(True), True, "graveyard")
+            count += 1
+        return count
+
+    def _return_lands_to_hand(self, n: int) -> int:
+        count = 0
+        while self._gy_lands() and count < n:
+            name = self._best_gy_land(False)
+            self.graveyard.remove(name)
+            self.hand.append(name)
+            count += 1
+        return count
+
+    def _pay_additional(self, cost: ActivationCost, source: Perm | None) -> bool:
+        """Pay the non-mana parts of an effect's cost: sacrifice the source itself, then lands. False, with nothing
+        sacrificed, when any part cannot be paid. Creature sacrifices are not paid in stage 2."""
+        if cost.sacrifice_creatures:
+            return False
+        on_board = source is not None and any(p is source for p in self.board)
+        if cost.sacrifice_self and not on_board:
+            return False
+        lands = sum(1 for p in self.board if p.card.is_land and not (cost.sacrifice_self and p is source))
+        if lands < cost.sacrifice_lands:
+            return False
+        if cost.sacrifice_self and source is not None:
+            self._sacrifice(source)
+        if cost.sacrifice_lands:
+            self._sacrifice_lands(cost.sacrifice_lands)
+        return True
 
     # ---- triggers ------------------------------------------------------------------------------
     def _triggered(self, on: str) -> list[tuple[Perm, Effect]]:
@@ -373,13 +453,21 @@ class Game:
 
     def _fire(self, effect: Effect, source: Perm | None) -> None:
         """Resolve one effect. `source` is the permanent it belongs to (None for a spell)."""
-        del source
         e = self._applicable(effect)
         if e is None:
             return
         if e.do == "token":
             self._create_tokens(e)
             return
+        if e.do == "return_lands":
+            self._return_lands(e.n)
+            return
+        if e.do == "fetch" and e.on != "activated":   # an activation pays its whole cost before firing
+            cost = parse_activation_cost(e.cost)
+            left = pay(cost.mana, self.pool) if cost.mana.total else self.pool
+            if left is None or not self._pay_additional(cost, source):
+                return
+            self.pool = left
         n = self._amount(e)
         if n <= 0:
             return
@@ -397,6 +485,14 @@ class Game:
                 self.life[i] -= n
         elif e.do == "pump":
             self.pumps.append(e)
+        elif e.do == "mill":
+            self._mill(n)
+        elif e.do == "return_lands_to_hand":
+            self._return_lands_to_hand(n)
+        elif e.do == "fetch":
+            for _ in range(n):
+                if not self._fetch_land():
+                    break
         # anthem is read by _board_power and _attack_powers
 
     def _resolve(self, name: str, from_hand: bool) -> None:
@@ -410,23 +506,27 @@ class Game:
         self.casts += 1
         if c.role == "threat" and from_hand:
             self._stamp("threat")
-        if c.role == "one_shot":
+        if c.role == "one_shot" and not c.is_spell:
             self._add_units(c.produces, c.mana, False)
             return
-        if c.role == "ramp_spell":
-            self._sacrifice_lands(c.ramp_sacrifice_lands)
-            for _ in range(c.ramp_to_battlefield):
-                self._fetch_land()
-            for _ in range(c.ramp_to_hand):
-                idx = self._basic_in_library()
-                if idx is None:
-                    break
-                self.hand.append(self.library.pop(idx))
-            return
-        if c.role == "draw_spell":
-            self._draw(c.draw)
-            return
         if c.is_spell:
+            if c.role == "one_shot":
+                self._add_units(c.produces, c.mana, False)
+            elif c.role == "ramp_spell":
+                self._sacrifice_lands(c.ramp_sacrifice_lands)
+                for _ in range(c.ramp_to_battlefield):
+                    self._fetch_land()
+                for _ in range(c.ramp_to_hand):
+                    idx = self._basic_in_library()
+                    if idx is None:
+                        break
+                    self.hand.append(self.library.pop(idx))
+            elif c.role == "draw_spell":
+                self._draw(c.draw)
+            for e in c.effects:
+                if e.on == "cast" and e.do != "pump":   # pumps fire from _try_pump only
+                    self._fire(e, None)
+            self._to_graveyard(name)
             return
         perm = Perm(c, self.turn)
         self.board.append(perm)
@@ -452,6 +552,27 @@ class Game:
         names = [n for n in self.hand if self.cards[n].role == role and self._try_pay(self.cards[n]) is not None]
         key = (lambda n: self.cards[n].cmc) if role in CHEAPEST_FIRST else (lambda n: -self.cards[n].cmc)
         return sorted(names, key=key)
+
+    def _spell_wanted(self, c: SimCard) -> bool:
+        """Cast this `spell` now: some applied non-pump cast effect of it is worth it on this board."""
+        for effect in c.effects:
+            if effect.on != "cast" or effect.do == "pump":
+                continue
+            e = self._applicable(effect)
+            if e is None:
+                continue
+            if e.do in ALWAYS_WANTED:
+                return True
+            if e.do == "return_lands":
+                gy = len(self._gy_lands())
+                if gy >= 1 and ((gy >= self.cfg.mass_return_min_lands and self._triggered("landfall"))
+                                or self.turn >= self.cfg.max_turn - 1):
+                    return True
+            elif e.do == "return_lands_to_hand":
+                drops = 1 + sum(int(x.n) for p in self.board for x in p.card.effects if x.on == "static" and x.do == "extra_land")
+                if self._gy_lands() and sum(1 for n in self.hand if self.cards[n].is_land) < drops:
+                    return True
+        return False
 
     def _tutor_target(self) -> str | None:
         board, hand, cz = self._zones()
@@ -539,7 +660,8 @@ class Game:
             if len(after) <= len(self.pool):
                 continue
             enables = any(self._try_pay(self.cards[m]) is None and self._try_pay(self.cards[m], after) is not None
-                          for m in self.hand if m != n and self.cards[m].role not in ("held", "land", "one_shot"))
+                          for m in self.hand if m != n and self.cards[m].role not in ("held", "land", "one_shot")
+                          and (self.cards[m].role != "spell" or self._spell_wanted(self.cards[m])))
             if enables or any(self._try_pay(self.cards[m], after) is not None and self._try_pay(self.cards[m]) is None for m in self.command_zone):
                 self._cast(n)
                 return True
@@ -587,6 +709,8 @@ class Game:
         if role == "ramp_spell":
             lands = self._land_count()
             names = [n for n in names if self.cards[n].ramp_sacrifice_lands <= lands]
+        elif role == "spell":
+            names = [n for n in names if self._spell_wanted(self.cards[n])]
         if not names:
             return False
         self._cast(names[0])

@@ -81,6 +81,7 @@ class SimConfig:
     metalcraft_count: int
     max_two_card_lines: int
     max_three_card_lines: int
+    mass_return_min_lands: int
     lethal_features: tuple[str, ...]
     payoff_resources: tuple[tuple[str, re.Pattern[str]], ...]
     payoff_converts: dict[str, tuple[str, ...]]
@@ -229,6 +230,7 @@ def _sim_from(raw: dict[str, Any]) -> SimConfig:
         metalcraft_count=int(raw["metalcraft_count"]),
         max_two_card_lines=int(raw["max_two_card_lines"]),
         max_three_card_lines=int(raw["max_three_card_lines"]),
+        mass_return_min_lands=int(raw["mass_return_min_lands"]),
         lethal_features=tuple(str(f).lower() for f in raw["lethal_features"]),
         **_payoffs_from(raw["payoffs"]),
     )

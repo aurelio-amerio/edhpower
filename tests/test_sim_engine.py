@@ -636,3 +636,166 @@ def test_token_created_does_not_make_tokens_from_tokens():
     g.board.append(Perm(card, 0))
     g._fire(Effect("landfall", "token", 1, 4, 4, "Beast"), None)   # would recurse without the guard
     assert _tokens(g, "Beast") == 1 and _tokens(g, "Elf") == 0
+
+
+# ---- stage 2: graveyard, sacrifice, mill, cast effects on resolution, spell policies, mass return -------------
+
+from .test_sim_effects import (AFTERMATH_ANALYST, EVOLVING_WILDS, LIFE_FROM_THE_LOAM, SPLENDID_RECLAMATION, SPRINGBLOOM_DRUID,
+                               TITANIA)
+from .test_sim_model import CAST_TOKENS
+
+SPLENDID_C = make_card("Splendid Reclamation", cmc=4.0, mana_cost="{3}{G}", type_line="Sorcery", colors=["G"])
+LOAM_C = make_card("Life from the Loam", cmc=2.0, mana_cost="{1}{G}", type_line="Sorcery", colors=["G"])
+ANALYST_C = make_card("Aftermath Analyst", cmc=2.0, mana_cost="{1}{G}", type_line="Creature — Elf Detective", power="1", toughness="3", colors=["G"])
+TITANIA_C = make_card("Titania, Protector of Argoth", cmc=5.0, mana_cost="{3}{G}{G}", type_line="Legendary Creature — Elemental",
+                      power="5", toughness="3", colors=["G"])
+SPRINGBLOOM_C = make_card("Springbloom Druid", cmc=3.0, mana_cost="{2}{G}", type_line="Creature — Elf Druid", power="1", toughness="1", colors=["G"])
+CAST_TOKENS_C = make_card("Cast Tokens", cmc=2.0, mana_cost="{1}{W}", type_line="Instant", colors=["W"])
+WILDS_C = make_card("Evolving Wilds", cmc=0.0, mana_cost="", type_line="Land",
+                    oracle_text="{T}, Sacrifice Evolving Wilds: Search your library for a basic land card, put it onto the battlefield tapped, then shuffle.")
+BARRENS = make_card("Scoured Barrens", cmc=0.0, mana_cost="", type_line="Land",
+                    oracle_text="Scoured Barrens enters tapped.\nWhen Scoured Barrens enters, you gain 1 life.\n{T}: Add {W} or {B}.",
+                    produced_mana=["W", "B"])
+
+SCRIPTS2 = {**SCRIPTS, "Splendid Reclamation": SPLENDID_RECLAMATION, "Life from the Loam": LIFE_FROM_THE_LOAM,
+            "Aftermath Analyst": AFTERMATH_ANALYST, "Titania, Protector of Argoth": TITANIA, "Springbloom Druid": SPRINGBLOOM_DRUID,
+            "Cast Tokens": CAST_TOKENS, "Evolving Wilds": EVOLVING_WILDS}
+
+
+def _fx2(entries, tags=None):
+    return _fx_deck(CMD, entries, tags=tags, scripts=SCRIPTS2)
+
+
+def _lands(g):
+    return [p for p in g.board if p.card.is_land]
+
+
+def test_resolved_spells_go_to_the_graveyard():
+    deck = _fx2([(FOREST, 39), (HARROW_C, 1)], tags={"land-ramp": ["Harrow"]})
+    assert "held" not in {c.role for c in deck.cards.values()}
+    g = _staged(deck, ["Forest"] * 3, hand=["Harrow"], turn=4)
+    g.command_zone = set()
+    g.pool = g._produce()
+    g._cast("Harrow")
+    assert g.graveyard == ["Forest", "Harrow"]   # the sacrificed land, then the resolved spell
+    assert g._gy_lands() == ["Forest"]
+
+
+def test_sacrificed_land_fires_land_sacrificed():
+    deck = _fx2([(FOREST, 38), (HARROW_C, 1), (TITANIA_C, 1)], tags={"land-ramp": ["Harrow"]})
+    g = _staged(deck, ["Forest"] * 3 + ["Titania, Protector of Argoth"], hand=["Harrow"], turn=4)
+    g.command_zone = set()
+    g.pool = g._produce()
+    g._cast("Harrow")
+    assert _tokens(g, "Elemental") == 1 and "Forest" in g.graveyard and "Harrow" in g.graveyard
+
+
+def test_mill_fills_the_graveyard_from_the_top():
+    deck = _fx2([(FOREST, 36), (ISLAND, 1), (SWAMP, 1), (MOUNTAIN, 1), (ANALYST_C, 1)])
+    g = _staged(deck, ["Forest"] * 2, hand=["Aftermath Analyst"], library=["Swamp", "Mountain", "Island", "Forest"], turn=2)
+    g.command_zone = set()
+    g.pool = g._produce()
+    g._cast("Aftermath Analyst")
+    assert g.graveyard == ["Forest", "Island", "Mountain"] and g.library == ["Swamp"]   # top of the library is its end
+    assert any(p.card.name == "Aftermath Analyst" for p in g.board)
+
+
+def _splendid_game(deck, gy_lands, baloths, turn):
+    board = ["Forest"] * 6 + (["Rampaging Baloths"] if baloths else [])
+    g = _staged(deck, board, hand=["Splendid Reclamation"], turn=turn)
+    g.command_zone = set()
+    g.graveyard = ["Forest"] * gy_lands
+    g.pool = g._produce()
+    g._main_phase()
+    return g
+
+
+def test_mass_return_waits_for_four_lands_and_a_landfall_source():
+    deck = _fx2([(FOREST, 38), (SPLENDID_C, 1), (BALOTHS_C, 1)])
+    assert CFG.mass_return_min_lands == 4
+    g = _splendid_game(deck, 3, True, 5)
+    assert "Splendid Reclamation" in g.hand and g._gy_lands() == ["Forest"] * 3
+    g = _splendid_game(deck, 4, True, 5)
+    assert "Splendid Reclamation" not in g.hand and g.graveyard == ["Splendid Reclamation"]
+    returned = [p for p in _lands(g) if p.entered == 5]
+    assert len(returned) == 4 and all(p.tapped for p in returned) and _tokens(g, "Beast") == 4
+    g = _splendid_game(deck, 4, False, 5)
+    assert "Splendid Reclamation" in g.hand
+    g = _splendid_game(deck, 4, False, CFG.max_turn - 1)
+    assert "Splendid Reclamation" not in g.hand and len(_lands(g)) == 10
+
+
+def test_return_lands_picks_best_priority_first():
+    deck = _fx2([(FOREST, 37), (BARRENS, 1), (VIRTUE_C, 1), (TITANIA_C, 1)])
+    assert deck.cards["Scoured Barrens"].enters_tapped and not deck.cards["Forest"].enters_tapped
+    g = _staged(deck, ["Forest"] * 5, hand=["Titania, Protector of Argoth", "Intangible Virtue"], turn=5)
+    g.command_zone = set()
+    g.graveyard = ["Forest", "Scoured Barrens"]
+    g.pool = g._produce()
+    g._cast("Titania, Protector of Argoth")
+    back = [p for p in _lands(g) if p.entered == 5]
+    assert [p.card.name for p in back] == ["Scoured Barrens"] and back[0].tapped   # both enter tapped: the fixer wins
+    assert g.graveyard == ["Forest"] and "Scoured Barrens" in g.distinct_lands
+
+
+def test_loam_returns_three_lands_when_the_hand_lacks_one():
+    deck = _fx2([(FOREST, 39), (LOAM_C, 1)])
+    assert deck.cards["Life from the Loam"].role == "spell"
+    g = _staged(deck, ["Forest"] * 3, hand=["Life from the Loam"], turn=5)
+    g.command_zone = set()
+    g.graveyard = ["Forest"] * 4
+    g.pool = g._produce()
+    g._main_phase()
+    assert g.hand == ["Forest"] * 3 and g.graveyard == ["Forest", "Life from the Loam"]
+    g = _staged(deck, ["Forest"] * 3, hand=["Life from the Loam", "Forest"], turn=5)
+    g.command_zone = set()
+    g.graveyard = ["Forest"] * 4
+    g.pool = g._produce()
+    g._main_phase()
+    assert "Life from the Loam" in g.hand and g.graveyard == ["Forest"] * 4
+
+
+def test_cast_effects_fire_on_resolution():
+    deck = _fx2([(PLAINS, 39), (CAST_TOKENS_C, 1)])
+    assert deck.cards["Cast Tokens"].role == "spell"
+    g = _staged(deck, ["Plains"] * 2, hand=["Cast Tokens"], library=["Plains"] * 5, turn=2)
+    g.command_zone = set()
+    g.pool = g._produce()
+    g._cast("Cast Tokens")
+    assert _tokens(g, "Soldier") == 2 and g.graveyard == ["Cast Tokens"]
+
+
+def test_token_spell_is_cast_in_the_main_phase():
+    deck = _fx2([(PLAINS, 39), (CAST_TOKENS_C, 1)])
+    g = _staged(deck, ["Plains"] * 2, hand=["Cast Tokens"], library=["Plains"] * 5, turn=2)
+    g.command_zone = set()
+    g.pool = g._produce()
+    g._main_phase()
+    assert _tokens(g, "Soldier") == 2 and not g.hand
+
+
+def test_triggered_fetch_pays_its_land_cost():
+    deck = _fx2([(FOREST, 39), (SPRINGBLOOM_C, 1)])
+    g = _staged(deck, ["Forest"] * 2, hand=["Springbloom Druid"], library=["Forest"] * 5, turn=3)
+    g.command_zone = set()
+    g.pool = g._produce() + [frozenset("G")]
+    g._cast("Springbloom Druid")
+    fetched = [p for p in _lands(g) if p.entered == 3]
+    assert len(_lands(g)) == 3 and len(fetched) == 2 and all(p.tapped for p in fetched)
+    assert g.graveyard == ["Forest"] and len(g.library) == 3
+    g = _staged(deck, [], hand=["Springbloom Druid"], library=["Forest"] * 5, turn=3)
+    g.command_zone = set()
+    g.pool = [frozenset("G")] * 3
+    g._cast("Springbloom Druid")
+    assert not _lands(g) and len(g.library) == 5 and g.graveyard == []
+    assert any(p.card.name == "Springbloom Druid" for p in g.board)
+
+
+def test_land_sacrifice_spares_an_uncracked_fetch():
+    deck = _fx2([(FOREST, 38), (WILDS_C, 1), (HARROW_C, 1)], tags={"land-ramp": ["Harrow"]})
+    assert any(e.on == "activated" and e.do == "fetch" for e in deck.cards["Evolving Wilds"].effects)
+    g = _staged(deck, ["Evolving Wilds", "Forest", "Forest"], library=["Forest"] * 5, turn=4)
+    assert g._sacrifice_lands(1) == 1
+    assert g.graveyard == ["Forest"] and any(p.card.name == "Evolving Wilds" for p in g.board)
+    g = _staged(deck, ["Evolving Wilds"], library=["Forest"] * 5, turn=4)
+    assert g._sacrifice_lands(2) == 1 and g.graveyard == ["Evolving Wilds"]   # the only land qualifies after all

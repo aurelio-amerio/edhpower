@@ -161,3 +161,8 @@ def test_forge_config_pinned():
     import re
     f = load_config().forge
     assert re.fullmatch(r"[0-9a-f]{40}", f.commit) and f.min_interval == 0.1
+
+
+def test_config_mass_return_min_lands():
+    cfg = load_config()
+    assert cfg.sim.mass_return_min_lands == 4 and cfg.sim.version == 3
