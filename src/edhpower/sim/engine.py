@@ -3,18 +3,21 @@
 from __future__ import annotations
 
 import random
+from collections.abc import Iterable
 from dataclasses import dataclass, field
 
 from edhpower.config import SimConfig
 from edhpower.sim.combos import SimLine, missing_pieces, payoff_ready, pieces_to_cast
-from edhpower.sim.mana import COLORLESS, ManaCost, Unit, pay
-from edhpower.sim.model import SimCard, SimDeck, reduction_applies
+from edhpower.sim.effects import Effect, condition_holds
+from edhpower.sim.mana import ANY_COLOR, COLORLESS, ManaCost, Unit, pay
+from edhpower.sim.model import SimCard, SimDeck, reduction_applies, token_card
 
 CLOCKS: tuple[str, ...] = ("commander", "mana_threshold", "tipping_target", "threat", "combat", "combo", "lethal_combo")
 MAIN_ORDER: tuple[str, ...] = ("rock", "dork", "reducer", "ramp_spell", "draw_spell", "commander", "tutor", "combo",
                                "threat", "creature", "engine", "permanent")
 CHEAPEST_FIRST = {"rock", "dork", "reducer", "engine", "permanent", "ramp_spell", "draw_spell", "tutor"}
 UNTAP_RANK = {"permanents": 3, "artifacts": 2, "one_artifact": 1}
+OPPONENTS = 3
 
 
 @dataclass
@@ -22,6 +25,7 @@ class Perm:
     card: SimCard
     entered: int
     tapped: bool = False
+    counters: int = 0   # +1/+1 counters
 
 
 @dataclass
@@ -29,6 +33,10 @@ class GameRecord:
     clocks: dict[str, int | None]
     mana_by_turn: list[int]
     idle_by_turn: list[bool]
+    tokens_by_turn: dict[str, list[int]] = field(default_factory=dict)   # token type -> tokens on board at end of turn
+    board_power_by_turn: list[int] = field(default_factory=list)   # power of creatures able to attack that turn
+    lands_by_turn: list[int] = field(default_factory=list)
+    landfall_by_turn: list[int] = field(default_factory=list)   # lands that entered that turn
 
 
 class Game:
@@ -47,7 +55,15 @@ class Game:
         self.casts = 0
         self.fired: set[str] = set()
         self.pending_payoff: set[str] = set()
-        self.record = GameRecord({k: None for k in CLOCKS}, [0] * (cfg.max_turn + 1), [False] * (cfg.max_turn + 1))
+        self.life: list[int] = [cfg.lethal_damage] * OPPONENTS
+        self.distinct_lands: set[str] = set()
+        self.landfalls = 0   # lands that entered this turn
+        self.token_cards: dict[tuple[str, int, int], SimCard] = {}
+        n = cfg.max_turn + 1
+        token_types = sorted({e.type for c in deck.cards.values() for top in c.effects for e in (top, top.upgrade)
+                              if e is not None and e.do == "token"})
+        self.record = GameRecord({k: None for k in CLOCKS}, [0] * n, [False] * n, {k: [0] * n for k in token_types},
+                                 [0] * n, [0] * n, [0] * n)
         self._opening_hand()
 
     # ---- setup -------------------------------------------------------------------------------
@@ -82,6 +98,33 @@ class Game:
 
     def _creature_count(self) -> int:
         return sum(1 for p in self.board if p.card.is_creature)
+
+    def _land_count(self) -> int:
+        return sum(1 for p in self.board if p.card.is_land)
+
+    def _token_count(self) -> int:
+        return sum(1 for p in self.board if p.card.role == "token")
+
+    @staticmethod
+    def _in_scope(card: SimCard, scope: str) -> bool:
+        """`scope` of an anthem/counters effect: "" every creature, "tokens" creature tokens, else a creature type."""
+        if not card.is_creature:
+            return False
+        if scope == "tokens":
+            return card.role == "token"
+        return not scope or scope in card.subtypes
+
+    def _anthems(self) -> list[Effect]:
+        return [e for p in self.board for e in p.card.effects if e.do == "anthem"]
+
+    def _anthem_bonus(self, card: SimCard, anthems: list[Effect] | None = None) -> int:
+        return sum(e.power for e in (self._anthems() if anthems is None else anthems) if self._in_scope(card, e.type))
+
+    def _board_power(self) -> int:
+        """Power of the creatures (tokens included) able to attack this turn: printed power, counters and anthems."""
+        anthems = self._anthems()
+        return sum(p.card.power + p.counters + (self._anthem_bonus(p.card, anthems) if anthems else 0)
+                   for p in self.board if p.card.is_creature and p.entered < self.turn)
 
     def _tron_names(self) -> set[str]:
         return {p.card.name for p in self.board if "tron" in p.card.params}
@@ -144,8 +187,10 @@ class Game:
             self.pool.append(COLORLESS)
             self.produced += 1
 
-    def _produce(self) -> list[Unit]:
-        self.pool = []
+    def _produce(self, fresh: bool = True) -> list[Unit]:
+        """Tap every untapped source. `fresh` empties the pool first; otherwise mana already there (landfall) stays."""
+        if fresh:
+            self.pool = []
         for p in self.board:
             if p.tapped:
                 continue
@@ -155,12 +200,17 @@ class Game:
                 self._add_units(p.card.produces, n, True)
         return self.pool
 
-    def _needed_colors(self) -> frozenset[str]:
-        needed: set[str] = set()
-        for n in self.hand:
+    def _pip_colors(self, names: Iterable[str]) -> set[str]:
+        """Colours that the nonland cards `names` need as a single-colour pip."""
+        out: set[str] = set()
+        for n in names:
             c = self.cards[n]
             if not c.is_land:
-                needed |= {next(iter(pip.options)) for pip in c.cost.pips if len(pip.options) == 1}
+                out |= {next(iter(pip.options)) for pip in c.cost.pips if len(pip.options) == 1}
+        return out
+
+    def _needed_colors(self) -> frozenset[str]:
+        needed = self._pip_colors(self.hand)
         have: set[str] = set()
         for p in self.board:
             have |= p.card.produces
@@ -189,18 +239,131 @@ class Game:
             return
         needed = self._needed_colors()
         pick = max(lands, key=lambda n: (self._land_priority(self.cards[n], needed), -self.hand.index(n)))
-        self.board = [p for p in self.board if not p.card.params.get("sacrifice_on_land_drop")]
+        if any(p.card.params.get("sacrifice_on_land_drop") for p in self.board):
+            self.board = [p for p in self.board if not p.card.params.get("sacrifice_on_land_drop")]
+            self._lands_left()
         self.hand.remove(pick)
         card = self.cards[pick]
-        self.board.append(Perm(card, self.turn, tapped=card.enters_tapped))
+        perm = Perm(card, self.turn, tapped=card.enters_tapped)
+        self.board.append(perm)
+        self._land_entered(perm)
+
+    def _basic_in_library(self) -> int | None:
+        """Index of the first 1-mana land in the library (what a land-search spell finds), or None."""
+        return next((i for i, n in enumerate(self.library) if self.cards[n].is_land and self.cards[n].mana == 1), None)
 
     def _fetch_land(self) -> bool:
-        idx = next((i for i, n in enumerate(self.library) if self.cards[n].is_land and self.cards[n].mana == 1), None)
+        idx = self._basic_in_library()
         if idx is None:
             return False
         name = self.library.pop(idx)
-        self.board.append(Perm(self.cards[name], self.turn, tapped=True))
+        perm = Perm(self.cards[name], self.turn, tapped=True)
+        self.board.append(perm)
+        self._land_entered(perm)
         return True
+
+    def _lands_left(self) -> None:
+        self.distinct_lands = {p.card.name for p in self.board if p.card.is_land}
+
+    def _sacrifice_lands(self, n: int) -> None:
+        """Sacrifice `n` lands, lowest land priority first, keeping the last source of a colour that is still wanted."""
+        for _ in range(n):
+            lands = [p for p in self.board if p.card.is_land]
+            if not lands:
+                return
+            wanted = self._pip_colors((*self.hand, *self.command_zone))
+            needed = frozenset(wanted)
+
+            def strands(p: Perm) -> bool:
+                others: set[str] = set()
+                for q in self.board:
+                    if q is not p:
+                        others |= q.card.produces
+                return bool((p.card.produces & wanted) - others)
+
+            victim = min(lands, key=lambda p: (strands(p), self._land_priority(p.card, needed)))
+            self.board.remove(victim)
+        self._lands_left()
+
+    # ---- triggers ------------------------------------------------------------------------------
+    def _triggered(self, on: str) -> list[tuple[Perm, Effect]]:
+        """Board permanents' effects of kind `on`, in board order, snapshot before any of them resolves."""
+        return [(p, e) for p in self.board if p.card.effects for e in p.card.effects if e.on == on]
+
+    def _land_entered(self, perm: Perm) -> None:
+        self.distinct_lands.add(perm.card.name)
+        self.landfalls += 1
+        for e in perm.card.effects:
+            if e.on == "etb":
+                self._fire(e, perm)
+        for p, e in self._triggered("landfall"):
+            self._fire(e, p)
+
+    def _creature_entered(self, perm: Perm) -> None:
+        """A creature entered: its own `etb` effects, then the `creature_etb` effects of every other permanent.
+        A token entering does not fire token-making `creature_etb` effects: each such token would trigger it again."""
+        for e in perm.card.effects:
+            if e.on == "etb":
+                self._fire(e, perm)
+        is_token = perm.card.role == "token"
+        for p, e in self._triggered("creature_etb"):
+            if p is not perm and not (is_token and e.do == "token"):
+                self._fire(e, p)
+
+    def _tokens_created(self, n: int) -> None:
+        fx = self._triggered("token_created")
+        for _ in range(n):
+            for p, e in fx:
+                self._fire(e, p)
+
+    def _amount(self, e: Effect) -> int:
+        return self._land_count() if e.n == "lands" else int(e.n)
+
+    def _create_tokens(self, e: Effect) -> None:
+        n = self._amount(e)
+        if n <= 0:
+            return
+        key = (e.type, e.power, e.toughness)
+        card = self.token_cards.get(key)
+        if card is None:
+            card = self.token_cards[key] = token_card(*key)
+            self.record.tokens_by_turn.setdefault(e.type, [0] * (self.cfg.max_turn + 1))
+        made = [Perm(card, self.turn) for _ in range(n)]
+        self.board.extend(made)
+        self._tokens_created(n)
+        if any(e2.on == "creature_etb" for p in self.board for e2 in p.card.effects):
+            for perm in made:
+                self._creature_entered(perm)
+
+    def _fire(self, effect: Effect, source: Perm | None) -> None:
+        """Resolve one effect. `source` is the permanent it belongs to (None for a spell)."""
+        del source
+        e = effect
+        if e.when or (e.upgrade is not None and e.upgrade.when):
+            lands, tokens = self._land_count(), self._token_count()
+            if e.upgrade is not None and condition_holds(e.upgrade.when, len(self.distinct_lands), lands, tokens):
+                e = e.upgrade
+            elif not condition_holds(e.when, len(self.distinct_lands), lands, tokens):
+                return
+        if e.do == "token":
+            self._create_tokens(e)
+            return
+        n = self._amount(e)
+        if n <= 0:
+            return
+        if e.do == "counters":
+            for p in self.board:
+                if self._in_scope(p.card, e.type):
+                    p.counters += n
+        elif e.do == "mana":
+            self._add_units(ANY_COLOR, n, from_tap=False)
+        elif e.do == "drain":
+            if e.each_opponent:
+                self.life = [x - n for x in self.life]
+            else:
+                i = max(range(len(self.life)), key=lambda k: (self.life[k], -k))
+                self.life[i] -= n
+        # anthem is read by _board_power; pump arrives with combat
 
     def _resolve(self, name: str, from_hand: bool) -> None:
         """Put a paid-for card where it goes and apply its effect. Payment happened already."""
@@ -217,7 +380,14 @@ class Game:
             self._add_units(c.produces, c.mana, False)
             return
         if c.role == "ramp_spell":
-            self._fetch_land()
+            self._sacrifice_lands(c.ramp_sacrifice_lands)
+            for _ in range(c.ramp_to_battlefield):
+                self._fetch_land()
+            for _ in range(c.ramp_to_hand):
+                idx = self._basic_in_library()
+                if idx is None:
+                    break
+                self.hand.append(self.library.pop(idx))
             return
         if c.role == "draw_spell":
             self._draw(c.draw)
@@ -231,6 +401,12 @@ class Game:
             if n:
                 perm.tapped = True
                 self._add_units(c.produces, n, True)
+        if c.is_creature:
+            self._creature_entered(perm)
+        else:
+            for e in c.effects:
+                if e.on == "etb":
+                    self._fire(e, perm)
 
     def _cast(self, name: str, from_hand: bool = True) -> None:
         left = self._try_pay(self.cards[name])
@@ -349,6 +525,9 @@ class Game:
         if role == "ramp_spell" and not any(self.cards[n].is_land and self.cards[n].mana == 1 for n in self.library):
             return False
         names = self._castable(role)
+        if role == "ramp_spell":
+            lands = self._land_count()
+            names = [n for n in names if self.cards[n].ramp_sacrifice_lands <= lands]
         if not names:
             return False
         self._cast(names[0])
@@ -366,11 +545,13 @@ class Game:
         t = self.turn
         self.casts = 0
         self.produced = 0
+        self.landfalls = 0
+        self.pool = []
         self._untap()
         if t > 1:
             self._draw(1)
         self._play_land()
-        self._produce()
+        self._produce(fresh=False)
         if self._commander_castable():
             self._stamp("commander")
         self._main_phase()
@@ -380,6 +561,7 @@ class Game:
         if t <= self.cfg.max_turn:
             self.record.mana_by_turn[t] = self.produced
             self.record.idle_by_turn[t] = self.casts == 0
+            self._record_board(t)
         if self.produced >= self.cfg.mana_threshold:
             self._stamp("mana_threshold")
         if self.produced >= self.tipping_target:
@@ -387,6 +569,17 @@ class Game:
         self.damage += sum(p.card.power for p in self.board if p.card.is_creature and p.entered < t)
         if self.damage >= self.cfg.lethal_damage:
             self._stamp("combat")
+
+    def _record_board(self, t: int) -> None:
+        rec = self.record
+        counts = dict.fromkeys(rec.tokens_by_turn, 0)
+        for (type_, _, _), card in self.token_cards.items():
+            counts[type_] += sum(1 for p in self.board if p.card is card)
+        for type_, n in counts.items():
+            rec.tokens_by_turn[type_][t] = n
+        rec.board_power_by_turn[t] = self._board_power()
+        rec.lands_by_turn[t] = self._land_count()
+        rec.landfall_by_turn[t] = self.landfalls
 
 
 def play_game(deck: SimDeck, lines: list[SimLine], cfg: SimConfig, rng: random.Random, tipping_target: int) -> GameRecord:
