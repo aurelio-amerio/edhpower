@@ -146,7 +146,8 @@ def test_table_card_is_never_unmodelled():
     from edhpower.profile import SpecialBehaviour
     from edhpower.sim.effects import Effect
     from edhpower.sim import model
-    sb = SpecialBehaviour("Six", None, 0, effects=(Effect(on="landfall", do="drain"),))
+    table_fx = (Effect(on="landfall", do="drain"),)
+    sb = SpecialBehaviour("Six", None, 0, effects=table_fx)
     orig = model.load_special_behaviours
     model.load_special_behaviours = lambda: {"Six": sb}
     try:
@@ -154,3 +155,6 @@ def test_table_card_is_never_unmodelled():
     finally:
         model.load_special_behaviours = orig
     assert "Six" not in deck.unmodelled and "Six" in deck.effects_sources["table"]
+    assert deck.cards["Six"].effects == table_fx
+    assert "Six" not in deck.partial
+    assert "Six" not in deck.effects_sources["forge"]
