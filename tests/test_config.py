@@ -166,3 +166,8 @@ def test_forge_config_pinned():
 def test_config_mass_return_min_lands():
     cfg = load_config()
     assert cfg.sim.mass_return_min_lands == 4 and cfg.sim.version == 3
+
+
+def test_config_chain_cap():
+    cfg = load_config()
+    assert cfg.sim.chain_cap == 20 and cfg.sim.version == 3

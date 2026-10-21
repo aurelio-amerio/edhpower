@@ -998,3 +998,127 @@ def test_board_diagnostics_stage2():
     g.command_zone = set()
     g.take_turn()
     assert g.record.graveyard_lands_by_turn[4] == 1 and g.record.distinct_lands_by_turn[4] == 1
+
+
+# ---- stage 2: dredge in the draw step, Cultivator chains -----------------------------------------------------
+
+COLOSSUS_C = make_card("Cultivator Colossus", cmc=7.0, mana_cost="{4}{G}{G}{G}", type_line="Creature — Plant Beast", power="*",
+                       toughness="*", colors=["G"])
+
+
+def _fx5(entries, tags=None):
+    return _fx_deck(CMD, entries, tags=tags, scripts=SCRIPTS3)
+
+
+def _draw_game(deck, board, hand, graveyard, library, turn=3, drops=1):
+    g = _staged(deck, board, hand=hand, library=library, turn=turn)
+    g.command_zone = set()
+    g.graveyard = list(graveyard)
+    g.land_drops = drops
+    return g
+
+
+def test_dredge_replaces_the_draw_only_when_the_hand_lacks_a_land():
+    deck = _fx5([(FOREST, 38), (NECROBLOOM_C, 1), (BEAR, 1)])
+    g = _draw_game(deck, ["The Necrobloom"], ["Grizzly Bears"], ["Forest"], ["Grizzly Bears"] * 5)
+    g._draw_step()
+    assert g.dredged and sorted(g.hand) == ["Forest", "Grizzly Bears"] and len(g.library) == 3
+    assert g.graveyard == ["Grizzly Bears"] * 2   # the Forest left, two cards were milled
+    g = _draw_game(deck, ["The Necrobloom"], ["Forest"], ["Forest"], ["Grizzly Bears"] * 5)
+    g._draw_step()
+    assert not g.dredged and g.hand == ["Forest", "Grizzly Bears"] and g.graveyard == ["Forest"] and len(g.library) == 4
+    g = _draw_game(deck, ["Forest"], ["Grizzly Bears"], ["Forest"], ["Grizzly Bears"] * 5)   # no dredge source
+    g._draw_step()
+    assert not g.dredged and g.graveyard == ["Forest"] and g.hand == ["Grizzly Bears"] * 2
+
+
+def test_dredged_is_reset_each_turn():
+    deck = _fx5([(FOREST, 38), (NECROBLOOM_C, 1), (BEAR, 1)])
+    g = _draw_game(deck, ["The Necrobloom"], ["Grizzly Bears"], ["Forest"], ["Grizzly Bears"] * 10)
+    g.take_turn()
+    assert g.dredged and g.record.landfall_by_turn[4] == 1   # the dredged Forest is played
+    g.take_turn()
+    assert not g.dredged   # no land in the graveyard: a plain draw
+
+
+def test_dredge_never_replaces_the_opening_hand(monkeypatch):
+    deck = _fx5([(FOREST, 38), (NECROBLOOM_C, 1), (BEAR, 1)])
+    g = _game(deck)
+    assert len(g.hand) in (6, 7) and g.turn == 0
+    calls = []
+    monkeypatch.setattr(g, "_draw_step", lambda: calls.append(g.turn))
+    g.take_turn()
+    assert calls == []
+    g.take_turn()
+    assert calls == [2]
+
+
+def test_dredge_needs_enough_library():
+    deck = _fx5([(FOREST, 37), (NECROBLOOM_C, 1), (BEAR, 1), (LOAM_C, 1)])
+    g = _draw_game(deck, ["The Necrobloom"], ["Grizzly Bears"], ["Forest", "Life from the Loam"], ["Grizzly Bears"])
+    g._draw_step()   # dredge 2 and dredge 3 both need more cards than the library holds: draw the last one
+    assert not g.dredged and g.hand == ["Grizzly Bears"] * 2 and g.library == []
+    assert g.graveyard == ["Forest", "Life from the Loam"]
+    g = _draw_game(deck, ["The Necrobloom"], ["Grizzly Bears"], ["Forest", "Life from the Loam"], ["Grizzly Bears"] * 2)
+    g._draw_step()   # exactly two cards: the land dredge 2 is taken
+    assert g.dredged and g.library == [] and "Forest" in g.hand
+    g = _draw_game(deck, [], ["Grizzly Bears"], ["Forest", "Life from the Loam"], ["Grizzly Bears"] * 2)
+    g._draw_step()   # only Loam's dredge 3 is available and the library is short: draw
+    assert not g.dredged and g.graveyard == ["Forest", "Life from the Loam"] and len(g.library) == 1
+    g = _draw_game(deck, [], ["Grizzly Bears"], [], [])
+    g._draw_step()   # an empty library never crashes
+    assert not g.dredged and g.hand == ["Grizzly Bears"]
+
+
+def test_self_dredge_card_comes_back_when_it_would_be_cast():
+    deck = _fx5([(FOREST, 38), (LOAM_C, 1), (BEAR, 1)])
+    assert any(e.on == "static" and e.do == "dredge" and e.type == "" for e in deck.cards["Life from the Loam"].effects)
+    g = _draw_game(deck, ["Forest"], ["Grizzly Bears"], ["Forest", "Life from the Loam"], ["Grizzly Bears"] * 5)
+    g._draw_step()
+    assert g.dredged and sorted(g.hand) == ["Grizzly Bears", "Life from the Loam"] and len(g.library) == 2
+    assert g.graveyard == ["Forest"] + ["Grizzly Bears"] * 3
+    g = _draw_game(deck, ["Forest"], ["Forest"], ["Forest", "Life from the Loam"], ["Grizzly Bears"] * 5)
+    g._draw_step()
+    assert not g.dredged and g.hand == ["Forest", "Grizzly Bears"] and "Life from the Loam" in g.graveyard
+    g = _draw_game(deck, ["Forest"], ["Grizzly Bears"], ["Life from the Loam"], ["Grizzly Bears"] * 5)
+    g._draw_step()   # no land in the graveyard: Loam would not be cast
+    assert not g.dredged and g.graveyard == ["Life from the Loam"]
+
+
+def test_land_dredge_beats_self_dredge():
+    deck = _fx5([(FOREST, 37), (NECROBLOOM_C, 1), (LOAM_C, 1), (BEAR, 1)])
+    g = _draw_game(deck, ["The Necrobloom"], ["Grizzly Bears"], ["Life from the Loam", "Forest"], ["Grizzly Bears"] * 5)
+    g._draw_step()
+    assert g.dredged and sorted(g.hand) == ["Forest", "Grizzly Bears"] and len(g.library) == 3
+    assert "Life from the Loam" in g.graveyard
+
+
+def _colossus_game(deck, board, hand, graveyard, library):
+    g = _staged(deck, ["Forest"] * 7 + board, hand=["Cultivator Colossus", *hand], library=library, turn=7)
+    g.command_zone = set()
+    g.graveyard = list(graveyard)
+    g.lands_played = g.land_drops = 1   # the turn's drop is already used: the chain needs none
+    g.pool = g._produce()
+    g._cast("Cultivator Colossus")
+    return g
+
+
+def test_chain_plays_every_land_in_hand_and_draws_between():
+    deck = _fx5([(FOREST, 37), (COLOSSUS_C, 1), (BEAR, 1), (NECROBLOOM_C, 1)])
+    assert Effect("etb", "chain_lands_from_hand") in deck.cards["Cultivator Colossus"].effects
+    g = _colossus_game(deck, [], ["Forest"] * 3, [], ["Grizzly Bears"] * 10)
+    chained = [p for p in _lands(g) if p.entered == 7]
+    assert len(chained) == 3 and all(p.tapped for p in chained)
+    assert g.hand == ["Grizzly Bears"] * 3 and len(g.library) == 7
+    assert g.landfalls == 3 and g.lands_played == 1
+    # with land dredge and lands in the graveyard, each draw dredges a land back and the chain continues
+    g = _colossus_game(deck, ["The Necrobloom"], ["Forest"], ["Forest"] * 3, ["Grizzly Bears"] * 10)
+    assert g.landfalls == 4 and g._gy_lands() == [] and len(g.library) == 10 - 3 * 2 - 1
+    assert g.hand == ["Grizzly Bears"] and _tokens(g, "Plant") == 4
+
+
+def test_chain_is_capped():
+    deck = _fx5([(FOREST, 38), (COLOSSUS_C, 1), (BEAR, 1)])
+    assert CFG.chain_cap == 20
+    g = _colossus_game(deck, [], ["Forest"], [], ["Forest"] * 50)
+    assert g.landfalls == CFG.chain_cap and len(g.library) == 50 - CFG.chain_cap and g.hand == ["Forest"]

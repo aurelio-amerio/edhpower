@@ -70,6 +70,7 @@ class Game:
         self.landfalls = 0   # lands that entered this turn
         self.land_drops = 1   # lands that may be played this turn
         self.lands_played = 0   # lands played this turn
+        self.dredged = False   # this turn's draw step was replaced by a dredge
         self.token_cards: dict[tuple[str, int, int], SimCard] = {}
         n = cfg.max_turn + 1
         token_types = sorted({e.type for c in deck.cards.values() for top in c.effects for e in (top, top.upgrade)
@@ -415,6 +416,61 @@ class Game:
             count += 1
         return count
 
+    # ---- draws and dredge --------------------------------------------------------------------------
+    def _hand_lands(self) -> int:
+        return sum(1 for n in self.hand if self.cards[n].is_land)
+
+    def _dredge_choice(self, want_land: bool) -> tuple[str, int] | None:
+        """The graveyard card to return to hand instead of a draw, and how many cards that mills; None to draw.
+        Only when a land is wanted: first a land through a permanent that gives graveyard lands dredge, then a card
+        with its own dredge that would be cast now. A dredge is only possible with at least n cards in the library."""
+        if not want_land:
+            return None
+        left = len(self.library)
+        land_n = max((int(e.n) for p in self.board for e in p.card.effects
+                      if e.on == "static" and e.do == "dredge" and e.type == "lands"), default=0)
+        if land_n and left >= land_n and self._gy_lands():
+            return self._best_gy_land(False), land_n
+        for name in self.graveyard:
+            c = self.cards[name]
+            if c.role != "spell":
+                continue
+            n = max((int(e.n) for e in c.effects if e.on == "static" and e.do == "dredge" and not e.type), default=0)
+            if n and left >= n and self._spell_wanted(c):
+                return name, n
+        return None
+
+    def _dredge(self, choice: tuple[str, int]) -> None:
+        name, n = choice
+        self.graveyard.remove(name)
+        self.hand.append(name)
+        self._mill(n)
+
+    def _draw_step(self) -> None:
+        """The turn's draw, replaced by a dredge when the hand holds fewer lands than this turn's drops."""
+        choice = self._dredge_choice(self._hand_lands() < self.land_drops)
+        if choice is None:
+            self._draw(1)
+            return
+        self._dredge(choice)
+        self.dredged = True
+
+    def _chain_lands(self) -> None:
+        """Each land in hand onto the battlefield tapped, best first, without using a drop, with a draw (or a land
+        dredge) after each; until the hand holds no land, at most `chain_cap` lands."""
+        for _ in range(self.cfg.chain_cap):
+            lands = [n for n in self.hand if self.cards[n].is_land]
+            if not lands:
+                return
+            needed = self._needed_colors()
+            pick = max(lands, key=lambda n: (self._land_priority(self.cards[n], needed, True), -lands.index(n)))
+            self._put_land(pick, True, "hand")
+            choice = self._dredge_choice(want_land=True)
+            if choice is None:
+                self._draw(1)
+            else:
+                self._dredge(choice)
+
     def _activate(self, perm: Perm, e: Effect) -> bool:
         """Pay the whole cost of `perm`'s activated `e` (mana from the pool, tap, sacrifices), then fire it.
         False, with nothing paid, when any part cannot be paid."""
@@ -587,6 +643,8 @@ class Game:
             for _ in range(n):
                 if not self._fetch_land():
                     break
+        elif e.do == "chain_lands_from_hand":
+            self._chain_lands()
         elif e.do == "extra_land":
             self.land_drops += n
             self._land_step()
@@ -665,7 +723,7 @@ class Game:
                 if self._mass_return_wanted():
                     return True
             elif e.do == "return_lands_to_hand":
-                if self._gy_lands() and sum(1 for n in self.hand if self.cards[n].is_land) < 1 + self._static_drops():
+                if self._gy_lands() and self._hand_lands() < 1 + self._static_drops():
                     return True
             elif e.do == "extra_land":
                 if self.lands_played >= self.land_drops and any(self.cards[n].is_land for n in self.hand):
@@ -831,14 +889,15 @@ class Game:
         self.produced = 0
         self.landfalls = 0
         self.lands_played = 0
+        self.dredged = False
         self.pool = []
         self.pumps = []
         life_before = sum(self.life)
         self._untap()
         self._upkeep()
         self.land_drops = 1 + self._static_drops()
-        if t > 1:
-            self._draw(1)
+        if t > 1:   # turn 1's hand is the opening hand
+            self._draw_step()
         self._land_step()
         self._produce(fresh=False)
         if self._commander_castable():
