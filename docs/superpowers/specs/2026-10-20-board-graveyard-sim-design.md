@@ -101,10 +101,9 @@ management (fetches, shocks, horizons, Glacial Chasm, Yawgmoth); Room cards.
 
 ## Constraints
 
-- `DeckFacts` schema does not change. `CardData` already carries `oracle_text`, `faces`,
-  `keywords`, `power`, `type_line`, and profiles carry the oracle tags (`reanimate`,
-  `cheat-into-play`, `land-ramp` exist). Everything new is derived from those at
-  `build_sim_deck` time, so the frozen fixtures keep loading.
+- `DeckFacts` schema goes 2 → 3 once (stage 1) to carry the Forge script per entry; the five
+  fixtures are re-frozen then and not again. Everything else new is derived at `build_sim_deck`
+  time from `CardData` and the script.
 - `special_behaviours.toml` stays the single table of per-card overrides; every card read from
   it is listed in the report (existing convention).
 - `sim.version` bumps once per stage (3, 4, 5) because each stage changes the meaning of the
@@ -168,24 +167,59 @@ Effects come from two sources, in precedence order, exactly as mana behaviour do
    ]
    ```
 
-2. **Oracle-text patterns** for the common shapes, no names, in the style of `payoffs.py`:
-   landfall/ETB token (`landfall … create a N/N <type> creature token`; `whenever a land you
-   control enters … create`), anthem (`creatures you control get +N/+N` on a permanent, with
-   `tokens`/type scope when stated), pump (instant/sorcery `creatures you control get +N/+N …
-   until end of turn`, `gain trample` irrelevant here), `dredge N` keyword, `you may play an
-   additional land`, `you may play lands from your graveyard`, `return all land cards from your
-   graveyard to the battlefield`, `return up to N target land cards from your graveyard to your
-   hand`, `return target creature card from your graveyard to the battlefield` (kept only when
-   the `reanimate` tag is present, same tag-check rule as `payoffs.py`), fetch lands (`{T},
-   sacrifice …: search your library for a … land card`), horizon lands (`{1}, {T}, sacrifice …:
-   draw a card`), landfall drain (already in `payoffs.py`: reuse, do not duplicate).
+2. **Forge card scripts** (decided with the user 2026-10-21, replacing the oracle-text
+   patterns first drafted here). The Card-Forge project
+   (`github.com/Card-Forge/forge`, `forge-gui/res/cardsfolder/<initial>/<slug>.txt`, GPL-3.0)
+   has one script per card in a typed mini-language that already separates trigger, condition
+   and effect, e.g. The Necrobloom:
 
-   A card the patterns read but the table also lists uses the table entry only.
+   ```
+   T:Mode$ ChangesZone | Origin$ Any | Destination$ Battlefield | ValidCard$ Land.YouCtrl | Execute$ TrigBranch | TriggerZones$ Battlefield | …
+   SVar:TrigBranch:DB$ Branch | BranchConditionSVar$ X | BranchConditionSVarCompare$ GE7 | TrueSubAbility$ DBZombie | FalseSubAbility$ DBPlant
+   SVar:DBPlant:DB$ Token | TokenScript$ g_0_1_plant | TokenOwner$ You
+   SVar:DBZombie:DB$ Token | TokenScript$ b_2_2_zombie | TokenOwner$ You
+   SVar:X:Count$Valid Land.YouCtrl$DifferentCardNames
+   S:Mode$ Continuous | AffectedZone$ Graveyard | Affected$ Land.YouOwn | AddKeyword$ Dredge:2 | …
+   ```
 
-The existing `payoffs.py` detection stays as the combo-payoff check; the new effects module is
-the simulator's view. They overlap for landfall drain and token makers; the builder decides
-whether `payoffs.py` reads from `effects.py` or both read the same regexes from one place.
-They must not disagree about a card.
+   Every shape this design needs is a small, fixed vocabulary of that language: `T:Mode$
+   ChangesZone … ValidCard$ Land.YouCtrl` (landfall) / `Card.Self` (ETB) / `Creature.Other+
+   YouCtrl` (creature ETB); `DB$ Token | TokenScript$ <colour>_<p>_<t>_<type> | TokenAmount$ X`;
+   `DB$ PutCounterAll | ValidCards$ Creature.<Type>`; `S:Mode$ Continuous | Affected$
+   Creature.(token+)?YouCtrl | AddPower$ N` (anthem) and the same on `A:SP$ PumpAll` (pump);
+   `DB$ Mana | Produced$ Any`; `DB$ LoseLife | Defined$ Player.Opponent`; `K:Dredge:N` and
+   `AddKeyword$ Dredge:N` with `AffectedZone$ Graveyard`; `S:Mode$ Continuous | Affected$ You |
+   AddKeyword$ AdditionalLandDrop` or `MayPlay`-style land-from-graveyard statics; `A:SP$
+   ChangeZoneAll | Origin$ Graveyard | Destination$ Battlefield | ChangeType$ Land`; `A:SP$
+   ChangeZone | Origin$ Graveyard | Destination$ Hand | ValidTgts$ Land | TargetMax$ N`;
+   `ChangeNum$ N` on a library→battlefield land search (Harrow = 2); `Cost$ … Sac<1/Land>`;
+   `A:AB$ ChangeZone | Cost$ T Sac<1/CARDNAME> | Origin$ Library | ChangeType$ Land.Basic`
+   (fetch); `Count$Valid Land.YouCtrl` / `$DifferentCardNames` for the two conditions. The
+   reader (`sim/effects.py`) understands that vocabulary and nothing else; every `T:`, `A:`, `S:`
+   line it does not understand makes the card **unmodelled**, so coverage is exact rather than
+   heuristic.
+
+   Fetching: `forge.py` (new) fetches `raw.githubusercontent.com/Card-Forge/forge/<commit>/
+   forge-gui/res/cardsfolder/<initial>/<slug>.txt` per card through the existing `HttpClient`,
+   at a commit pinned in `scoring.toml` (`[forge] commit`), cached under
+   `EDHPOWER_CACHE_DIR/forge/<commit>/`. Slug = NFKD-ASCII-folded name, lower-cased, punctuation
+   (`' , . : ! ? "`) dropped, spaces and hyphens → `_`, DFC faces joined with `_` (verified:
+   `azusa_lost_but_seeking`, `thespians_stage`, `jotun_grunt`, `lim_dul_the_necromancer`,
+   `walk_in_closet_forgotten_cellar`). A 404 is recorded as "no script", not an error. The script
+   text is stored on each `FactEntry` (`forge_script: str | None`) so `--from-facts` stays
+   offline; `facts.fetched["forge_commit"]` records the pin. **`DeckFacts` schema becomes 3**
+   and the five fixtures are re-frozen once by fetching their scripts. Forge unreachable
+   degrades like the tag cache: table-only effects, a note, and the component/curve scores
+   untouched; `--no-forge` skips it on purpose.
+
+   Licence: the scripts are read at run time as data, exactly like Scryfall's; nothing from
+   Forge is vendored into this MIT repo.
+
+   A card the scripts describe but the table also lists uses the table entry only.
+
+The existing `payoffs.py` detection stays as the combo-payoff check on oracle text; the new
+effects module is the simulator's view. Where they overlap (landfall drain, token makers) the
+report must show the same cards; a disagreement is a test failure, not a note.
 
 ### Zones and board (`sim/engine.py`)
 
@@ -261,10 +295,11 @@ They must not disagree about a card.
 
 ### What "unmodelled" means
 
-A nonland, non-token card is unmodelled when it has no `effects`, no mana behaviour, and its
-oracle text contains a trigger or activation (`whenever`, `at the beginning`, `:` preceded by a
-cost, `landfall`). Vanilla creatures are modelled (they attack). Instants and sorceries with no
-effect are `held` as today and count as unmodelled.
+A nonland, non-token card is unmodelled when its Forge script has at least one `T:`, `A:` or
+`S:` line the reader did not turn into an effect or mana behaviour, and the table has no entry
+for it. Vanilla creatures are modelled (they attack). A card with no script (404) is
+unmodelled unless the table covers it. Instants and sorceries with no effect are `held` as
+today and count as unmodelled.
 
 ## Stages
 
@@ -293,11 +328,15 @@ alive here; this is the stage to compare against the primer's description of a g
 
 ## Testing
 
-- `tests/test_sim_effects.py`: one positive and one negative per pattern, with oracle text pasted
-  from Scryfall (Felidar Retreat, Rampaging Baloths, Scute Swarm's first sentence, Intangible
-  Virtue, Overrun, Life from the Loam, Azusa, Ramunap Excavator, Splendid Reclamation, Evolving
-  Wilds, Horizon Canopy, Dread Return; negatives such as Retreat to Hagra's non-token mode, an
-  opponent's-land landfall, Mirkwood Bats).
+- `tests/test_sim_effects.py`: one positive and one negative per script shape, with Forge
+  script text pasted from the pinned commit (The Necrobloom, Avenger of Zendikar, Rampaging
+  Baloths, Felidar Retreat, Scute Swarm, Intangible Virtue, Overrun, Lotus Cobra, Retreat to
+  Hagra; stage 2: Life from the Loam, Azusa, Ramunap Excavator, Splendid Reclamation, Harrow,
+  Evolving Wilds, Horizon Canopy; stage 3: Dread Return, The Gitrog Monster; negatives: an
+  opponent's-land trigger, Mirkwood Bats, Six — attack-triggered mill is outside the vocabulary
+  and must come out unmodelled).
+- `tests/test_forge.py`: slug mapping for the names above, cache hit/miss, 404 → `None`,
+  unreachable → `ForgeError`.
 - `tests/test_sim_engine.py`: synthetic decks per mechanic: a landfall token maker plus lands
   gives N tokens by turn N+1 and they attack from the next turn; the Zombie threshold flips at
   seven distinct names and not with seven Forests; dredge replaces the draw only when the hand
@@ -336,6 +375,9 @@ eldrazi repo does with its `*-benchmarks.md`.
 - One sim version per stage.
 - The Necrobloom v3 list becomes a golden fixture.
 - `kind` in `special_behaviours.toml` becomes optional when `effects` is present.
+- Forge scripts are fetched live at a pinned commit and stored in the facts, not vendored;
+  the repo stays MIT (user's choice 2026-10-21, with "fetch live" preferred over keeping a
+  local index current).
 
 ## Left to the builder
 
