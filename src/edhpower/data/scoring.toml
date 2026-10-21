@@ -81,6 +81,7 @@ max_two_card_lines = 8      # scrollvault's caps on simulated Spellbook lines
 max_three_card_lines = 6
 mass_return_min_lands = 4    # a mass land return is cast with this many lands in the graveyard and a landfall source out (or on the last two turns)
 chain_cap = 20               # a land chain (each land in hand onto the battlefield, a draw after each) stops after this many lands
+reanimate_min_power = 4      # a reanimation spell is cast for a graveyard creature of MV >= threat_mv or at least this power
 lethal_features = ["infinite damage", "win the game", "loses the game", "lifeloss", "life loss", "infinite mill", "poison"]
 
 [sim.payoffs]

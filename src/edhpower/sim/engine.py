@@ -14,7 +14,7 @@ from edhpower.sim.mana import ANY_COLOR, COLORLESS, ActivationCost, ManaCost, Un
 from edhpower.sim.model import SimCard, SimDeck, reduction_applies, token_card
 
 CLOCKS: tuple[str, ...] = ("commander", "mana_threshold", "tipping_target", "threat", "combat", "combo", "lethal_combo",
-                           "lethal_table", "first_opponent", "win")
+                           "lethal_table", "first_opponent", "win", "reanimate")
 MAIN_ORDER: tuple[str, ...] = ("rock", "dork", "reducer", "ramp_spell", "spell", "draw_spell", "commander", "tutor", "combo",
                                "threat", "creature", "engine", "permanent")
 CHEAPEST_FIRST = {"rock", "dork", "reducer", "engine", "permanent", "ramp_spell", "spell", "draw_spell", "tutor"}
@@ -346,7 +346,7 @@ class Game:
 
     def _sacrifice(self, perm: Perm) -> None:
         """Board -> graveyard (a token just leaves). A land also updates the distinct names and fires the
-        `land_sacrificed` effects of every other permanent on the board."""
+        `land_sacrificed` effects of every other permanent on the board; a creature then fires its own `dies` effects."""
         idx = next(i for i, p in enumerate(self.board) if p is perm)
         del self.board[idx]
         if perm.card.role != "token":
@@ -356,6 +356,10 @@ class Game:
             for p, e in self._triggered("land_sacrificed"):
                 if p is not perm:
                     self._fire(e, p)
+        if perm.card.is_creature:
+            for e in perm.card.effects:
+                if e.on == "dies":
+                    self._fire(e, None)
 
     def _crackable(self, p: Perm) -> bool:
         """A land whose activated fetch is still worth cracking: it is two landfalls, not one."""
@@ -385,13 +389,18 @@ class Game:
         return done
 
     def _mill(self, n: int) -> list[str]:
-        """The top `n` cards of the library (its end, as `_draw`) into the graveyard, in that order."""
+        """The top `n` cards of the library (its end, as `_draw`) into the graveyard, in that order. When they hold
+        a land, every `land_milled` effect of the board fires once (board order) with those lands."""
         out: list[str] = []
         for _ in range(n):
             if not self.library:
                 break
             out.append(self.library.pop())
             self._to_graveyard(out[-1])
+        lands = tuple(name for name in out if self.cards[name].is_land)
+        if lands:
+            for p, e in self._triggered("land_milled"):
+                self._fire(e, p, milled=lands)
         return out
 
     def _best_gy_land(self, tapped: bool) -> str:
@@ -502,6 +511,8 @@ class Game:
                     wanted = self._basic_in_library() is not None
                 elif e.do == "return_lands":
                     wanted = self._mass_return_wanted()
+                elif e.do == "draw":
+                    wanted = not self.hand
                 else:
                     continue
                 if wanted and self._activate(p, e):
@@ -522,21 +533,45 @@ class Game:
             else:
                 self._fire(e, p)
 
-    def _pay_additional(self, cost: ActivationCost, source: Perm | None) -> bool:
-        """Pay the non-mana parts of an effect's cost: sacrifice the source itself, then lands. False, with nothing
-        sacrificed, when any part cannot be paid. Creature sacrifices are not paid in stage 2."""
-        if cost.sacrifice_creatures:
-            return False
+    def _can_pay_additional(self, cost: ActivationCost, source: Perm | None) -> bool:
+        """Whether `_pay_additional` would pay: the source is on the board for a self-sacrifice, and enough other
+        lands and creatures remain for the land and creature sacrifices."""
         on_board = source is not None and any(p is source for p in self.board)
         if cost.sacrifice_self and not on_board:
             return False
-        lands = sum(1 for p in self.board if p.card.is_land and not (cost.sacrifice_self and p is source))
-        if lands < cost.sacrifice_lands:
+        others = [p for p in self.board if not (cost.sacrifice_self and p is source)]
+        return (sum(1 for p in others if p.card.is_land) >= cost.sacrifice_lands
+                and sum(1 for p in others if p.card.is_creature) >= cost.sacrifice_creatures)
+
+    def _pay_additional(self, cost: ActivationCost, source: Perm | None) -> bool:
+        """Pay the non-mana parts of an effect's cost: sacrifice the source itself, then creatures, then lands.
+        False, with nothing sacrificed, when any part cannot be paid."""
+        if not self._can_pay_additional(cost, source):
             return False
         if cost.sacrifice_self and source is not None:
             self._sacrifice(source)
+        if cost.sacrifice_creatures and not self._pay_sacrifice_creatures(cost.sacrifice_creatures):
+            return False   # unreachable: counted above, and a dies trigger only adds lands
         if cost.sacrifice_lands:
             self._sacrifice_lands(cost.sacrifice_lands)
+        return True
+
+    def _pay_sacrifice_creatures(self, n: int) -> bool:
+        """Sacrifice `n` creatures, one at a time: a nontoken creature whose `dies` effect returns lands while the
+        graveyard holds one, else the lowest-power token, else the lowest-power nontoken creature (board order on
+        ties). False, with nothing sacrificed, when fewer than `n` creatures are on the board."""
+        if self._creature_count() < n:
+            return False
+        for _ in range(n):
+            creatures = [p for p in self.board if p.card.is_creature]
+            if not creatures:
+                return False
+            gy_lands = bool(self._gy_lands())
+            victim = next((p for p in creatures if gy_lands and p.card.role != "token"
+                           and any(e.on == "dies" and e.do == "return_lands" for e in p.card.effects)), None)
+            if victim is None:
+                victim = min(creatures, key=lambda p: (p.card.role != "token", p.card.power + p.counters))
+            self._sacrifice(victim)
         return True
 
     # ---- triggers ------------------------------------------------------------------------------
@@ -601,8 +636,9 @@ class Game:
                 return None
         return e
 
-    def _fire(self, effect: Effect, source: Perm | None) -> None:
-        """Resolve one effect. `source` is the permanent it belongs to (None for a spell)."""
+    def _fire(self, effect: Effect, source: Perm | None, milled: tuple[str, ...] = ()) -> None:
+        """Resolve one effect. `source` is the permanent it belongs to (None for a spell or a dies effect);
+        `milled` the lands of the mill that fired a `land_milled` effect."""
         e = self._applicable(effect)
         if e is None:
             return
@@ -610,11 +646,17 @@ class Game:
             self._create_tokens(e)
             return
         if e.do == "return_lands":
-            self._return_lands(e.n)
+            if e.n == "milled":
+                for name in milled:
+                    if name in self.graveyard:
+                        self._put_land(name, True, "graveyard")
+            else:
+                self._return_lands(e.n)
             return
-        if e.do == "fetch" and e.on != "activated":   # an activation pays its whole cost before firing
+        if e.do in ("fetch", "draw", "reanimate") and e.cost and e.on != "activated":   # an activation pays its whole cost before firing
             cost = _cost(e.cost)
-            left = pay(cost.mana, self.pool) if cost.mana.total else self.pool
+            # a spell's Cost$ holds its own mana cost, paid when it was cast
+            left = pay(cost.mana, self.pool) if cost.mana.total and e.on != "cast" else self.pool
             if left is None or not self._pay_additional(cost, source):
                 return
             self.pool = left
@@ -645,6 +687,14 @@ class Game:
                     break
         elif e.do == "chain_lands_from_hand":
             self._chain_lands()
+        elif e.do == "draw":
+            self._draw(n)   # a plain draw, never a dredge
+        elif e.do == "reanimate":
+            for _ in range(n):
+                target = self._reanimate_target(e.type, e.mv_max, threshold=False)
+                if target is None:
+                    break
+                self._reanimate(target)
         elif e.do == "extra_land":
             self.land_drops += n
             self._land_step()
@@ -698,6 +748,42 @@ class Game:
                 if e.on == "etb":
                     self._fire(e, perm)
 
+    def _reanimate_target(self, type_: str, mv_max: int, threshold: bool) -> str | None:
+        """The graveyard card a reanimation returns: a creature card ("creature") or any permanent card, lands
+        included ("permanent"), of mana value at most `mv_max` (0: no cap); with `threshold`, only one worth a
+        spell (MV >= threat_mv or power >= reanimate_min_power). Highest MV first, ties by name."""
+        best: str | None = None
+        for name in self.graveyard:
+            c = self.cards[name]
+            if not (c.is_creature if type_ == "creature" else not c.is_spell):
+                continue
+            if mv_max > 0 and c.cmc > mv_max:
+                continue
+            if threshold and not (c.cmc >= self.cfg.threat_mv or c.power >= self.cfg.reanimate_min_power):
+                continue
+            if best is None or (-c.cmc, name) < (-self.cards[best].cmc, best):
+                best = name
+        return best
+
+    def _reanimate(self, name: str) -> None:
+        """Graveyard -> battlefield. A land enters tapped (landfall); anything else enters this turn and fires its
+        enters effects. A creature stamps the `reanimate` clock."""
+        c = self.cards[name]
+        if c.is_creature:
+            self._stamp("reanimate")
+        if c.is_land:
+            self._put_land(name, True, "graveyard")
+            return
+        self.graveyard.remove(name)
+        perm = Perm(c, self.turn)
+        self.board.append(perm)
+        if c.is_creature:
+            self._creature_entered(perm)
+        else:
+            for e in c.effects:
+                if e.on == "etb":
+                    self._fire(e, perm)
+
     def _cast(self, name: str, from_hand: bool = True) -> None:
         left = self._try_pay(self.cards[name])
         assert left is not None, name
@@ -727,6 +813,10 @@ class Game:
                     return True
             elif e.do == "extra_land":
                 if self.lands_played >= self.land_drops and any(self.cards[n].is_land for n in self.hand):
+                    return True
+            elif e.do == "reanimate":
+                if (self._reanimate_target(e.type, e.mv_max, threshold=True) is not None
+                        and self._can_pay_additional(_cost(e.cost), None)):
                     return True
         return False
 

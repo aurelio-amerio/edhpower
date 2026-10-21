@@ -1122,3 +1122,146 @@ def test_chain_is_capped():
     assert CFG.chain_cap == 20
     g = _colossus_game(deck, [], ["Forest"], [], ["Forest"] * 50)
     assert g.landfalls == CFG.chain_cap and len(g.library) == 50 - CFG.chain_cap and g.hand == ["Forest"]
+
+
+# ---- stage 3: land-milled and dies triggers, triggered draw, reanimation --------------------------------------
+
+from .test_sim_effects import DREAD_RETURN, HEDGE_SHREDDER, HORIZON_CANOPY, SUN_TITAN, WORLD_SHAPER
+
+DREAD_C = make_card("Dread Return", cmc=4.0, mana_cost="{2}{B}{B}", type_line="Sorcery", colors=["B"])
+VICTIMIZE_C = make_card("Victimize", cmc=3.0, mana_cost="{2}{B}", type_line="Sorcery", colors=["B"])
+SUN_TITAN_C = make_card("Sun Titan", cmc=6.0, mana_cost="{4}{W}{W}", type_line="Creature — Giant", power="6", toughness="6", colors=["W"])
+SHAPER_C = make_card("World Shaper", cmc=4.0, mana_cost="{3}{G}", type_line="Creature — Merfolk Shaman", power="3", toughness="3", colors=["G"])
+SHREDDER_C = make_card("Hedge Shredder", cmc=4.0, mana_cost="{2}{G}{G}", type_line="Artifact — Vehicle", power="5", toughness="5", colors=["G"])
+CANOPY_C = make_card("Horizon Canopy", cmc=0.0, mana_cost="", type_line="Land",
+                     oracle_text="{T}, Pay 1 life: Add {G} or {W}.\n{1}, {T}, Sacrifice Horizon Canopy: Draw a card.", produced_mana=["G", "W"])
+THREE_C = make_card("Three Thing", cmc=3.0, mana_cost="{3}", type_line="Artifact")
+
+SCRIPTS8 = {**SCRIPTS3, "Dread Return": DREAD_RETURN, "Sun Titan": SUN_TITAN, "World Shaper": WORLD_SHAPER,
+            "Hedge Shredder": HEDGE_SHREDDER, "Horizon Canopy": HORIZON_CANOPY}
+
+
+def _fx8(entries, tags=None):
+    return _fx_deck(CMD, entries, tags=tags, scripts=SCRIPTS8)
+
+
+def _on_board(g, name):
+    return [p for p in g.board if p.card.name == name]
+
+
+def test_land_milled_fires_once_per_mill_with_a_land():
+    deck = _fx8([(FOREST, 37), (GITROG_C, 1), (BEAR, 1), (ISLAND, 1)])
+    g = _staged(deck, ["The Gitrog Monster"], library=["Grizzly Bears"] * 3 + ["Forest", "Grizzly Bears", "Island"], turn=3)
+    assert g._mill(3) == ["Island", "Grizzly Bears", "Forest"]
+    assert g.hand == ["Grizzly Bears"] and len(g.library) == 2   # two lands, one mill: one draw
+    g._mill(1)
+    assert g.hand == ["Grizzly Bears"] and len(g.library) == 1   # no land milled: no draw
+    g = _staged(deck, ["The Gitrog Monster", "Forest", "Forest", "Forest"], library=["Grizzly Bears"] * 5, turn=3)
+    g._sacrifice_lands(2)
+    assert g.hand == ["Grizzly Bears"] * 2   # land_sacrificed draws once per land
+
+
+def test_milled_lands_return_exactly_once():
+    deck = _fx8([(FOREST, 35), (SHREDDER_C, 1), (NECROBLOOM_C, 1), (GITROG_C, 1), (BEAR, 1), (ISLAND, 1), (SWAMP, 1)])
+    lib = ["Grizzly Bears"] * 3 + ["Swamp", "Island"]
+    g = _draw_game(deck, ["Hedge Shredder", "The Necrobloom"], ["Grizzly Bears"], ["Forest", "Forest"], lib)
+    g._draw_step()
+    assert g.dredged and sorted(g.hand) == ["Forest", "Grizzly Bears"]
+    back = [p for p in _lands(g) if p.card.name in ("Island", "Swamp")]
+    assert sorted(p.card.name for p in back) == ["Island", "Swamp"] and all(p.tapped for p in back)
+    assert g.graveyard == ["Forest"] and g.landfalls == 2 and _tokens(g, "Plant") == 2   # the older Forest stays
+    g = _draw_game(deck, ["Hedge Shredder", "The Gitrog Monster", "The Necrobloom"], ["Grizzly Bears"], ["Forest", "Forest"], lib)
+    g._draw_step()
+    assert g.dredged and sorted(g.hand) == ["Forest", "Grizzly Bears", "Grizzly Bears"] and len(g.library) == 2
+    assert g.graveyard == ["Forest"] and g.landfalls == 2
+
+
+def test_dies_returns_lands():
+    deck = _fx8([(SWAMP, 34), (FOREST, 1), (ISLAND, 1), (VICTIMIZE_C, 1), (SHAPER_C, 1), (BALOTHS_C, 1), (AVENGER_C, 1)])
+    assert Effect("dies", "return_lands", "all") in deck.cards["World Shaper"].effects
+    g = _staged(deck, ["Swamp"] * 3 + ["World Shaper"], hand=["Victimize"], turn=5)
+    g.command_zone = set()
+    g.graveyard = ["Forest", "Island", "Swamp", "Rampaging Baloths", "Avenger of Zendikar"]
+    g.pool = g._produce()
+    g._main_phase()
+    assert g._gy_lands() == [] and len(_lands(g)) == 6 and g.landfalls == 3
+    assert g.graveyard == ["World Shaper", "Victimize"]
+    assert _on_board(g, "Avenger of Zendikar") and _on_board(g, "Rampaging Baloths") and g.record.clocks["reanimate"] == 5
+
+
+def test_reanimate_policy_and_target():
+    deck = _fx8([(SWAMP, 36), (DREAD_C, 1), (BEAR, 1), (BALOTHS_C, 1)])
+    assert CFG.reanimate_min_power == 4
+    g = _staged(deck, ["Swamp"] * 4, hand=["Dread Return"], library=["Swamp"] * 10, turn=6)
+    g.command_zone = set()
+    g.graveyard = ["Grizzly Bears", "Rampaging Baloths"]
+    g.pool = g._produce()
+    g._main_phase()
+    baloths = _on_board(g, "Rampaging Baloths")
+    assert baloths and baloths[0].entered == 6 and g.graveyard == ["Grizzly Bears", "Dread Return"]
+    assert g.record.clocks["reanimate"] == 6
+    g = _staged(deck, ["Swamp"] * 4, hand=["Dread Return"], library=["Swamp"] * 10, turn=6)
+    g.command_zone = set()
+    g.graveyard = ["Grizzly Bears"]
+    g.pool = g._produce()
+    g._main_phase()
+    assert g.hand == ["Dread Return"] and g.graveyard == ["Grizzly Bears"] and g.record.clocks["reanimate"] is None
+
+
+def test_sun_titan_returns_a_cheap_permanent_or_a_land():
+    deck = _fx8([(PLAINS, 34), (SUN_TITAN_C, 1), (WILDS_C, 1), (THREE_C, 1), (BALOTHS_C, 1), (DREAD_C, 1), (FOREST, 1)])
+    g = _staged(deck, ["Plains"] * 6, hand=["Sun Titan"], library=["Forest"] * 10, turn=6)
+    g.command_zone = set()
+    g.graveyard = ["Evolving Wilds", "Three Thing", "Rampaging Baloths", "Dread Return"]
+    g.pool = g._produce()
+    g._cast("Sun Titan")
+    assert _on_board(g, "Three Thing") and g.graveyard == ["Evolving Wilds", "Rampaging Baloths", "Dread Return"]
+    assert g.record.clocks["reanimate"] is None   # a noncreature permanent is not the reanimate clock
+    g = _staged(deck, ["Plains"] * 6 + ["Rampaging Baloths"], hand=["Sun Titan"], library=["Forest"] * 10, turn=6)
+    g.command_zone = set()
+    g.graveyard = ["Evolving Wilds"]
+    g.pool = g._produce()
+    g._cast("Sun Titan")
+    wilds = _on_board(g, "Evolving Wilds")
+    assert wilds and wilds[0].tapped and g.graveyard == [] and g.landfalls == 1 and _tokens(g, "Beast") == 1
+
+
+def test_sacrifice_cost_prefers_a_token_and_refuses_when_empty():
+    deck = _fx8([(SWAMP, 37), (VICTIMIZE_C, 1), (ELDRAZI, 1), (AVENGER_C, 1)])
+    g = _staged(deck, ["Swamp"] * 3 + ["Endbringer"], hand=["Victimize"], library=["Swamp"] * 10, turn=5)
+    g.board.append(Perm(token_card("Saproling", 1, 1), 0))
+    g.command_zone = set()
+    g.graveyard = ["Avenger of Zendikar"]
+    g.pool = g._produce()
+    g._main_phase()
+    assert _on_board(g, "Endbringer") and not _tokens(g, "Saproling") and _on_board(g, "Avenger of Zendikar")
+    assert g.graveyard == ["Victimize"]
+    g = _staged(deck, ["Swamp"] * 3, hand=["Victimize"], library=["Swamp"] * 10, turn=5)
+    g.command_zone = set()
+    g.graveyard = ["Avenger of Zendikar"]
+    g.pool = g._produce()
+    g._main_phase()
+    assert g.hand == ["Victimize"] and g.graveyard == ["Avenger of Zendikar"] and len(g.pool) == 3
+
+
+def test_horizon_land_draws_when_the_hand_is_empty():
+    deck = _fx8([(FOREST, 38), (CANOPY_C, 1), (BIG, 1)])
+    assert any(e.on == "activated" and e.do == "draw" for e in deck.cards["Horizon Canopy"].effects)
+    g = _staged(deck, ["Horizon Canopy", "Forest"], library=["Forest"] * 10, turn=4)
+    g.command_zone = set()
+    g.pool = [frozenset("G")]
+    g._main_phase()
+    assert g.graveyard == ["Horizon Canopy"] and g.hand == ["Forest"] and g.pool == [] and len(g.library) == 9
+    g = _staged(deck, ["Horizon Canopy", "Forest"], hand=["Ulamog, the Ceaseless Hunger"], library=["Forest"] * 10, turn=4)
+    g.command_zone = set()
+    g.pool = [frozenset("G")]
+    g._main_phase()
+    assert _on_board(g, "Horizon Canopy") and g.hand == ["Ulamog, the Ceaseless Hunger"] and len(g.pool) == 1
+
+
+def test_triggered_draw_is_never_a_dredge():
+    deck = _fx8([(FOREST, 36), (GITROG_C, 1), (NECROBLOOM_C, 1), (BEAR, 1), (ISLAND, 1)])
+    g = _draw_game(deck, ["The Gitrog Monster", "The Necrobloom"], ["Grizzly Bears"], ["Forest"],
+                   ["Grizzly Bears"] * 3 + ["Island"])
+    g._mill(1)
+    assert g.hand == ["Grizzly Bears"] * 2 and g.graveyard == ["Forest", "Island"] and len(g.library) == 2

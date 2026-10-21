@@ -91,6 +91,7 @@ def clock_labels(cfg: SimConfig, tipping_target: int) -> dict[str, str]:
         "combat": f"{life} combat damage to one opponent (no blockers)",
         "combo": "combo line assembled",
         "lethal_combo": "lethal combo line assembled",
+        "reanimate": "creature returned from the graveyard to the battlefield",
     }
 
 

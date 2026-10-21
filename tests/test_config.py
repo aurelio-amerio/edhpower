@@ -171,3 +171,8 @@ def test_config_mass_return_min_lands():
 def test_config_chain_cap():
     cfg = load_config()
     assert cfg.sim.chain_cap == 20 and cfg.sim.version == 4
+
+
+def test_config_reanimate_min_power():
+    cfg = load_config()
+    assert cfg.sim.reanimate_min_power == 4 and cfg.sim.version == 4
