@@ -551,7 +551,9 @@ class Game:
         if cost.sacrifice_self and source is not None:
             self._sacrifice(source)
         if cost.sacrifice_creatures and not self._pay_sacrifice_creatures(cost.sacrifice_creatures):
-            return False   # unreachable: counted above, and a dies trigger only adds lands
+            # counted above, so only reached when a trigger fired by the self-sacrifice (a land_sacrificed effect
+            # with its own creature cost) took a counted creature: the cost is then part paid, a later clock
+            return False
         if cost.sacrifice_lands:
             self._sacrifice_lands(cost.sacrifice_lands)
         return True
@@ -566,13 +568,26 @@ class Game:
             creatures = [p for p in self.board if p.card.is_creature]
             if not creatures:
                 return False
-            gy_lands = bool(self._gy_lands())
-            victim = next((p for p in creatures if gy_lands and p.card.role != "token"
-                           and any(e.on == "dies" and e.do == "return_lands" for e in p.card.effects)), None)
-            if victim is None:
-                victim = min(creatures, key=lambda p: (p.card.role != "token", p.card.power + p.counters))
-            self._sacrifice(victim)
+            self._sacrifice(self._sacrifice_pick(creatures, bool(self._gy_lands())))
         return True
+
+    @staticmethod
+    def _sacrifice_pick(creatures: list[Perm], gy_lands: bool) -> Perm:
+        """The creature `_pay_sacrifice_creatures` sacrifices next among `creatures` (non-empty)."""
+        victim = next((p for p in creatures if gy_lands and p.card.role != "token"
+                       and any(e.on == "dies" and e.do == "return_lands" for e in p.card.effects)), None)
+        return victim if victim is not None else min(creatures, key=lambda p: (p.card.role != "token", p.card.power + p.counters))
+
+    def _sacrifice_victims(self, n: int) -> list[Perm]:
+        """The creatures `_pay_sacrifice_creatures(n)` would sacrifice, without sacrificing them (the graveyard's
+        lands as they are now)."""
+        creatures = [p for p in self.board if p.card.is_creature]
+        gy_lands = bool(self._gy_lands())
+        out: list[Perm] = []
+        for _ in range(min(n, len(creatures))):
+            out.append(self._sacrifice_pick(creatures, gy_lands))
+            creatures.remove(out[-1])
+        return out
 
     # ---- triggers ------------------------------------------------------------------------------
     def _triggered(self, on: str) -> list[tuple[Perm, Effect]]:
@@ -653,6 +668,9 @@ class Game:
             else:
                 self._return_lands(e.n)
             return
+        targets: list[str] = []
+        if e.do == "reanimate":   # targets are chosen before the cost is paid: a card it sacrifices is never one
+            targets = self._reanimate_targets(e.type, e.mv_max, self._amount(e))
         if e.do in ("fetch", "draw", "reanimate") and e.cost and e.on != "activated":   # an activation pays its whole cost before firing
             cost = _cost(e.cost)
             # a spell's Cost$ holds its own mana cost, paid when it was cast
@@ -690,11 +708,9 @@ class Game:
         elif e.do == "draw":
             self._draw(n)   # a plain draw, never a dredge
         elif e.do == "reanimate":
-            for _ in range(n):
-                target = self._reanimate_target(e.type, e.mv_max, threshold=False)
-                if target is None:
-                    break
-                self._reanimate(target)
+            for target in targets:
+                if target in self.graveyard:
+                    self._reanimate(target)
         elif e.do == "extra_land":
             self.land_drops += n
             self._land_step()
@@ -755,15 +771,40 @@ class Game:
         best: str | None = None
         for name in self.graveyard:
             c = self.cards[name]
-            if not (c.is_creature if type_ == "creature" else not c.is_spell):
-                continue
-            if mv_max > 0 and c.cmc > mv_max:
-                continue
-            if threshold and not (c.cmc >= self.cfg.threat_mv or c.power >= self.cfg.reanimate_min_power):
+            if not self._reanimate_eligible(c, type_, mv_max, threshold):
                 continue
             if best is None or (-c.cmc, name) < (-self.cards[best].cmc, best):
                 best = name
         return best
+
+    def _reanimate_targets(self, type_: str, mv_max: int, n: int) -> list[str]:
+        """Up to `n` graveyard cards a reanimation returns (threshold off), in `_reanimate_target` order."""
+        names = [name for name in self.graveyard if self._reanimate_eligible(self.cards[name], type_, mv_max, False)]
+        return sorted(names, key=lambda name: (-self.cards[name].cmc, name))[:n]
+
+    def _reanimate_eligible(self, c: SimCard, type_: str, mv_max: int, threshold: bool) -> bool:
+        if not (c.is_creature if type_ == "creature" else not c.is_spell):
+            return False
+        if mv_max > 0 and c.cmc > mv_max:
+            return False
+        return not threshold or c.cmc >= self.cfg.threat_mv or c.power >= self.cfg.reanimate_min_power
+
+    def _reanimate_value(self, c: SimCard) -> tuple[bool, float, int]:
+        """How much a creature is worth to a reanimation: the threshold first, then MV, then power."""
+        return c.cmc >= self.cfg.threat_mv or c.power >= self.cfg.reanimate_min_power, c.cmc, c.power
+
+    def _reanimate_wanted(self, e: Effect) -> bool:
+        """Cast a reanimation spell: its `n` targets are in the graveyard before any cost is paid, one meets the
+        threshold, its sacrifices are payable and none of them is worth more than the best target."""
+        n = self._amount(e)
+        targets = self._reanimate_targets(e.type, e.mv_max, n)
+        if n <= 0 or len(targets) < n or self._reanimate_target(e.type, e.mv_max, threshold=True) is None:
+            return False
+        cost = _cost(e.cost)
+        if not self._can_pay_additional(cost, None):
+            return False
+        best = max(self._reanimate_value(self.cards[t]) for t in targets)
+        return all(self._reanimate_value(p.card) <= best for p in self._sacrifice_victims(cost.sacrifice_creatures))
 
     def _reanimate(self, name: str) -> None:
         """Graveyard -> battlefield. A land enters tapped (landfall); anything else enters this turn and fires its
@@ -815,8 +856,7 @@ class Game:
                 if self.lands_played >= self.land_drops and any(self.cards[n].is_land for n in self.hand):
                     return True
             elif e.do == "reanimate":
-                if (self._reanimate_target(e.type, e.mv_max, threshold=True) is not None
-                        and self._can_pay_additional(_cost(e.cost), None)):
+                if self._reanimate_wanted(e):
                     return True
         return False
 

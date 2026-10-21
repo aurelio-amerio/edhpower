@@ -1226,22 +1226,47 @@ def test_sun_titan_returns_a_cheap_permanent_or_a_land():
     assert wilds and wilds[0].tapped and g.graveyard == [] and g.landfalls == 1 and _tokens(g, "Beast") == 1
 
 
+def _victimize_game(deck, creatures, graveyard, token=False):
+    g = _staged(deck, ["Swamp"] * 3 + creatures, hand=["Victimize"], library=["Swamp"] * 10, turn=5)
+    if token:
+        g.board.append(Perm(token_card("Saproling", 1, 1), 0))
+    g.command_zone = set()
+    g.graveyard = list(graveyard)
+    g.pool = g._produce()
+    g._main_phase()
+    return g
+
+
 def test_sacrifice_cost_prefers_a_token_and_refuses_when_empty():
-    deck = _fx8([(SWAMP, 37), (VICTIMIZE_C, 1), (ELDRAZI, 1), (AVENGER_C, 1)])
-    g = _staged(deck, ["Swamp"] * 3 + ["Endbringer"], hand=["Victimize"], library=["Swamp"] * 10, turn=5)
-    g.board.append(Perm(token_card("Saproling", 1, 1), 0))
+    deck = _fx8([(SWAMP, 35), (VICTIMIZE_C, 1), (ELDRAZI, 1), (AVENGER_C, 1), (BALOTHS_C, 1), (BIG, 1)])
+    g = _victimize_game(deck, ["Endbringer"], ["Avenger of Zendikar", "Rampaging Baloths"], token=True)
+    assert _on_board(g, "Endbringer") and not _tokens(g, "Saproling")
+    assert _on_board(g, "Avenger of Zendikar") and _on_board(g, "Rampaging Baloths") and g.graveyard == ["Victimize"]
+    g = _victimize_game(deck, [], ["Avenger of Zendikar", "Rampaging Baloths"])
+    assert g.hand == ["Victimize"] and len(g.graveyard) == 2 and len(g.pool) == 3   # nothing to sacrifice
+
+
+def test_sacrificed_creature_is_never_a_target():
+    deck = _fx8([(SWAMP, 35), (VICTIMIZE_C, 1), (ELDRAZI, 1), (AVENGER_C, 1), (BALOTHS_C, 1), (BIG, 1)])
+    # Endbringer (MV 6, 5 power) is the only creature: worth less than Avenger (MV 7), so it goes, and stays gone
+    g = _victimize_game(deck, ["Endbringer"], ["Avenger of Zendikar", "Rampaging Baloths"])
+    assert not _on_board(g, "Endbringer") and g.graveyard == ["Endbringer", "Victimize"]
+    assert _on_board(g, "Avenger of Zendikar") and _on_board(g, "Rampaging Baloths")
+    # the victim would be worth more than the best target: held
+    g = _victimize_game(deck, ["Ulamog, the Ceaseless Hunger"], ["Avenger of Zendikar", "Rampaging Baloths"])
+    assert g.hand == ["Victimize"] and _on_board(g, "Ulamog, the Ceaseless Hunger")
+
+
+def test_two_target_reanimation_needs_two_targets():
+    deck = _fx8([(SWAMP, 35), (VICTIMIZE_C, 1), (DREAD_C, 1), (AVENGER_C, 1), (BALOTHS_C, 1)])
+    g = _victimize_game(deck, [], ["Avenger of Zendikar"], token=True)
+    assert g.hand == ["Victimize"] and _tokens(g, "Saproling") == 1 and g.graveyard == ["Avenger of Zendikar"]
+    g = _staged(deck, ["Swamp"] * 4, hand=["Dread Return"], library=["Swamp"] * 10, turn=6)   # n = 1: one target is enough
     g.command_zone = set()
     g.graveyard = ["Avenger of Zendikar"]
     g.pool = g._produce()
     g._main_phase()
-    assert _on_board(g, "Endbringer") and not _tokens(g, "Saproling") and _on_board(g, "Avenger of Zendikar")
-    assert g.graveyard == ["Victimize"]
-    g = _staged(deck, ["Swamp"] * 3, hand=["Victimize"], library=["Swamp"] * 10, turn=5)
-    g.command_zone = set()
-    g.graveyard = ["Avenger of Zendikar"]
-    g.pool = g._produce()
-    g._main_phase()
-    assert g.hand == ["Victimize"] and g.graveyard == ["Avenger of Zendikar"] and len(g.pool) == 3
+    assert _on_board(g, "Avenger of Zendikar") and g.graveyard == ["Dread Return"]
 
 
 def test_horizon_land_draws_when_the_hand_is_empty():
