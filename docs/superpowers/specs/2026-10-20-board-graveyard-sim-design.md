@@ -1,6 +1,6 @@
 # Board, graveyard and a shared win clock for the goldfish simulator
 
-**Date:** 2026-10-20. **Status:** draft, awaiting approval. Plan to follow in
+**Date:** 2026-10-20. **Status:** stage 1 implemented (sim v3, 2026-10-21). Plan in
 `docs/superpowers/plans/`.
 
 ## Problem

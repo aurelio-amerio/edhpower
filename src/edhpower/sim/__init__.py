@@ -156,11 +156,11 @@ def simulate(facts: DeckFacts, cfg: SimConfig, iterations: int, tipping_target: 
         f"on the play, {iterations} games, seed {seed}; one London mulligan when the opener holds fewer than "
         f"{cfg.mulligan_min_lands} or more than {cfg.mulligan_max_lands} lands; no opponent, no interaction; "
         "combat counts printed power, counters, anthems and pumps cast for lethal; tokens attack from the turn after they enter; no haste, no blockers; colours are enforced",
-        "note: tokens entering do not fire token-making creature-enters effects, and token-created triggers do not make more tokens",
-        "note: lands fetched by ramp spells enter tapped",
-        "note: attackers are assigned greedily to the opponent with the most life, not optimally",
-        "note: at most one pump spell is cast per turn, and only when it kills an opponent",
-        "note: a pump spell cast for another role (a threat, a draw tag) does not apply its pump",
+        "tokens entering do not fire token-making creature-enters effects, and token-created triggers do not make more tokens",
+        "lands fetched by ramp spells enter tapped",
+        "attackers are assigned greedily to the opponent with the most life, not optimally",
+        "at most one pump spell is cast per turn, and only when it kills an opponent",
+        "a pump spell cast for another role (a threat, a draw tag) does not apply its pump",
     ]
     notes.extend(deck.notes)
     notes.extend(payoffs.notes)

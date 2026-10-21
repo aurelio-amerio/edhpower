@@ -140,7 +140,9 @@ def test_result_carries_new_rows():
     assert r.max_swing_median >= 0 and set(r.effects_sources) >= {"table", "forge", "none"}
     assert r.nonland_count == sum(r.coverage.values()) - r.coverage["land"]
     assert isinstance(r.unmodelled, list) and isinstance(r.partial, list)
-    assert sum("note:" in n for n in r.notes) >= 5
+    assert not any(n.startswith("note:") for n in r.notes)   # the report adds the prefix
+    for text in ("token-created triggers", "enter tapped", "assigned greedily", "one pump spell", "does not apply its pump"):
+        assert any(text in n for n in r.notes), text
     json.dumps(r.to_dict())
 
 

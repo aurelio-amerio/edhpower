@@ -40,6 +40,11 @@ def golden_for(name: str) -> dict:
         "sim_combat_median": sim.clocks["combat"].median,
         "sim_combo_reached": sim.clocks["combo"].reached,
         "sim_lethal_combo_reached": sim.clocks["lethal_combo"].reached,
+        "sim_win_median": sim.clocks["win"].median,
+        "sim_win_fast": sim.clocks["win"].fast,
+        "sim_lethal_table_median": sim.clocks["lethal_table"].median,
+        "sim_max_swing_median": sim.max_swing_median,
+        "sim_unmodelled_count": len(sim.unmodelled),
         "sim_idle_window": list(a.narrative.idle_window) if a.narrative.idle_window else None,
     }
 

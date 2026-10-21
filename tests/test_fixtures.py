@@ -16,6 +16,7 @@ FIXTURES = Path(__file__).parent / "fixtures"
     ("ulalek-b5", None, None),              # bracket 5 by declaration; the criteria floor is whatever the live run shows
     ("precon-eldrazi-unbound", None, None),  # expected 0 Game Changers / bracket 2 — if the live run disagrees, record why in CALIBRATION.md
     ("ulalek-bracket4-v2", None, None),     # 14 Game Changers per the deck notes → bracket 4 expected; record the live value in CALIBRATION.md
+    ("necrobloom-v3", 1, 3),
 ])
 def test_fixture_invariants(name, expected_gc, expected_bracket):
     facts = load_facts(FIXTURES / f"{name}.facts.json")
@@ -63,3 +64,17 @@ def test_special_behaviours_hit_the_expected_cards():
     u = load_facts(FIXTURES / "ulalek-bracket3-v2.facts.json")
     assert any(h.startswith("Basalt Monolith (rock, mana 3)") for h in u.special_hits)
     assert u.profiles["Ancient Tomb"].land_mana == 2 and u.profiles["Mana Vault"].is_fast_mana
+
+
+def test_necrobloom_fixture_makes_zombies():
+    sim = analyse(load_facts(FIXTURES / "necrobloom-v3.facts.json"), iterations=500).sim
+    assert sim is not None
+    assert sim.tokens_by_turn["Zombie"][12] > 0
+    assert sim.tokens_by_turn["Plant"][5] > 0
+
+
+def test_necrobloom_effects_come_from_forge_not_table():
+    sim = analyse(load_facts(FIXTURES / "necrobloom-v3.facts.json"), iterations=100).sim
+    assert sim is not None
+    assert {"The Necrobloom", "Avenger of Zendikar"} <= set(sim.effects_sources["forge"])
+    assert sim.effects_sources["table"] == []

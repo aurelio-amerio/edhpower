@@ -201,6 +201,8 @@ def build_sim_deck(facts: DeckFacts, cfg: SimConfig) -> SimDeck:
         cards[e.name] = sc
         if e.is_commander:
             commanders.append(sc)
+            if not sc.is_land:
+                sources[fx.source].append(e.name)   # where its effects came from; coverage counts stay library-only
         else:
             library.extend([e.name] * e.count)
             coverage[sc.role] += e.count

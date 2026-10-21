@@ -123,7 +123,14 @@ def test_effects_ride_on_simcard():
     deck = _fx_deck()
     assert deck.cards["Rampaging Baloths"].effects[0].do == "token"
     assert deck.effects_sources["forge"] == ["Grizzly Bears", "Rampaging Baloths", "Retreat to Hagra", "Six"]
-    assert deck.effects_sources["none"] == ["Mystery"]
+    assert deck.effects_sources["none"] == ["Cmdr", "Mystery"]
+
+
+def test_commander_effects_source_is_recorded():
+    baloths_commands = "1 Rampaging Baloths\n\n1 Cmdr\n1 Six\n1 Grizzly Bears\n1 Retreat to Hagra\n1 Mystery\n1 Forest\n"
+    deck = build_sim_deck(sim_facts(baloths_commands, _FX_CARDS, TAGS, scripts=_FX_SCRIPTS), CFG)
+    assert deck.commanders[0].name == "Rampaging Baloths"
+    assert "Rampaging Baloths" in deck.effects_sources["forge"] and "Cmdr" in deck.effects_sources["none"]
 
 
 def test_token_card_shape():

@@ -3,10 +3,73 @@
     "config_version": 1,
     "curve_profile": "edhpowerlevel-2026-08",
     "components_profile": "v1",
-    "sim_version": 2,
+    "sim_version": 3,
     "sim_iterations": 500
   },
   "decks": {
+    "necrobloom-v3": {
+      "bracket": 3,
+      "curve_power_level": 7.4659,
+      "curve_total_impact": 683.2377,
+      "curve_efficiency": 0.956,
+      "curve_bracket_estimate": 3,
+      "components_total": 5.395,
+      "components": {
+        "fast_mana": 1.667,
+        "tutors": 10.0,
+        "interaction": 3.333,
+        "card_advantage": 10.0,
+        "combos": 2.5,
+        "curve": 7.079
+      },
+      "archetype": "combo",
+      "tipping_target": 3,
+      "tipping_turn": 3,
+      "tipping_probability": 0.989982,
+      "partition_counts": {
+        "lands": 40,
+        "fast_mana": 1,
+        "mana_rocks": 1,
+        "mana_dorks": 2,
+        "land_ramp": 28,
+        "rituals": 0,
+        "other_ramp": 3,
+        "cost_reducers": 1,
+        "tutors": 20,
+        "counterspells": 0,
+        "board_wipes": 0,
+        "removal": 4,
+        "cantrips": 2,
+        "card_advantage": 17,
+        "extra_turns": 0,
+        "mass_land_denial": 0,
+        "pitch_spells": 0,
+        "stax": 0,
+        "reanimate": 15,
+        "cheat_into_play": 2,
+        "extra_combat": 0,
+        "copy_spell": 0,
+        "creatures": 27,
+        "untagged": 11
+      },
+      "sim_seed": 1189066043824635889,
+      "sim_commander_median": 4,
+      "sim_mana_threshold_median": 6,
+      "sim_tipping_target_median": 3,
+      "sim_threat_median": null,
+      "sim_combat_median": 10,
+      "sim_combo_reached": 0.0,
+      "sim_lethal_combo_reached": 0.0,
+      "sim_win_median": null,
+      "sim_win_fast": 10,
+      "sim_lethal_table_median": null,
+      "sim_max_swing_median": 23,
+      "sim_unmodelled_count": 40,
+      "sim_idle_window": [
+        8,
+        12
+      ]
+    },
     "precon-eldrazi-unbound": {
       "bracket": 2,
       "curve_power_level": 5.1864,
@@ -60,6 +123,11 @@
       "sim_combat_median": 9,
       "sim_combo_reached": 0.0,
       "sim_lethal_combo_reached": 0.0,
+      "sim_win_median": null,
+      "sim_win_fast": 11,
+      "sim_lethal_table_median": null,
+      "sim_max_swing_median": 21,
+      "sim_unmodelled_count": 55,
       "sim_idle_window": [
         2,
         4
@@ -118,6 +186,11 @@
       "sim_combat_median": null,
       "sim_combo_reached": 0.206,
       "sim_lethal_combo_reached": 0.06,
+      "sim_win_median": null,
+      "sim_win_fast": 12,
+      "sim_lethal_table_median": null,
+      "sim_max_swing_median": 6,
+      "sim_unmodelled_count": 64,
       "sim_idle_window": [
         2,
         12
@@ -176,6 +249,11 @@
       "sim_combat_median": 11,
       "sim_combo_reached": 0.08,
       "sim_lethal_combo_reached": 0.0,
+      "sim_win_median": null,
+      "sim_win_fast": 12,
+      "sim_lethal_table_median": null,
+      "sim_max_swing_median": 14,
+      "sim_unmodelled_count": 53,
       "sim_idle_window": [
         2,
         12
@@ -234,6 +312,11 @@
       "sim_combat_median": null,
       "sim_combo_reached": 0.386,
       "sim_lethal_combo_reached": 0.148,
+      "sim_win_median": null,
+      "sim_win_fast": 9,
+      "sim_lethal_table_median": null,
+      "sim_max_swing_median": 7,
+      "sim_unmodelled_count": 54,
       "sim_idle_window": [
         2,
         12
@@ -292,6 +375,11 @@
       "sim_combat_median": 9,
       "sim_combo_reached": 0.0,
       "sim_lethal_combo_reached": 0.0,
+      "sim_win_median": 12,
+      "sim_win_fast": 10,
+      "sim_lethal_table_median": 12,
+      "sim_max_swing_median": 28,
+      "sim_unmodelled_count": 54,
       "sim_idle_window": [
         8,
         12
