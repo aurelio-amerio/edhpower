@@ -41,6 +41,7 @@ class CardEffects:
     partial: bool = False  # some effect read, some line/choice/branch not
     ramp_to_battlefield: int = 1
     ramp_to_hand: int = 0
+    ramp_sacrifice_lands: int = 0  # lands sacrificed as the ramp spell's additional cost (Sac<N/Land>)
 
 
 @dataclass(frozen=True)
@@ -50,6 +51,9 @@ class ForgeScript:
     abilities: list[dict[str, str]] = field(default_factory=list)
     statics: list[dict[str, str]] = field(default_factory=list)
     svars: dict[str, dict[str, str]] = field(default_factory=dict)
+    replacements: list[dict[str, str]] = field(default_factory=list)
+    alternate_mode: str = ""  # AlternateMode$ of a card with a back face
+    back_face_types: str | None = None  # Types line of the back face (after ALTERNATE); None when there is none
 
 
 # ---------------------------------------------------------------------------------------------- parsing
@@ -64,20 +68,32 @@ def _fields(text: str) -> dict[str, str]:
 
 
 def parse_script(text: str) -> ForgeScript:
-    """Split a Forge card script into its fields. Only the front face is read (stops at ALTERNATE)."""
+    """Split a Forge card script into its fields. Only the front face's abilities are read; of the back face
+    (after ALTERNATE) only its Types line is kept."""
     keywords: list[str] = []
     triggers: list[dict[str, str]] = []
     abilities: list[dict[str, str]] = []
     statics: list[dict[str, str]] = []
+    replacements: list[dict[str, str]] = []
     svars: dict[str, dict[str, str]] = {}
-    for raw in text.splitlines():
+    alternate_mode = ""
+    back_face_types: str | None = None
+    lines = iter(text.splitlines())
+    for raw in lines:
         line = raw.strip()
         if line == "ALTERNATE":
+            back_face_types = ""
+            for back in lines:
+                if back.startswith("Types:"):
+                    back_face_types = back.partition(":")[2].strip()
+                    break
             break
         prefix, sep, body = line.partition(":")
         if not sep:
             continue
-        if prefix == "K":
+        if prefix == "AlternateMode":
+            alternate_mode = body.strip()
+        elif prefix == "K":
             keywords.append(body)
         elif prefix == "T":
             triggers.append(_fields(body))
@@ -85,10 +101,12 @@ def parse_script(text: str) -> ForgeScript:
             abilities.append(_fields(body))
         elif prefix == "S":
             statics.append(_fields(body))
+        elif prefix == "R":
+            replacements.append(_fields(body))
         elif prefix == "SVar":
             name, _, value = body.partition(":")
             svars[name] = _fields(value)
-    return ForgeScript(tuple(keywords), triggers, abilities, statics, svars)
+    return ForgeScript(tuple(keywords), triggers, abilities, statics, svars, replacements, alternate_mode, back_face_types)
 
 
 def _text(d: dict[str, str]) -> str:
@@ -175,6 +193,8 @@ class _Reader:
         api = d.get("DB") or d.get("SP") or d.get("AB") or ""
         if api in _IGNORED_STEPS:
             return [], []
+        if any(k.startswith("Condition") for k in d):  # conditional step: fail closed
+            return [], [self.svar_text(name) if name else _clip(_text(d))]
         if api == "Branch":
             return self.branch(name, d, on, seen)
         if api in ("Charm", "GenericChoice"):
@@ -184,6 +204,8 @@ class _Reader:
             if api == "PumpAll" and "NumAtt" not in d and "NumDef" not in d and "KW" in d:
                 return [], []  # keyword-only mass pump (vigilance until end of turn): not modelled, not a gap
             return [], [self.svar_text(name) if name else _clip(_text(d))]
+        if "Sac<" in d.get("Cost", ""):  # a sacrifice cost the model does not pay
+            return [effect], [_clip(f"Cost$ {d['Cost']}")]
         return [effect], []
 
     def branch(self, name: str, d: dict[str, str], on: str, seen: frozenset[str]) -> tuple[list[Effect], list[str]]:
@@ -193,10 +215,12 @@ class _Reader:
         when = _branch_condition(d, self.s.svars)
         if when is not None and len(true_fx) == 1 and len(false_fx) == 1 and not true_un and not false_un:
             return [replace(false_fx[0], upgrade=replace(true_fx[0], when=when))], []
-        if false_fx and not true_fx:
+        if false_fx and not true_fx:  # the upgrade branch is not understood: the default effect, unconditioned
             return false_fx, false_un + (true_un or [self.svar_text(name)])
-        if true_fx and not false_fx:
-            return true_fx, true_un + (false_un or [self.svar_text(name)])
+        if true_fx and not false_fx:  # the effect happens only when the condition holds
+            if when is None:
+                return [], [self.svar_text(name)]
+            return [replace(e, when=when) for e in true_fx], true_un + false_un
         if not true_fx and not false_fx:
             return [], [self.svar_text(name)]
         # both branches read but not as a single upgradeable effect: keep the default branch
@@ -231,7 +255,17 @@ class _Reader:
         self.unread.extend(un)
 
 
+_TRIGGER_KEYS = frozenset({"Mode", "Origin", "Destination", "ValidCard", "ValidPlayer", "ValidToken", "TriggerZones", "Execute",
+                           "TriggerDescription", "OptionalDecider", "Secondary"})
+_YOUR_TOKENS = ("Card.token+YouCtrl", "Creature.token+YouCtrl")
+
+
 def _trigger_kind(t: dict[str, str]) -> str | None:
+    """The trigger's kind, or None when any key or value is outside the read vocabulary (fail closed)."""
+    if set(t) - _TRIGGER_KEYS or t.get("Origin", "Any") != "Any" or t.get("TriggerZones", "Battlefield") != "Battlefield":
+        return None
+    if "ValidToken" in t and t["ValidToken"] not in _YOUR_TOKENS:
+        return None
     mode = t.get("Mode")
     if mode == "ChangesZone" and t.get("Destination") == "Battlefield":
         valid = t.get("ValidCard", "")
@@ -332,14 +366,33 @@ def _is_land_type(change_type: str) -> bool:
     return bool(change_type) and all(part.split(".")[0] in _BASIC_TYPES for part in change_type.split(","))
 
 
-def _ramp(ability: dict[str, str], svars: dict[str, dict[str, str]]) -> tuple[int, int] | None:
-    """(to battlefield, to hand) for a land-search spell's ChangeZone chain; None when it is not one."""
+_SAC = re.compile(r"Sac<([^/>]+)/([^>]+)>")
+
+
+def _land_sacrifice(cost: str) -> int | None:
+    """Lands sacrificed by `cost` (Sac<N/Land>); None when it holds any other sacrifice."""
+    total = 0
+    for num, what in _SAC.findall(cost):
+        n = _int(num)
+        if n is None or what != "Land":
+            return None
+        total += n
+    return total
+
+
+def _ramp(ability: dict[str, str], svars: dict[str, dict[str, str]]) -> tuple[int, int, int] | None:
+    """(to battlefield, to hand, lands sacrificed) for a land-search spell's ChangeZone chain; None when it is not one."""
+    sacrificed = _land_sacrifice(ability.get("Cost", ""))
+    if sacrificed is None:
+        return None
     to_bf = to_hand = 0
     found = False
     step: dict[str, str] | None = ability
     seen: set[str] = set()
     while step is not None:
         api = step.get("SP") or step.get("DB")
+        if any(k.startswith("Condition") for k in step):
+            return None
         if api == "ChangeZone":
             land = _is_land_type(step.get("ChangeType", ""))
             n = _int(step.get("ChangeNum"), 1) or 0
@@ -359,12 +412,37 @@ def _ramp(ability: dict[str, str], svars: dict[str, dict[str, str]]) -> tuple[in
             break
         seen.add(sub)
         step = svars.get(sub)
-    return (to_bf, to_hand) if found else None
+    return (to_bf, to_hand, sacrificed) if found else None
+
+
+# Keywords with no effect on a goldfish board, mana or win clock beyond what the model already reads (combat,
+# evasion, protection, casting timing, type-changing). Every other K: line is unread.
+_IGNORED_KEYWORDS = frozenset({
+    "Flying", "Trample", "Reach", "Vigilance", "Haste", "Menace", "Deathtouch", "Lifelink", "First Strike", "Double Strike",
+    "Defender", "Indestructible", "Hexproof", "Shroud", "Ward", "Protection", "Flash", "Devoid", "Changeling", "Cycling",
+    "TypeCycling", "Landwalk", "Horsemanship", "Shadow", "Fear", "Intimidate", "Skulk",
+})
+
+
+def _self_enters_tapped(r: dict[str, str], svars: dict[str, dict[str, str]]) -> bool:
+    """`R:` "this enters tapped": read by the mana model, not here."""
+    if (r.get("Event"), r.get("ValidCard"), r.get("Destination")) != ("Moved", "Card.Self", "Battlefield"):
+        return False
+    tap = svars.get(r.get("ReplaceWith", ""), {})
+    return tap.get("DB") == "Tap" and tap.get("ETB") == "True" and tap.get("Defined") in ("Self", "ReplacedCard")
 
 
 def _read_script(text: str) -> CardEffects:
     s = parse_script(text)
     reader = _Reader(s)
+    for k in s.keywords:
+        if k.split(":")[0].split(" from ")[0] not in _IGNORED_KEYWORDS:
+            reader.unread.append(_clip("K:" + k))
+    for r in s.replacements:
+        if not _self_enters_tapped(r, s.svars):
+            reader.unread.append(_clip("R:" + _text(r)))
+    if s.back_face_types is not None and "Land" not in s.back_face_types.split():
+        reader.unread.append(_clip(f"ALTERNATE: {s.alternate_mode or s.back_face_types}"))
     for t in s.triggers:
         reader.trigger(t)
     for st in s.statics:
@@ -373,14 +451,14 @@ def _read_script(text: str) -> CardEffects:
             reader.effects.append(effect)
         elif not ignorable:
             reader.unread.append(_clip("S:" + _text(st)))
-    ramp_bf, ramp_hand = 1, 0
+    ramp_bf, ramp_hand, ramp_sac = 1, 0, 0
     for a in s.abilities:
         if a.get("AB") == "Mana":
             continue  # mana abilities belong to the mana model, not to the effects reader
         if a.get("SP") == "ChangeZone":
             ramp = _ramp(a, s.svars)
             if ramp is not None:
-                ramp_bf, ramp_hand = ramp
+                ramp_bf, ramp_hand, ramp_sac = ramp
                 continue
         if "SP" in a:
             fx, un = reader.step("", a, "cast", frozenset())
@@ -394,7 +472,7 @@ def _read_script(text: str) -> CardEffects:
                 continue
         reader.unread.append(_clip("A:" + _text(a)))
     effects, unread = tuple(reader.effects), tuple(reader.unread)
-    return CardEffects(effects, "forge", unread, bool(effects) and bool(unread), ramp_bf, ramp_hand)
+    return CardEffects(effects, "forge", unread, bool(effects) and bool(unread), ramp_bf, ramp_hand, ramp_sac)
 
 
 def effects_for(card: CardData, script: str | None, special: SpecialBehaviour | None) -> CardEffects:

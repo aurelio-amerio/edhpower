@@ -186,7 +186,84 @@ SVar:TrigToken:DB$ Token | TokenScript$ w_1_1_bird_flying | TokenOwner$ You
 Oracle:Flying\nLandfall — Whenever a land you control enters, you may create a 1/1 white Bird creature token with flying.
 """
 
+DOUBLING_SEASON = r"""Name:Doubling Season
+ManaCost:4 G
+Types:Enchantment
+R:Event$ CreateToken | ActiveZones$ Battlefield | ValidToken$ Card.YouCtrl | ReplaceWith$ DoubleToken | EffectOnly$ True | Description$ If an effect would create one or more tokens under your control, it creates twice that many of those tokens instead.
+SVar:DoubleToken:DB$ ReplaceToken | Type$ Amount
+R:Event$ AddCounter | ActiveZones$ Battlefield | ValidCard$ Permanent.YouCtrl+inZoneBattlefield | EffectOnly$ True | ReplaceWith$ DoubleCounters | Description$ If an effect would put one or more counters on a permanent you control, it puts twice that many of those counters on that permanent instead.
+SVar:DoubleCounters:DB$ ReplaceCounter | Amount$ Y
+SVar:Y:ReplaceCount$CounterNum/Twice
+Oracle:If an effect would create one or more tokens under your control, it creates twice that many of those tokens instead.\nIf an effect would put one or more counters on a permanent you control, it puts twice that many of those counters on that permanent instead.
+"""
+
+GARRUKS_UPRISING = r"""Name:Garruk's Uprising
+ManaCost:2 G
+Types:Enchantment
+T:Mode$ ChangesZone | Origin$ Any | Destination$ Battlefield | ValidCard$ Card.Self | IsPresent$ Creature.YouCtrl+powerGE4 | Execute$ TrigDraw | TriggerDescription$ When CARDNAME enters, if you control a creature with power 4 or greater, draw a card.
+S:Mode$ Continuous | Affected$ Creature.YouCtrl | AddKeyword$ Trample | Description$ Creatures you control have trample.
+T:Mode$ ChangesZone | Origin$ Any | Destination$ Battlefield | ValidCard$ Creature.powerGE4+YouCtrl | TriggerZones$ Battlefield | Execute$ TrigDraw | TriggerDescription$ Whenever a creature you control with power 4 or greater enters, draw a card.
+SVar:TrigDraw:DB$ Draw | Defined$ You
+Oracle:When Garruk's Uprising enters, if you control a creature with power 4 or greater, draw a card.\nCreatures you control have trample. (They can deal excess combat damage to the player or planeswalker they're attacking.)\nWhenever a creature you control with power 4 or greater enters, draw a card.
+"""
+
+MINISTRANT_OF_OBLIGATION = r"""Name:Ministrant of Obligation
+ManaCost:2 W
+Types:Creature Human Cleric
+PT:2/1
+K:Afterlife:2
+DeckHas:Ability$Token
+Oracle:Afterlife 2 (When this creature dies, create two 1/1 white and black Spirit creature tokens with flying.)
+"""
+
+WANDERING_ARCHAIC = r"""Name:Wandering Archaic
+ManaCost:5
+Types:Creature Avatar
+PT:4/4
+T:Mode$ SpellCast | ValidCard$ Instant,Sorcery | ValidActivatingPlayer$ Opponent | TriggerZones$ Battlefield | Execute$ TrigCopySpell | TriggerDescription$ Whenever an opponent casts an instant or sorcery spell, they may pay {2}. If they don't, you may copy that spell. You may choose new targets for the copy.
+SVar:TrigCopySpell:DB$ CopySpellAbility | UnlessCost$ 2 | UnlessPayer$ TriggeredActivator | Controller$ You | Defined$ TriggeredSpellAbility | AILogic$ Always | Optional$ True | MayChooseTarget$ True
+AlternateMode:Modal
+Oracle:Whenever an opponent casts an instant or sorcery spell, they may pay {2}. If they don't, you may copy that spell. You may choose new targets for the copy.
+
+ALTERNATE
+
+Name:Explore the Vastlands
+ManaCost:3
+Types:Sorcery
+A:SP$ DigMultiple | Defined$ Player | DigNum$ 5 | Optional$ True | ChangeValid$ Land,Spell.!Aura | RestRandomOrder$ True | SubAbility$ DBGainLife | SpellDescription$ Each player looks at the top five cards of their library and may reveal a land card and/or an instant or sorcery card from among them. Each player puts the cards they revealed this way into their hand and the rest on the bottom of their library in a random order. Each player gains 3 life.
+SVar:DBGainLife:DB$ GainLife | Defined$ Player | LifeAmount$ 3 | StackDescription$ None
+DeckHas:Ability$LifeGain
+DeckHints:Type$Instant|Sorcery
+Oracle:Each player looks at the top five cards of their library and may reveal a land card and/or an instant or sorcery card from among them. Each player puts the cards they revealed this way into their hand and the rest on the bottom of their library in a random order. Each player gains 3 life.
+"""
+
+BALA_GED_RECOVERY = r"""Name:Bala Ged Recovery
+ManaCost:2 G
+Types:Sorcery
+A:SP$ ChangeZone | ValidTgts$ Card.YouOwn | Origin$ Graveyard | Destination$ Hand | SpellDescription$ Return target card from your graveyard to your hand.
+DeckHas:Ability$Graveyard
+AlternateMode:Modal
+Oracle:Return target card from your graveyard to your hand.
+
+ALTERNATE
+
+Name:Bala Ged Sanctuary
+ManaCost:no cost
+Types:Land
+R:Event$ Moved | ValidCard$ Card.Self | Destination$ Battlefield | ReplacementResult$ Updated | ReplaceWith$ ETBTapped | Description$ CARDNAME enters tapped.
+SVar:ETBTapped:DB$ Tap | Defined$ Self | ETB$ True
+A:AB$ Mana | Cost$ T | Produced$ G | SpellDescription$ Add {G}.
+Oracle:Bala Ged Sanctuary enters tapped.\n{T}: Add {G}.
+"""
+
 OPP_LANDFALL = BALOTHS.replace("ValidCard$ Land.YouCtrl", "ValidCard$ Land.OppCtrl")
+# Hand-edited probes (fail-closed coverage).
+IS_PRESENT_LANDFALL = BALOTHS.replace("| Execute$ TrigToken", "| IsPresent$ Creature.YouCtrl+powerGE4 | Execute$ TrigToken")
+CONDITIONAL_MANA = LOTUS_COBRA.replace("DB$ Mana | Produced$ Any", "DB$ Mana | Produced$ Any | ConditionPresent$ Creature.YouCtrl | ConditionCompare$ GE2")
+TRUE_ONLY_BRANCH = NECROBLOOM.replace(" | FalseSubAbility$ DBPlant", "")
+SAC_COST_DAMAGE = OVERRUN.replace(
+    "A:SP$ PumpAll | ValidCards$ Creature.YouCtrl | NumAtt$ +3 | NumDef$ +3 | KW$ Trample",
+    "A:SP$ DealDamage | Cost$ 2 G G G Sac<1/Creature> | Defined$ Player.Opponent | NumDmg$ 3")
 
 
 def _card(name: str, type_line: str = "Creature") -> CardData:
@@ -332,3 +409,48 @@ def test_parse_effects_table_with_upgrade():
 def test_parse_effects_table_rejects_unknown(bad, key):
     with pytest.raises(ValueError, match=key):
         parse_effects_table([bad])
+
+
+def test_replacement_lines_are_unread_except_self_enters_tapped():
+    ce = _read(DOUBLING_SEASON)
+    assert ce.effects == () and len(ce.unread) == 2 and all(u.startswith("R:Event$") for u in ce.unread)
+
+
+def test_trigger_with_unknown_condition_is_unread():
+    ce = _read(IS_PRESENT_LANDFALL)
+    assert IS_PRESENT_LANDFALL != BALOTHS and ce.effects == () and len(ce.unread) == 1 and ce.unread[0].startswith("T:Mode$ ChangesZone")
+    assert len(_read(GARRUKS_UPRISING).unread) == 2  # IsPresent ETB and the power-4 creature trigger
+
+
+def test_conditional_step_is_unread():
+    ce = _read(CONDITIONAL_MANA)
+    assert CONDITIONAL_MANA != LOTUS_COBRA and ce.effects == () and len(ce.unread) == 1
+
+
+def test_keywords_outside_the_allowlist_are_unread():
+    assert _read(MINISTRANT_OF_OBLIGATION).unread == ("K:Afterlife:2",)
+    assert _read(BALOTHS).unread == ()  # K:Trample is ignored
+
+
+def test_back_face_is_unread_unless_it_is_a_land():
+    assert "ALTERNATE: Modal" in _read(WANDERING_ARCHAIC).unread
+    assert not any(u.startswith(("ALTERNATE", "R:")) for u in _read(BALA_GED_RECOVERY).unread)
+
+
+def test_true_only_branch_keeps_its_condition():
+    ce = _read(TRUE_ONLY_BRANCH)
+    assert TRUE_ONLY_BRANCH != NECROBLOOM
+    assert ce.effects == (Effect("landfall", "token", 1, 2, 2, "Zombie", when="distinct_lands >= 7"),)
+    assert len(ce.unread) == 1 and ce.unread[0].startswith("S:")  # only the dredge static
+
+
+def test_ramp_land_sacrifice_cost():
+    harrow = _read(HARROW)
+    assert (harrow.ramp_to_battlefield, harrow.ramp_to_hand, harrow.ramp_sacrifice_lands) == (2, 0, 1)
+    assert _read(CULTIVATE).ramp_sacrifice_lands == 0
+
+
+def test_other_sacrifice_cost_is_unread():
+    ce = _read(SAC_COST_DAMAGE)
+    assert SAC_COST_DAMAGE != OVERRUN
+    assert ce.effects == (Effect("cast", "drain", 3),) and ce.unread == ("Cost$ 2 G G G Sac<1/Creature>",) and ce.partial
