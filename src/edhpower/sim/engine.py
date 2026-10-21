@@ -5,6 +5,7 @@ from __future__ import annotations
 import random
 from collections.abc import Iterable
 from dataclasses import dataclass, field
+from functools import lru_cache
 
 from edhpower.config import SimConfig
 from edhpower.sim.combos import SimLine, missing_pieces, payoff_ready, pieces_to_cast
@@ -19,6 +20,8 @@ MAIN_ORDER: tuple[str, ...] = ("rock", "dork", "reducer", "ramp_spell", "spell",
 CHEAPEST_FIRST = {"rock", "dork", "reducer", "engine", "permanent", "ramp_spell", "spell", "draw_spell", "tutor"}
 ALWAYS_WANTED = {"mill", "token", "counters", "drain"}   # cast effects worth casting whenever the spell is payable
 UNTAP_RANK = {"permanents": 3, "artifacts": 2, "one_artifact": 1}
+
+_cost = lru_cache(maxsize=None)(parse_activation_cost)   # effect costs are a handful of strings, parsed in hot loops
 
 
 @dataclass
@@ -40,6 +43,8 @@ class GameRecord:
     landfall_by_turn: list[int] = field(default_factory=list)   # lands that entered that turn
     damage_by_turn: list[int] = field(default_factory=list)   # life the opponents lost that turn, combat and drain
     max_swing: int = 0   # largest damage_by_turn
+    graveyard_lands_by_turn: list[int] = field(default_factory=list)   # land cards in the graveyard at end of turn
+    distinct_lands_by_turn: list[int] = field(default_factory=list)   # land names on the battlefield at end of turn
 
 
 class Game:
@@ -63,12 +68,15 @@ class Game:
         self.pumps: list[Effect] = []   # pumps resolved this turn; they end with it
         self.distinct_lands: set[str] = set()
         self.landfalls = 0   # lands that entered this turn
+        self.land_drops = 1   # lands that may be played this turn
+        self.lands_played = 0   # lands played this turn
         self.token_cards: dict[tuple[str, int, int], SimCard] = {}
         n = cfg.max_turn + 1
         token_types = sorted({e.type for c in deck.cards.values() for top in c.effects for e in (top, top.upgrade)
                               if e is not None and e.do == "token"})
         self.record = GameRecord({k: None for k in CLOCKS}, [0] * n, [False] * n, {k: [0] * n for k in token_types},
-                                 [0] * n, [0] * n, [0] * n, [0] * n)
+                                 [0] * n, [0] * n, [0] * n, [0] * n,
+                                 graveyard_lands_by_turn=[0] * n, distinct_lands_by_turn=[0] * n)
         self._opening_hand()
 
     # ---- setup -------------------------------------------------------------------------------
@@ -244,6 +252,8 @@ class Game:
 
     def _land_priority(self, c: SimCard, needed: frozenset[str], tapped: bool = False) -> int:
         """How much a land is worth playing now; `tapped`: it enters tapped whatever the card says (a return)."""
+        if self._free_fetch(c) is not None and self._basic_in_library() is not None:
+            return 3   # a tapped land of a needed colour: it is two landfalls
         enters_tapped = c.enters_tapped or tapped
         if c.params.get("sacrifice_on_land_drop"):
             return 8 if self.turn <= 2 else 1
@@ -261,15 +271,48 @@ class Game:
             return 3 if fixes else 2
         return 6 if fixes else 5
 
-    def _play_land(self) -> None:
-        lands = [n for n in self.hand if self.cards[n].is_land]
-        if not lands:
-            return
-        needed = self._needed_colors()
-        pick = max(lands, key=lambda n: (self._land_priority(self.cards[n], needed), -self.hand.index(n)))
-        for p in [p for p in self.board if p.card.params.get("sacrifice_on_land_drop")]:
-            self._sacrifice(p)
-        self._put_land(pick, self.cards[pick].enters_tapped, "hand")
+    def _static_drops(self) -> int:
+        return sum(int(e.n) for p in self.board for e in p.card.effects if e.on == "static" and e.do == "extra_land")
+
+    def _plays_from_graveyard(self) -> bool:
+        return any(e.on == "static" and e.do == "play_lands_from_graveyard" for p in self.board for e in p.card.effects)
+
+    def _land_step(self) -> None:
+        """Play lands while drops are left: from the hand, else from the graveyard when a permanent allows it, best
+        land priority first. A free fetch is cracked after each land, so a replayed fetch uses one drop each time."""
+        while self.lands_played < self.land_drops:
+            zone, lands = "hand", [n for n in self.hand if self.cards[n].is_land]
+            if not lands and self._plays_from_graveyard():
+                zone, lands = "graveyard", self._gy_lands()
+            if not lands:
+                break
+            needed = self._needed_colors()
+            pick = max(lands, key=lambda n: (self._land_priority(self.cards[n], needed), -lands.index(n)))
+            for p in [p for p in self.board if p.card.params.get("sacrifice_on_land_drop")]:
+                self._sacrifice(p)
+            self._put_land(pick, self.cards[pick].enters_tapped, zone)
+            self.lands_played += 1
+            self._crack_free_fetches()
+        self._crack_free_fetches()
+
+    @staticmethod
+    def _free_fetch(c: SimCard) -> Effect | None:
+        """The activated fetch of a land that costs no mana and no creature, and is paid by tapping or sacrificing it."""
+        if not c.is_land:
+            return None
+        for e in c.effects:
+            if e.on == "activated" and e.do == "fetch":
+                cost = _cost(e.cost)
+                if not cost.mana.total and not cost.sacrifice_creatures and (cost.tap or cost.sacrifice_self):
+                    return e
+        return None
+
+    def _crack_free_fetches(self) -> None:
+        """Crack every untapped land's free fetch while the library still holds a land it finds."""
+        while True:
+            found = next(((p, e) for p in self.board if not p.tapped and (e := self._free_fetch(p.card)) is not None), None)
+            if found is None or self._basic_in_library() is None or not self._activate(*found):
+                return
 
     def _put_land(self, name: str, tapped: bool, zone: str) -> Perm:
         """Move the land `name` from `zone` ("hand" | "graveyard" | "library") onto the battlefield; it enters (landfall)."""
@@ -372,6 +415,57 @@ class Game:
             count += 1
         return count
 
+    def _activate(self, perm: Perm, e: Effect) -> bool:
+        """Pay the whole cost of `perm`'s activated `e` (mana from the pool, tap, sacrifices), then fire it.
+        False, with nothing paid, when any part cannot be paid."""
+        cost = _cost(e.cost)
+        if cost.tap and (perm.tapped or (perm.card.is_creature and perm.entered >= self.turn)):
+            return False
+        left = pay(cost.mana, self.pool) if cost.mana.total else self.pool
+        if left is None or not self._pay_additional(cost, perm):
+            return False
+        self.pool = left
+        if cost.tap:
+            perm.tapped = True
+        self._fire(e, perm)
+        return True
+
+    def _mass_return_wanted(self) -> bool:
+        """Return every graveyard land now: enough of them and a landfall payoff, or the game is nearly over."""
+        gy = len(self._gy_lands())
+        return gy >= 1 and ((gy >= self.cfg.mass_return_min_lands and bool(self._triggered("landfall")))
+                            or self.turn >= self.cfg.max_turn - 1)
+
+    def _try_activated(self) -> bool:
+        """Activate the first board ability whose policy holds and whose cost is payable."""
+        for p in list(self.board):
+            for e in p.card.effects:
+                if e.on != "activated":
+                    continue
+                if e.do == "fetch":
+                    wanted = self._basic_in_library() is not None
+                elif e.do == "return_lands":
+                    wanted = self._mass_return_wanted()
+                else:
+                    continue
+                if wanted and self._activate(p, e):
+                    return True
+        return False
+
+    def _upkeep(self) -> None:
+        """Upkeep effects of board permanents, board order. A land sacrifice that cannot be paid sacrifices the source."""
+        for p, e in self._triggered("upkeep"):
+            if not any(q is p for q in self.board):
+                continue
+            if e.do == "sacrifice_land":
+                n = int(e.n)
+                if self._land_count() >= n:
+                    self._sacrifice_lands(n)
+                else:
+                    self._sacrifice(p)
+            else:
+                self._fire(e, p)
+
     def _pay_additional(self, cost: ActivationCost, source: Perm | None) -> bool:
         """Pay the non-mana parts of an effect's cost: sacrifice the source itself, then lands. False, with nothing
         sacrificed, when any part cannot be paid. Creature sacrifices are not paid in stage 2."""
@@ -463,7 +557,7 @@ class Game:
             self._return_lands(e.n)
             return
         if e.do == "fetch" and e.on != "activated":   # an activation pays its whole cost before firing
-            cost = parse_activation_cost(e.cost)
+            cost = _cost(e.cost)
             left = pay(cost.mana, self.pool) if cost.mana.total else self.pool
             if left is None or not self._pay_additional(cost, source):
                 return
@@ -493,6 +587,10 @@ class Game:
             for _ in range(n):
                 if not self._fetch_land():
                     break
+        elif e.do == "extra_land":
+            self.land_drops += n
+            self._land_step()
+            self._produce(fresh=False)   # the new land taps for mana this turn
         # anthem is read by _board_power and _attack_powers
 
     def _resolve(self, name: str, from_hand: bool) -> None:
@@ -564,13 +662,13 @@ class Game:
             if e.do in ALWAYS_WANTED:
                 return True
             if e.do == "return_lands":
-                gy = len(self._gy_lands())
-                if gy >= 1 and ((gy >= self.cfg.mass_return_min_lands and self._triggered("landfall"))
-                                or self.turn >= self.cfg.max_turn - 1):
+                if self._mass_return_wanted():
                     return True
             elif e.do == "return_lands_to_hand":
-                drops = 1 + sum(int(x.n) for p in self.board for x in p.card.effects if x.on == "static" and x.do == "extra_land")
-                if self._gy_lands() and sum(1 for n in self.hand if self.cards[n].is_land) < drops:
+                if self._gy_lands() and sum(1 for n in self.hand if self.cards[n].is_land) < 1 + self._static_drops():
+                    return True
+            elif e.do == "extra_land":
+                if self.lands_played >= self.land_drops and any(self.cards[n].is_land for n in self.hand):
                     return True
         return False
 
@@ -722,6 +820,8 @@ class Game:
             progressed = any(self._try_role(role) for role in MAIN_ORDER)   # short-circuits at the first cast
             if not progressed:
                 progressed = self._try_one_shot()
+            if not progressed:
+                progressed = self._try_activated()
         self._try_pump()
 
     def take_turn(self) -> None:
@@ -730,13 +830,16 @@ class Game:
         self.casts = 0
         self.produced = 0
         self.landfalls = 0
+        self.lands_played = 0
         self.pool = []
         self.pumps = []
         life_before = sum(self.life)
         self._untap()
+        self._upkeep()
+        self.land_drops = 1 + self._static_drops()
         if t > 1:
             self._draw(1)
-        self._play_land()
+        self._land_step()
         self._produce(fresh=False)
         if self._commander_castable():
             self._stamp("commander")
@@ -783,6 +886,8 @@ class Game:
         rec.board_power_by_turn[t] = self._board_power()
         rec.lands_by_turn[t] = self._land_count()
         rec.landfall_by_turn[t] = self.landfalls
+        rec.graveyard_lands_by_turn[t] = len(self._gy_lands())
+        rec.distinct_lands_by_turn[t] = len(self.distinct_lands)
 
 
 def play_game(deck: SimDeck, lines: list[SimLine], cfg: SimConfig, rng: random.Random, tipping_target: int) -> GameRecord:

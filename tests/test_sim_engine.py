@@ -121,11 +121,12 @@ def test_city_of_traitors_is_sacrificed_on_the_next_land_drop():
     deck, _ = _deck(CMD, [(CITY, 1), (WASTES, 39)])
     g = _game(deck)
     g.turn, g.hand, g.board = 1, ["City of Traitors", "Wastes"], []
-    g._play_land()
+    g.lands_played, g.land_drops = 0, 1
+    g._land_step()
     assert [p.card.name for p in g.board] == ["City of Traitors"]
-    g.turn = 2
-    g._play_land()
-    assert [p.card.name for p in g.board] == ["Wastes"]
+    g.turn, g.lands_played = 2, 0
+    g._land_step()
+    assert [p.card.name for p in g.board] == ["Wastes"] and g.graveyard == ["City of Traitors"]
 
 
 def test_tron_completes_to_seven():
@@ -139,7 +140,8 @@ def test_tron_completes_to_seven():
     assert len(g._produce()) == 7
     g.hand = ["Urza's Tower", "Wastes"]
     g.board = [Perm(deck.cards["Urza's Mine"], 0), Perm(deck.cards["Urza's Power Plant"], 0)]
-    g._play_land()
+    g.lands_played = 0
+    g._land_step()
     assert g.board[-1].card.name == "Urza's Tower"
 
 
@@ -408,7 +410,8 @@ def test_zombie_threshold_needs_seven_distinct_names():
     g = _staged(deck, ["The Necrobloom"], hand=["Forest"] * 12)
     for t in range(1, 13):
         g.turn = t
-        g._play_land()
+        g.lands_played = 0
+        g._land_step()
     assert _tokens(g, "Zombie") == 0 and _tokens(g, "Plant") == 12
 
     deck = _fx_deck(NECROBLOOM_C, [(FOREST, 10), (ISLAND, 5), (SWAMP, 5), (PLAINS, 5), (MOUNTAIN, 5), (SAVANNAH, 1), (BAYOU, 1)])
@@ -417,7 +420,8 @@ def test_zombie_threshold_needs_seven_distinct_names():
     zombies = []
     for t, land in enumerate(order, 1):
         g.turn, g.hand = t, [land]
-        g._play_land()
+        g.lands_played = 0
+        g._land_step()
         zombies.append(_tokens(g, "Zombie"))
     assert len(g.distinct_lands) == 7
     assert zombies == [0, 0, 0, 0, 0, 0, 0, 1, 2]   # the eighth drop brings the seventh name: it makes the first Zombie
@@ -440,7 +444,8 @@ def test_landfall_counters_hit_tokens_of_type():
     g = _staged(deck, ["Forest", "Avenger of Zendikar", "Rampaging Baloths"], hand=["Forest"], turn=3)
     plant, beast = token_card("Plant", 0, 1), token_card("Beast", 4, 4)
     g.board += [Perm(plant, 1), Perm(plant, 1), Perm(beast, 1)]
-    g._play_land()
+    g.lands_played = 0
+    g._land_step()
     assert [p.counters for p in g.board if p.card.role == "token"] == [1, 1, 0, 0]   # the Beast it just made is not a Plant
     assert all(p.counters == 0 for p in g.board if p.card.role != "token")
 
@@ -799,3 +804,197 @@ def test_land_sacrifice_spares_an_uncracked_fetch():
     assert g.graveyard == ["Forest"] and any(p.card.name == "Evolving Wilds" for p in g.board)
     g = _staged(deck, ["Evolving Wilds"], library=["Forest"] * 5, turn=4)
     assert g._sacrifice_lands(2) == 1 and g.graveyard == ["Evolving Wilds"]   # the only land qualifies after all
+
+
+# ---- stage 2: land drops, lands from the graveyard, fetch lands, activated abilities, upkeep ---------------
+
+from .test_sim_effects import AZUSA, EXPLORE, GITROG, MYRIAD_LANDSCAPE, RAMUNAP_EXCAVATOR, SAKURA_TRIBE_ELDER
+
+AZUSA_C = make_card("Azusa, Lost but Seeking", cmc=3.0, mana_cost="{2}{G}", type_line="Legendary Creature — Human Monk",
+                    power="1", toughness="2", colors=["G"])
+RAMUNAP_C = make_card("Ramunap Excavator", cmc=3.0, mana_cost="{2}{G}", type_line="Creature — Snake Cleric", power="2", toughness="3",
+                      colors=["G"])
+MYRIAD_C = make_card("Myriad Landscape", cmc=0.0, mana_cost="", type_line="Land",
+                     oracle_text="Myriad Landscape enters tapped.\n{T}: Add {C}.\n{2}, {T}, Sacrifice Myriad Landscape: Search your library "
+                                 "for up to two basic land cards that share a land type, put them onto the battlefield tapped, then shuffle.",
+                     produced_mana=["C"])
+SAKURA_C = make_card("Sakura-Tribe Elder", cmc=2.0, mana_cost="{1}{G}", type_line="Creature — Snake Shaman", power="1", toughness="1",
+                     colors=["G"])
+GITROG_C = make_card("The Gitrog Monster", cmc=5.0, mana_cost="{3}{B}{G}", type_line="Legendary Creature — Frog Horror",
+                     power="6", toughness="6", colors=["B", "G"])
+EXPLORE_C = make_card("Explore", cmc=2.0, mana_cost="{1}{G}", type_line="Sorcery", oracle_text="You may play an additional land this turn.\nDraw a card.",
+                      colors=["G"])
+BLUE_THING = make_card("Blue Thing", cmc=2.0, mana_cost="{1}{U}", type_line="Artifact", colors=["U"])
+
+SCRIPTS3 = {**SCRIPTS2, "Azusa, Lost but Seeking": AZUSA, "Ramunap Excavator": RAMUNAP_EXCAVATOR, "Myriad Landscape": MYRIAD_LANDSCAPE,
+            "Sakura-Tribe Elder": SAKURA_TRIBE_ELDER, "The Gitrog Monster": GITROG, "Explore": EXPLORE}
+
+
+def _fx3(entries, tags=None):
+    return _fx_deck(CMD, entries, tags=tags, scripts=SCRIPTS3)
+
+
+def _step(g, drops=1):
+    g.lands_played, g.land_drops = 0, drops
+    g._land_step()
+
+
+def test_extra_land_statics_raise_the_drops():
+    deck = _fx3([(FOREST, 37), (AZUSA_C, 1), (NECROBLOOM_C, 1)])
+    g = _staged(deck, ["Forest", "Azusa, Lost but Seeking", "The Necrobloom"], hand=["Forest"] * 3, library=["Forest"] * 10, turn=3)
+    g.command_zone = set()
+    g.take_turn()
+    assert g.land_drops == 3 and g.lands_played == 3
+    assert g.record.landfall_by_turn[4] == 3 and len(_lands(g)) == 4 and _tokens(g, "Plant") == 3
+
+
+def test_cast_extra_land_plays_another_land_this_turn():
+    deck = _fx3([(FOREST, 39), (EXPLORE_C, 1)])
+    assert deck.cards["Explore"].role == "spell"
+    g = _staged(deck, ["Forest"] * 2, hand=["Explore", "Forest", "Forest"], library=["Forest"] * 10, turn=1)
+    g.command_zone = set()
+    g.take_turn()
+    assert "Explore" in g.graveyard and g.land_drops == 2 and g.lands_played == 2
+    assert g.record.landfall_by_turn[2] == 2 and len(_lands(g)) == 4
+
+
+def test_explore_is_held_without_a_land_in_hand_or_before_the_drop_is_used():
+    deck = _fx3([(FOREST, 39), (EXPLORE_C, 1)])
+    explore = deck.cards["Explore"]
+    g = _staged(deck, ["Forest"] * 2, hand=["Explore"], turn=2)
+    g.lands_played, g.land_drops = 1, 1
+    assert not g._spell_wanted(explore)
+    g.hand.append("Forest")
+    assert g._spell_wanted(explore)
+    g.lands_played = 0
+    assert not g._spell_wanted(explore)
+
+
+def test_lands_are_played_from_the_graveyard_only_without_a_land_in_hand():
+    deck = _fx3([(FOREST, 38), (BARRENS, 1), (RAMUNAP_C, 1)])
+    g = _staged(deck, ["Ramunap Excavator"], hand=["Forest"], turn=3)
+    g.graveyard = ["Scoured Barrens"]
+    _step(g)
+    assert g.hand == [] and g.graveyard == ["Scoured Barrens"] and [p.card.name for p in _lands(g)] == ["Forest"]
+    g.turn = 4
+    _step(g)
+    assert g.graveyard == [] and [p.card.name for p in _lands(g)] == ["Forest", "Scoured Barrens"] and _lands(g)[1].tapped
+    g = _staged(deck, [], turn=3)
+    g.graveyard = ["Scoured Barrens"]
+    _step(g)
+    assert g.graveyard == ["Scoured Barrens"] and not _lands(g)
+
+
+def test_free_fetch_is_cracked_on_entry():
+    deck = _fx3([(FOREST, 38), (WILDS_C, 1), (BEAR, 1)])
+    g = _staged(deck, ["Forest"], hand=["Evolving Wilds"], library=["Forest"] * 10 + ["Grizzly Bears"], turn=3)   # draws the Bears
+    g.command_zone = set()
+    g.take_turn()
+    assert g._gy_lands() == ["Evolving Wilds"] and g.record.landfall_by_turn[4] == 2
+    fetched = [p for p in _lands(g) if p.entered == 4]
+    assert [p.card.name for p in fetched] == ["Forest"] and fetched[0].tapped
+
+
+def test_fetch_replay_loop_uses_a_drop_each_time():
+    deck = _fx3([(FOREST, 37), (WILDS_C, 1), (RAMUNAP_C, 1), (AZUSA_C, 1)])
+    g = _staged(deck, ["Ramunap Excavator", "Azusa, Lost but Seeking"], library=["Forest"] * 10, turn=3)
+    g.graveyard = ["Evolving Wilds"]
+    g.lands_played, g.land_drops = 0, 1 + 2
+    g._land_step()
+    assert g.lands_played == 3 and g.landfalls == 6
+    assert g.graveyard == ["Evolving Wilds"] and [p.card.name for p in _lands(g)] == ["Forest"] * 3 and len(g.library) == 7
+
+
+def test_costed_fetch_waits_for_spare_mana():
+    deck = _fx3([(FOREST, 39), (MYRIAD_C, 1)])
+    assert deck.cards["Myriad Landscape"].enters_tapped
+    for spare, cracked in ((2, True), (1, False)):
+        g = _staged(deck, ["Myriad Landscape", "Forest", "Forest"], library=["Forest"] * 10, turn=4)
+        g.command_zone = set()
+        g.pool = [frozenset("G")] * spare
+        g._main_phase()
+        on_board = any(p.card.name == "Myriad Landscape" for p in g.board)
+        assert on_board is not cracked
+        if cracked:
+            fetched = [p for p in _lands(g) if p.entered == 4]
+            assert len(fetched) == 2 and all(p.tapped and p.card.mana == 1 for p in fetched)
+            assert g.graveyard == ["Myriad Landscape"] and g.pool == []
+        else:
+            assert len(g.pool) == 1 and g.graveyard == []
+
+
+def test_creature_fetch_cracks_the_turn_it_enters():
+    deck = _fx3([(FOREST, 39), (SAKURA_C, 1)])
+    assert deck.cards["Sakura-Tribe Elder"].role == "creature"
+    g = _staged(deck, ["Forest"] * 2, hand=["Sakura-Tribe Elder"], library=["Forest"] * 10, turn=2)
+    g.command_zone = set()
+    g.pool = g._produce()
+    g._main_phase()
+    assert g.graveyard == ["Sakura-Tribe Elder"] and not any(p.card.name == "Sakura-Tribe Elder" for p in g.board)
+    fetched = [p for p in _lands(g) if p.entered == 2]
+    assert len(fetched) == 1 and fetched[0].tapped
+
+
+def test_activated_mass_return_pays_and_sacrifices():
+    deck = _fx3([(FOREST, 38), (ANALYST_C, 1), (BALOTHS_C, 1)])
+    g = _staged(deck, ["Forest"] * 5 + ["Aftermath Analyst", "Rampaging Baloths"], turn=5)
+    g.command_zone = set()
+    g.graveyard = ["Forest"] * 4
+    g.pool = g._produce()
+    g._main_phase()
+    assert g.graveyard == ["Aftermath Analyst"] and len(_lands(g)) == 9 and g.casts == 0
+    assert _tokens(g, "Beast") == 4 and len(g.pool) == 1
+    g = _staged(deck, ["Forest"] * 5 + ["Aftermath Analyst", "Rampaging Baloths"], turn=5)
+    g.command_zone = set()
+    g.graveyard = ["Forest"] * 3
+    g.pool = g._produce()
+    g._main_phase()
+    assert any(p.card.name == "Aftermath Analyst" for p in g.board) and g._gy_lands() == ["Forest"] * 3
+
+
+def test_upkeep_sacrifice_land_prefers_a_land_then_the_permanent():
+    deck = _fx3([(FOREST, 37), (ISLAND, 1), (BLUE_THING, 1), (GITROG_C, 1)])
+    g = _staged(deck, ["The Gitrog Monster", "Forest", "Forest"], turn=3)
+    g._upkeep()
+    assert len(_lands(g)) == 1 and g.graveyard == ["Forest"] and any(p.card.name == "The Gitrog Monster" for p in g.board)
+    g = _staged(deck, ["The Gitrog Monster", "Island", "Forest"], hand=["Blue Thing"], turn=3)
+    g.command_zone = set()
+    g._upkeep()
+    assert [p.card.name for p in _lands(g)] == ["Island"] and g.graveyard == ["Forest"]
+    g = _staged(deck, ["The Gitrog Monster"], turn=3)
+    g._upkeep()
+    assert g.graveyard == ["The Gitrog Monster"] and not g.board
+
+
+def test_upkeep_runs_before_the_land_drops_are_counted():
+    deck = _fx3([(FOREST, 39), (GITROG_C, 1)])
+    g = _staged(deck, ["The Gitrog Monster"], hand=["Forest", "Forest"], library=["Forest"] * 10, turn=3)
+    g.command_zone = set()
+    g.take_turn()   # no land at upkeep: Gitrog goes, and its extra land drop with it
+    assert "The Gitrog Monster" in g.graveyard and g.land_drops == 1 and g.lands_played == 1
+    g = _staged(deck, ["The Gitrog Monster", "Forest"], hand=["Forest", "Forest"], library=["Forest"] * 10, turn=3)
+    g.command_zone = set()
+    g.take_turn()
+    assert g.graveyard == ["Forest"] and g.land_drops == 2 and g.lands_played == 2
+
+
+def test_fetch_priority_is_a_tapped_fixer():
+    deck = _fx3([(FOREST, 38), (WILDS_C, 1), (MYRIAD_C, 1)])
+    g = _staged(deck, [], library=["Forest"] * 10, turn=3)
+    wilds = deck.cards["Evolving Wilds"]
+    assert g._land_priority(wilds, frozenset()) == 3 and g._land_priority(wilds, frozenset("G"), tapped=True) == 3
+    assert g._land_priority(deck.cards["Myriad Landscape"], frozenset()) == 2   # a costed fetch is unchanged
+    g.hand = ["Evolving Wilds", "Forest"]
+    _step(g)
+    assert [p.card.name for p in _lands(g)] == ["Forest"] and g.hand == ["Evolving Wilds"]
+
+
+def test_board_diagnostics_stage2():
+    deck = _fx3([(FOREST, 38), (WILDS_C, 1), (BEAR, 1)])
+    rec = play_game(deck, [], CFG, random.Random(5), 4)
+    n = CFG.max_turn + 1
+    assert len(rec.graveyard_lands_by_turn) == n and len(rec.distinct_lands_by_turn) == n
+    g = _staged(deck, ["Forest"], hand=["Evolving Wilds"], library=["Forest"] * 10 + ["Grizzly Bears"], turn=3)
+    g.command_zone = set()
+    g.take_turn()
+    assert g.record.graveyard_lands_by_turn[4] == 1 and g.record.distinct_lands_by_turn[4] == 1
