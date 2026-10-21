@@ -10,10 +10,11 @@ from edhpower.config import SimConfig
 from edhpower.facts import DeckFacts
 from edhpower.profile import CardProfile, SpecialBehaviour, load_special_behaviours
 from edhpower.scryfall import CardData
+from edhpower.sim.effects import CardEffects, Effect, effects_for
 from edhpower.sim.mana import ANY_COLOR, COLORLESS, ManaCost, parse_cost
 
 ROLES: tuple[str, ...] = ("land", "one_shot", "rock", "dork", "reducer", "ramp_spell", "draw_spell", "tutor",
-                          "threat", "creature", "engine", "permanent", "held")
+                          "threat", "creature", "engine", "permanent", "held", "token")
 
 
 @dataclass(frozen=True)
@@ -38,6 +39,10 @@ class SimCard:
     special: str | None
     params: dict[str, Any]
     draw: int
+    effects: tuple[Effect, ...] = ()
+    ramp_to_battlefield: int = 1
+    ramp_to_hand: int = 0
+    ramp_sacrifice_lands: int = 0
 
 
 @dataclass(frozen=True)
@@ -48,6 +53,9 @@ class SimDeck:
     commander_subtypes: frozenset[str]
     coverage: dict[str, int]
     notes: list[str] = field(default_factory=list)
+    effects_sources: dict[str, list[str]] = field(default_factory=dict)
+    unmodelled: tuple[str, ...] = ()
+    partial: tuple[str, ...] = ()
 
 
 def sources_of(profile_colors: tuple[str, ...], produced_mana: tuple[str, ...]) -> frozenset[str]:
@@ -103,7 +111,23 @@ def _role(p: CardProfile, card: CardData, special: SpecialBehaviour | None, is_s
     return "permanent"
 
 
-def build_card(p: CardProfile, card: CardData, special: SpecialBehaviour | None, tags_ok: bool, cfg: SimConfig) -> SimCard:
+def token_card(type_: str, power: int, toughness: int) -> SimCard:
+    """A creature token as a SimCard, so the engine can hold it in the same structures as any creature."""
+    del toughness   # the engine only needs power; toughness is tracked on the board
+    return SimCard(
+        name=f"{type_} token", is_land=False, is_creature=True, is_artifact=False, is_eldrazi=False, is_colorless=False,
+        is_spell=False, subtypes=frozenset(type_.split()), cmc=0.0, cost=parse_cost(""), power=power, produces=frozenset(),
+        mana=0, role="token", reduction=0, reduction_scope="", enters_tapped=False, special=None, params={}, draw=0,
+    )
+
+
+def build_card(p: CardProfile, card: CardData, special: SpecialBehaviour | None, tags_ok: bool, cfg: SimConfig,
+               script: str | None = None) -> SimCard:
+    return _build_card(p, card, special, tags_ok, cfg, effects_for(card, script, special))
+
+
+def _build_card(p: CardProfile, card: CardData, special: SpecialBehaviour | None, tags_ok: bool, cfg: SimConfig,
+                fx: CardEffects) -> SimCard:
     front = card.front_type_line
     is_spell = "Instant" in front or "Sorcery" in front
     role = _role(p, card, special, is_spell, tags_ok, cfg)
@@ -136,6 +160,10 @@ def build_card(p: CardProfile, card: CardData, special: SpecialBehaviour | None,
         special=special.kind if special is not None else None,
         params=dict(special.params) if special is not None else {},
         draw=p.draw_count,
+        effects=fx.effects,
+        ramp_to_battlefield=fx.ramp_to_battlefield,
+        ramp_to_hand=fx.ramp_to_hand,
+        ramp_sacrifice_lands=fx.ramp_sacrifice_lands,
     )
 
 
@@ -162,14 +190,25 @@ def build_sim_deck(facts: DeckFacts, cfg: SimConfig) -> SimDeck:
     library: list[str] = []
     commanders: list[SimCard] = []
     coverage = {r: 0 for r in ROLES}
+    sources: dict[str, list[str]] = {"table": [], "forge": [], "none": []}
+    unmodelled: list[str] = []
+    partial: list[str] = []
     for e in facts.entries:
-        sc = build_card(facts.profiles[e.name], e.card, specials.get(e.name), tags_ok, cfg)
+        special = specials.get(e.name)
+        fx = effects_for(e.card, e.forge_script, special)
+        sc = _build_card(facts.profiles[e.name], e.card, special, tags_ok, cfg, fx)
         cards[e.name] = sc
         if e.is_commander:
             commanders.append(sc)
         else:
             library.extend([e.name] * e.count)
             coverage[sc.role] += e.count
+            if not sc.is_land:
+                sources[fx.source].append(e.name)
+                if fx.source != "table" and not fx.effects and (fx.unread or fx.source == "none"):
+                    unmodelled.append(e.name)
+                if fx.effects and fx.unread:
+                    partial.append(e.name)
     subtypes: frozenset[str] = frozenset()
     for c in commanders:
         subtypes |= c.subtypes
@@ -178,5 +217,13 @@ def build_sim_deck(facts: DeckFacts, cfg: SimConfig) -> SimDeck:
         notes.append(f"tags unavailable ({facts.tags_status}): tutors and land-ramp spells are not modelled, so every clock is a floor (later than reality)")
     if coverage["held"]:
         notes.append(f"{coverage['held']} instant/sorcery card(s) with no modelled effect are never cast (a goldfish has nothing to interact with)")
+    if unmodelled:
+        notes.append(f"{len(unmodelled)} nonland card(s) have script lines the model does not read: {sorted(unmodelled)[:4]}…")
+    if partial:
+        notes.append(f"{len(partial)} card(s) modelled in part (a mode or branch is skipped): {sorted(partial)[:4]}…")
+    status = facts.fetched.get("forge_status")
+    if status != "ok":
+        notes.append(f"Forge scripts unavailable ({status}): effects come from the behaviours table only")
     # Sorted so the library's initial order — and therefore every shuffle — is independent of decklist order.
-    return SimDeck(cards, tuple(sorted(library)), tuple(commanders), subtypes, coverage, notes)
+    return SimDeck(cards, tuple(sorted(library)), tuple(commanders), subtypes, coverage, notes,
+                   {k: sorted(v) for k, v in sources.items()}, tuple(sorted(unmodelled)), tuple(sorted(partial)))

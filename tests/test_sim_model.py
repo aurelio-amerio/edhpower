@@ -1,5 +1,6 @@
 from edhpower.config import load_config
 from edhpower.sim.mana import ANY_COLOR, COLORLESS
+from edhpower.sim.mana import parse_cost
 from edhpower.sim.model import build_sim_deck, reduction_applies, sources_of
 
 from .conftest import make_card, sim_facts
@@ -94,3 +95,62 @@ def test_sources_of():
     assert sources_of(("G", "U"), ()) == frozenset({"G", "U"})
     assert sources_of((), ("W", "B")) == frozenset({"W", "B"})
     assert sources_of((), ()) == COLORLESS
+
+
+# ---------------------------------------------------------------------------------- effects on SimCard
+from edhpower.sim.model import token_card  # noqa: E402
+
+from .test_sim_effects import BALOTHS, GRIZZLY_BEARS, RETREAT_TO_HAGRA, SIX  # noqa: E402
+
+_FX_CARDS = [
+    make_card("Cmdr", cmc=4.0, mana_cost="{2}{G}{G}", type_line="Legendary Creature — Elf", power="3", toughness="3"),
+    make_card("Rampaging Baloths", cmc=6.0, mana_cost="{4}{G}{G}", type_line="Creature — Beast", power="6", toughness="6"),
+    make_card("Six", cmc=3.0, mana_cost="{2}{G}", type_line="Legendary Creature — Treefolk", power="2", toughness="4"),
+    make_card("Grizzly Bears", cmc=2.0, mana_cost="{1}{G}", type_line="Creature — Bear", power="2", toughness="2"),
+    make_card("Retreat to Hagra", cmc=3.0, mana_cost="{2}{B}", type_line="Enchantment"),
+    make_card("Mystery", cmc=2.0, mana_cost="{1}{G}", type_line="Creature — Elf", power="1", toughness="1"),
+    make_card("Forest", cmc=0.0, mana_cost="", type_line="Basic Land — Forest", produced_mana=["G"]),
+]
+_FX_DECK = "1 Cmdr\n\n1 Rampaging Baloths\n1 Six\n1 Grizzly Bears\n1 Retreat to Hagra\n1 Mystery\n1 Forest\n"
+_FX_SCRIPTS = {"Rampaging Baloths": BALOTHS, "Six": SIX, "Grizzly Bears": GRIZZLY_BEARS, "Retreat to Hagra": RETREAT_TO_HAGRA}
+
+
+def _fx_deck():
+    return build_sim_deck(sim_facts(_FX_DECK, _FX_CARDS, TAGS, scripts=_FX_SCRIPTS), CFG)
+
+
+def test_effects_ride_on_simcard():
+    deck = _fx_deck()
+    assert deck.cards["Rampaging Baloths"].effects[0].do == "token"
+    assert deck.effects_sources["forge"] == ["Grizzly Bears", "Rampaging Baloths", "Retreat to Hagra", "Six"]
+    assert deck.effects_sources["none"] == ["Mystery"]
+
+
+def test_token_card_shape():
+    t = token_card("Beast", 3, 3)
+    assert (t.name, t.is_creature, t.role, t.power, t.produces) == ("Beast token", True, "token", 3, frozenset())
+    assert t.cost == parse_cost("")
+
+
+def test_unmodelled_is_exact():
+    deck = _fx_deck()
+    assert "Six" in deck.unmodelled and "Mystery" in deck.unmodelled
+    for n in ("Rampaging Baloths", "Grizzly Bears", "Forest", "Cmdr"):
+        assert n not in deck.unmodelled
+    assert "Retreat to Hagra" in deck.partial and "Retreat to Hagra" not in deck.unmodelled
+    assert deck.unmodelled == tuple(sorted(deck.unmodelled))
+    assert any("does not read" in n for n in deck.notes) and any("in part" in n for n in deck.notes)
+
+
+def test_table_card_is_never_unmodelled():
+    from edhpower.profile import SpecialBehaviour
+    from edhpower.sim.effects import Effect
+    from edhpower.sim import model
+    sb = SpecialBehaviour("Six", None, 0, effects=(Effect(on="landfall", do="drain"),))
+    orig = model.load_special_behaviours
+    model.load_special_behaviours = lambda: {"Six": sb}
+    try:
+        deck = _fx_deck()
+    finally:
+        model.load_special_behaviours = orig
+    assert "Six" not in deck.unmodelled and "Six" in deck.effects_sources["table"]
