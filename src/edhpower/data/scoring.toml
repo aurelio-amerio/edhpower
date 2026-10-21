@@ -66,7 +66,7 @@ heavy_min = 3
 
 # ---- goldfish simulator (Plan C): seeded Monte Carlo driven by CardProfile ---------------------
 [sim]
-version = 5                 # stamped into the JSON as sim_version; bump when the model's semantics change. 2 (2026-10-18): lethal_combo needs the payoff; lock-only lines leave the combo clock. 3 (2026-10-21): tokens, triggers, three opponents, win clocks. 4 (2026-10-21): graveyard, dredge, land drops, fetches, land recursion. 5 (2026-10-21): reanimation, land-milled and dies triggers, triggered draw
+version = 6                 # stamped into the JSON as sim_version; bump when the model's semantics change. 2 (2026-10-18): lethal_combo needs the payoff; lock-only lines leave the combo clock. 3 (2026-10-21): tokens, triggers, three opponents, win clocks. 4 (2026-10-21): graveyard, dredge, land drops, fetches, land recursion. 5 (2026-10-21): reanimation, land-milled and dies triggers, triggered draw. 6 (2026-10-21): win is 40 combat and drain damage to one opponent (scrollvault's goldfish target) or a lethal combo, not table lethal
 iterations = 20000          # production default; --iterations overrides; golden tests use 500
 max_turn = 12
 opening_hand = 7
@@ -74,7 +74,7 @@ mulligan_min_lands = 2      # one London mulligan when the opener has fewer land
 mulligan_max_lands = 5      # ... or more than this; the second seven is kept and one card bottomed
 mana_threshold = 7          # "effective mana threshold reached" clock
 threat_mv = 7               # "first large threat cast" clock: MV >= this, from hand, mana paid
-life_per_opponent = 40      # starting life of each opponent; combat clock: cumulative unblocked power against one opponent
+life_per_opponent = 40      # starting life of each opponent; combat, one_opponent and win clocks: cumulative damage against one opponent
 opponents = 3               # opponents at the table: lethal_table needs every one of them at 0
 metalcraft_count = 3        # artifacts needed for requires = "metalcraft" sources
 max_two_card_lines = 8      # scrollvault's caps on simulated Spellbook lines

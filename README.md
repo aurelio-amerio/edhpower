@@ -177,8 +177,11 @@ hits every opponent (or the one with the most life, when the script names one op
 Each clock (`engine.CLOCKS`) reports a median turn, a `fast` turn and a by-turn cumulative
 share:
 
-- `win` — the first turn of `lethal_table` or `lethal_combo`: the headline comparison number.
-- `lethal_table` — every opponent at 0 from combat and drain; `first_opponent` — the first one.
+- `win` — the first turn of `one_opponent` or `lethal_combo`: the headline comparison number.
+  Like scrollvault's goldfish clock, a non-combo win is 40 damage to one opponent, not the table.
+- `one_opponent` — 40 cumulative combat and drain damage, as if all of it went to one opponent.
+- `lethal_table` — every opponent at 0 from combat and drain; `first_opponent` — the first one
+  (attackers spread greedily, so this is later than `one_opponent`).
 - `commander`, `mana_threshold`, `tipping_target`, `threat` — as in sim v2.
 - `combat` — 40 cumulative combat damage to one opponent, counting effective power (printed
   power, counters, the anthems the reader understands, tokens and pumps cast for lethal; any
@@ -222,7 +225,7 @@ add the effect-model simplifications):
 
 `[sim]` in `src/edhpower/data/scoring.toml` holds the simulator's tuning constants; `sim_version`
 is stamped into the JSON alongside `config_version`. Golden tests run the simulator at 500 games;
-production defaults to 20 000 (`--iterations` overrides either). sim v2 (2026-10-18) gates the lethal-combo clock on a detected payoff and drops lock-only lines from the combo clock; v1 and v2 combo numbers are not comparable. sim v3 (2026-10-21) adds Forge-read effects, tokens and triggers, three opponents and the `win`, `lethal_table` and `first_opponent` clocks; its `combat` clock counts tokens, counters, anthems and pumps, so a v3 combat median can be earlier than the v2 one for a token deck. sim v4 (2026-10-21) adds the graveyard, dredge, several land drops, lands played from the graveyard, fetch lands, activated abilities, land chains, mass land return and the `spell` role; a deck with fetch lands or newly read instants and sorceries can have earlier v4 clocks than v3 ones, because sim v3 played a fetch land as a land with no mana. sim v5 (2026-10-21) adds reanimation, land-milled and dies triggers, triggered draw and the `reanimate` clock; a deck with reanimation spells, a land-milled draw engine or newly read draw effects can have earlier v5 clocks than v4 ones.
+production defaults to 20 000 (`--iterations` overrides either). sim v2 (2026-10-18) gates the lethal-combo clock on a detected payoff and drops lock-only lines from the combo clock; v1 and v2 combo numbers are not comparable. sim v3 (2026-10-21) adds Forge-read effects, tokens and triggers, three opponents and the `win`, `lethal_table` and `first_opponent` clocks; its `combat` clock counts tokens, counters, anthems and pumps, so a v3 combat median can be earlier than the v2 one for a token deck. sim v4 (2026-10-21) adds the graveyard, dredge, several land drops, lands played from the graveyard, fetch lands, activated abilities, land chains, mass land return and the `spell` role; a deck with fetch lands or newly read instants and sorceries can have earlier v4 clocks than v3 ones, because sim v3 played a fetch land as a land with no mana. sim v5 (2026-10-21) adds reanimation, land-milled and dies triggers, triggered draw and the `reanimate` clock; a deck with reanimation spells, a land-milled draw engine or newly read draw effects can have earlier v5 clocks than v4 ones. sim v6 (2026-10-21) adds the `one_opponent` clock and bases `win` on it instead of `lethal_table`, matching scrollvault's 40-damage goldfish target; a combat deck's v6 win is earlier than its v5 one.
 
 ## Data sources and caching
 

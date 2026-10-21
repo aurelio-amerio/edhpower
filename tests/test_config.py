@@ -11,7 +11,7 @@ def test_default_profiles_load_with_published_constants():
     assert cfg.components.name == "v1" and set(cfg.components.parts) == set(COMPONENT_NAMES)
     assert abs(sum(p.weight for p in cfg.components.parts.values()) - 1.0) < 1e-9
     assert cfg.tipping.threshold == 0.8 and cfg.tipping.max_turn == 7
-    assert cfg.stamp() == {"config_version": 1, "curve_profile": "edhpowerlevel-2026-08", "components_profile": "v1", "sim_version": 5}
+    assert cfg.stamp() == {"config_version": 1, "curve_profile": "edhpowerlevel-2026-08", "components_profile": "v1", "sim_version": 6}
 
 
 def test_unknown_profile_names_are_errors():
@@ -94,19 +94,19 @@ def test_curve_profile_missing_source_raises():
 def test_sim_and_narrative_sections_load_with_required_reads():
     cfg = load_config()
     s = cfg.sim
-    assert s.version == 5 and s.iterations == 20000 and s.max_turn == 12
+    assert s.version == 6 and s.iterations == 20000 and s.max_turn == 12
     assert s.opening_hand == 7 and (s.mulligan_min_lands, s.mulligan_max_lands) == (2, 5)
     assert s.mana_threshold == 7 and s.threat_mv == 7 and s.life_per_opponent == 40 and s.opponents == 3
     assert s.metalcraft_count == 3 and s.max_two_card_lines == 8 and s.max_three_card_lines == 6
     assert "infinite damage" in s.lethal_features and all(f == f.lower() for f in s.lethal_features)
     n = cfg.narrative
     assert n.lowest_components == 2 and n.scorer_gap == 2.0 and n.idle_share == 0.25
-    assert cfg.stamp() == {"config_version": 1, "curve_profile": "edhpowerlevel-2026-08", "components_profile": "v1", "sim_version": 5}
+    assert cfg.stamp() == {"config_version": 1, "curve_profile": "edhpowerlevel-2026-08", "components_profile": "v1", "sim_version": 6}
 
 
 def test_config_sim_v3_fields():
     cfg = load_config()
-    assert cfg.sim.version == 5 and cfg.sim.life_per_opponent == 40 and cfg.sim.opponents == 3
+    assert cfg.sim.version == 6 and cfg.sim.life_per_opponent == 40 and cfg.sim.opponents == 3
     assert not hasattr(cfg.sim, "lethal_damage")
     assert cfg.narrative.unmodelled_share == 0.25
 
@@ -165,14 +165,14 @@ def test_forge_config_pinned():
 
 def test_config_mass_return_min_lands():
     cfg = load_config()
-    assert cfg.sim.mass_return_min_lands == 4 and cfg.sim.version == 5
+    assert cfg.sim.mass_return_min_lands == 4 and cfg.sim.version == 6
 
 
 def test_config_chain_cap():
     cfg = load_config()
-    assert cfg.sim.chain_cap == 20 and cfg.sim.version == 5
+    assert cfg.sim.chain_cap == 20 and cfg.sim.version == 6
 
 
 def test_config_reanimate_min_power():
     cfg = load_config()
-    assert cfg.sim.reanimate_min_power == 4 and cfg.sim.version == 5
+    assert cfg.sim.reanimate_min_power == 4 and cfg.sim.version == 6

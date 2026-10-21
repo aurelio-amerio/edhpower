@@ -578,8 +578,8 @@ def test_single_huge_attacker_does_not_kill_the_table_in_one_swing():
     g.take_turn()
     assert g.life == [-5, 40, 40]
     clocks = _run_to(g, 3)
-    assert clocks["combat"] == 1 and clocks["first_opponent"] == 1
-    assert clocks["lethal_table"] == 3 and clocks["win"] == 3
+    assert clocks["combat"] == 1 and clocks["first_opponent"] == 1 and clocks["one_opponent"] == 1
+    assert clocks["lethal_table"] == 3 and clocks["win"] == 1   # win is 40 to one opponent, not the table
 
 
 def test_three_forty_power_attackers_kill_the_table_in_one_swing():
@@ -614,8 +614,19 @@ def test_each_opponent_drain_hits_all_three():
     g.take_turn()
     assert g.life == [0, 0, 0] and g.damage == 0
     assert g.record.damage_by_turn[4] == 3
-    assert g.record.clocks["first_opponent"] == 4 and g.record.clocks["lethal_table"] == 4 and g.record.clocks["win"] == 4
+    assert g.record.clocks["first_opponent"] == 4 and g.record.clocks["lethal_table"] == 4
+    assert g.focused == 1 and g.record.clocks["one_opponent"] is None and g.record.clocks["win"] is None
     assert g.record.clocks["combat"] is None
+
+
+def test_drain_counts_toward_one_opponent():
+    deck = _fx_deck(CMD, [(FOREST, 37), (SWAMP, 1), (WATCHER_C, 1), (BEAR, 1)])
+    g = _staged(deck, ["Forest", "Swamp", "Drain Watcher"], hand=["Grizzly Bears"], turn=3)
+    g.command_zone = set()
+    g.board[-1].entered = 4
+    g.focused = 39
+    g.take_turn()
+    assert g.damage == 0 and g.record.clocks["one_opponent"] == 4 and g.record.clocks["win"] == 4
 
 
 def test_win_stamps_on_lethal_combo_too():

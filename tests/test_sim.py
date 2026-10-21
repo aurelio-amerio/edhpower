@@ -130,7 +130,7 @@ def test_clock_fast_is_fifth_percentile():
 def test_result_carries_new_rows():
     r = simulate(fixture_facts("ulalek-bracket3-v2"), CFG, 40, 4)
     assert list(r.clocks)[:3] == ["win", "lethal_table", "first_opponent"]
-    assert r.clocks["win"].label == "win (table lethal or lethal combo)"
+    assert r.clocks["win"].label == f"win ({CFG.life_per_opponent} damage to one opponent or lethal combo)"
     assert r.clocks["combat"].label == f"{CFG.life_per_opponent} combat damage to one opponent (no blockers)"
     turns = set(range(1, CFG.max_turn + 1))
     for rows in (r.damage_by_turn, r.board_power_by_turn, r.lands_by_turn):
@@ -182,7 +182,7 @@ def test_win_ok_without_spellbook():
     r = simulate(facts, CFG, 20, 4)
     assert r.clocks["win"].status == "ok" and r.clocks["lethal_table"].status == "ok"
     assert r.win_route["combo"] == 0.0
-    assert any("lethal_table alone" in n for n in r.notes)
+    assert any("one_opponent alone" in n for n in r.notes)
 
 
 def test_same_deck_same_numbers():

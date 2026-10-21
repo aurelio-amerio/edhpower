@@ -14,7 +14,7 @@ from edhpower.sim.mana import ANY_COLOR, COLORLESS, ActivationCost, ManaCost, Un
 from edhpower.sim.model import SimCard, SimDeck, reduction_applies, token_card
 
 CLOCKS: tuple[str, ...] = ("commander", "mana_threshold", "tipping_target", "threat", "combat", "combo", "lethal_combo",
-                           "lethal_table", "first_opponent", "win", "reanimate")
+                           "lethal_table", "first_opponent", "one_opponent", "win", "reanimate")
 MAIN_ORDER: tuple[str, ...] = ("rock", "dork", "reducer", "ramp_spell", "spell", "draw_spell", "commander", "tutor", "combo",
                                "threat", "creature", "engine", "permanent")
 CHEAPEST_FIRST = {"rock", "dork", "reducer", "engine", "permanent", "ramp_spell", "spell", "draw_spell", "tutor"}
@@ -61,6 +61,7 @@ class Game:
         self.turn = 0
         self.produced = 0
         self.damage = 0   # cumulative combat damage as if focused on one opponent: the `combat` clock
+        self.focused = 0   # cumulative combat and drain damage as if focused on one opponent: the `one_opponent` clock
         self.casts = 0
         self.fired: set[str] = set()
         self.pending_payoff: set[str] = set()
@@ -702,6 +703,7 @@ class Game:
             else:
                 i = max(range(len(self.life)), key=lambda k: (self.life[k], -k))
                 self.life[i] -= n
+            self.focused += n
         elif e.do == "pump":
             self.pumps.append(e)
         elif e.do == "mill":
@@ -1078,7 +1080,9 @@ class Game:
             self._stamp("first_opponent")
         if all(x <= 0 for x in self.life):
             self._stamp("lethal_table")
-        if self.record.clocks["lethal_table"] is not None or self.record.clocks["lethal_combo"] is not None:
+        if self.focused >= self.cfg.life_per_opponent:
+            self._stamp("one_opponent")
+        if self.record.clocks["one_opponent"] is not None or self.record.clocks["lethal_combo"] is not None:
             self._stamp("win")
 
     def _combat(self) -> None:
@@ -1087,6 +1091,7 @@ class Game:
         powers = self._attack_powers()
         self.life = self._assign(self.life, powers)
         self.damage += sum(powers)
+        self.focused += sum(powers)
         if self.damage >= self.cfg.life_per_opponent:
             self._stamp("combat")
 

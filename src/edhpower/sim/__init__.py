@@ -81,9 +81,10 @@ def deck_seed(facts: DeckFacts) -> int:
 def clock_labels(cfg: SimConfig, tipping_target: int) -> dict[str, str]:
     life = cfg.life_per_opponent
     return {
-        "win": "win (table lethal or lethal combo)",
+        "win": f"win ({life} damage to one opponent or lethal combo)",
         "lethal_table": f"lethal to the table ({cfg.opponents} \u00d7 {life}, combat and drain)",
         "first_opponent": f"first opponent dead ({life} life, combat and drain)",
+        "one_opponent": f"{life} combat and drain damage to one opponent (no blockers)",
         "commander": "commander castable",
         "mana_threshold": f"{cfg.mana_threshold} mana available",
         "tipping_target": f"{tipping_target} mana available (closed-form tipping target)",
@@ -149,7 +150,7 @@ def simulate(facts: DeckFacts, cfg: SimConfig, iterations: int, tipping_target: 
             for t in turns:
                 acc[t] += per_turn[t]
         swings.append(rec.max_swing)
-        lt, lc = rec.clocks["lethal_table"], rec.clocks["lethal_combo"]
+        lt, lc = rec.clocks["one_opponent"], rec.clocks["lethal_combo"]
         if rec.clocks["win"] is None:
             routes["none"] += 1
         elif lt is not None and (lc is None or lt <= lc):
@@ -188,7 +189,7 @@ def simulate(facts: DeckFacts, cfg: SimConfig, iterations: int, tipping_target: 
     notes.extend(deck.notes)
     notes.extend(payoffs.notes)
     if not combos_ok:
-        notes.append(f"Spellbook unavailable ({facts.combos_unavailable_reason}): combo clocks unevaluated; win is lethal_table alone")
+        notes.append(f"Spellbook unavailable ({facts.combos_unavailable_reason}): combo clocks unevaluated; win is one_opponent alone")
     elif skipped:
         notes.append(f"{len(lines)} of {len(lines) + len(skipped)} Spellbook line(s) simulated; the rest are listed as not simulated, not assumed free")
     return SimResult(
