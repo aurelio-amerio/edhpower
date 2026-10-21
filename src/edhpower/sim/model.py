@@ -13,7 +13,7 @@ from edhpower.scryfall import CardData
 from edhpower.sim.effects import CardEffects, Effect, effects_for
 from edhpower.sim.mana import ANY_COLOR, COLORLESS, ManaCost, parse_cost
 
-ROLES: tuple[str, ...] = ("land", "one_shot", "rock", "dork", "reducer", "ramp_spell", "draw_spell", "tutor",
+ROLES: tuple[str, ...] = ("land", "one_shot", "rock", "dork", "reducer", "ramp_spell", "draw_spell", "spell", "tutor",
                           "threat", "creature", "engine", "permanent", "held", "token")
 
 
@@ -82,7 +82,8 @@ def _power(value: str | None) -> int:
         return 0   # "*" and friends
 
 
-def _role(p: CardProfile, card: CardData, special: SpecialBehaviour | None, is_spell: bool, tags_ok: bool, cfg: SimConfig) -> str:
+def _role(p: CardProfile, card: CardData, special: SpecialBehaviour | None, is_spell: bool, tags_ok: bool, cfg: SimConfig,
+          fx: CardEffects) -> str:
     tags = set(p.tags) if tags_ok else set()
     if p.is_land:
         return "land"
@@ -96,9 +97,10 @@ def _role(p: CardProfile, card: CardData, special: SpecialBehaviour | None, is_s
         return "one_shot"
     if p.cost_reduction > 0 and not is_spell:
         return "reducer"
-    if "land-ramp" in tags and is_spell:
+    if "land-ramp" in tags and is_spell and fx.land_search:
         return "ramp_spell"
-    if p.draw_count > 0 and is_spell:
+    cast_effects = any(e.on == "cast" and e.do != "pump" for e in fx.effects)
+    if p.draw_count > 0 and is_spell and not cast_effects:
         return "draw_spell"
     if "tutor" in tags and is_spell:
         return "tutor"
@@ -106,6 +108,8 @@ def _role(p: CardProfile, card: CardData, special: SpecialBehaviour | None, is_s
         return "threat"
     if p.is_creature:
         return "creature"
+    if is_spell and cast_effects:
+        return "spell"
     if is_spell:
         return "held"
     return "permanent"
@@ -121,16 +125,11 @@ def token_card(type_: str, power: int, toughness: int) -> SimCard:
     )
 
 
-def applied_by_engine(e: Effect) -> bool:
-    """Stage 1 applies every effect except a `cast` effect other than pump (spell effects wait for stage 2)."""
-    return e.on != "cast" or e.do == "pump"
-
-
 def _build_card(p: CardProfile, card: CardData, special: SpecialBehaviour | None, tags_ok: bool, cfg: SimConfig,
                 fx: CardEffects) -> SimCard:
     front = card.front_type_line
     is_spell = "Instant" in front or "Sorcery" in front
-    role = _role(p, card, special, is_spell, tags_ok, cfg)
+    role = _role(p, card, special, is_spell, tags_ok, cfg, fx)
     if p.is_land:
         mana, produces = p.land_mana, sources_of((), card.produced_mana)
     elif special is not None and special.kind == "rock":
@@ -213,12 +212,9 @@ def build_sim_deck(facts: DeckFacts, cfg: SimConfig) -> SimDeck:
                 never_cast += e.count
             if not sc.is_land:
                 sources[fx.source].append(e.name)
-                applied = [x for x in fx.effects if applied_by_engine(x)]
-                if fx.source != "table" and not fx.effects and (fx.unread or fx.source == "none"):
+                if fx.source != "table" and not fx.effects and not fx.land_search and (fx.unread or fx.source == "none"):
                     unmodelled.append(e.name)
-                elif fx.effects and not applied:   # every effect read is one the engine never applies
-                    unmodelled.append(e.name)
-                elif applied and (fx.unread or len(applied) < len(fx.effects)):
+                elif (fx.effects or fx.land_search) and fx.unread:
                     partial.append(e.name)
     subtypes: frozenset[str] = frozenset()
     for c in commanders:
@@ -229,10 +225,9 @@ def build_sim_deck(facts: DeckFacts, cfg: SimConfig) -> SimDeck:
     if never_cast:
         notes.append(f"{never_cast} instant/sorcery card(s) with no modelled effect are never cast (a goldfish has nothing to interact with)")
     if unmodelled:
-        notes.append(f"{len(unmodelled)} nonland card(s) have no effect the model applies (script lines it does not read, "
-                     f"or an instant/sorcery effect other than pump): {sorted(unmodelled)[:4]}…")
+        notes.append(f"{len(unmodelled)} nonland card(s) have no effect the model applies (script lines it does not read): {sorted(unmodelled)[:4]}…")
     if partial:
-        notes.append(f"{len(partial)} card(s) modelled in part (a mode, branch or non-pump spell effect is skipped): {sorted(partial)[:4]}…")
+        notes.append(f"{len(partial)} card(s) modelled in part (a mode, branch or script line is skipped): {sorted(partial)[:4]}…")
     notes.extend(commander_unread)
     status = facts.fetched.get("forge_status")
     if status != "ok":

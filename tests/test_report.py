@@ -120,3 +120,9 @@ def test_report_prints_fast_column_and_board_rows():
                    "biggest swing (median)", "effects: table 1 (Baz) · forge 0 · unmodelled: Foo · partial: Bar",
                    "  not modelled: graveyard, dredge, extra land drops, land recursion, fetch cracking, reanimation, blockers/interaction"]:
         assert needle in text, needle
+
+
+def test_report_coverage_line_has_spells():
+    text = render_text(analyse(_facts(), iterations=20))
+    line = next(l for l in text.splitlines() if "model coverage:" in l)
+    assert " · spells " in line and line.index("spells") < line.index("held")

@@ -168,7 +168,7 @@ def render_text(analysis: Analysis) -> str:
         else:
             out.append("  payoffs: none detected, and no simulated line needs one")
         cov = sim.coverage
-        out.append(f"  model coverage: lands {cov['land']} · rocks {cov['rock']} · dorks {cov['dork']} · one-shot {cov['one_shot']} · reducers {cov['reducer']} · ramp spells {cov['ramp_spell']} · draw spells {cov['draw_spell']} · tutors {cov['tutor']} · threats {cov['threat']} · creatures {cov['creature']} · engines {cov['engine']} · other permanents {cov['permanent']} · held {cov['held']} · unmodelled {len(sim.unmodelled)}")
+        out.append(f"  model coverage: lands {cov['land']} · rocks {cov['rock']} · dorks {cov['dork']} · one-shot {cov['one_shot']} · reducers {cov['reducer']} · ramp spells {cov['ramp_spell']} · draw spells {cov['draw_spell']} · tutors {cov['tutor']} · threats {cov['threat']} · creatures {cov['creature']} · engines {cov['engine']} · other permanents {cov['permanent']} · spells {cov['spell']} · held {cov['held']} · unmodelled {len(sim.unmodelled)}")
         src = sim.effects_sources
         eff = f"  effects: table {len(src['table'])} ({_names(src['table'], 4)}) · forge {len(src['forge'])} · unmodelled: {_names(sim.unmodelled, 4)}"
         if sim.partial:

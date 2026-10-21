@@ -35,7 +35,8 @@ TAGS = {"tutor": ["Demonic Tutor"], "land-ramp": ["Rampant Growth"], "ramp": ["R
 
 
 def _deck(tags=TAGS):
-    return build_sim_deck(sim_facts(DECK, CARDS, tags), CFG)
+    from .test_sim_effects import RAMPANT_GROWTH
+    return build_sim_deck(sim_facts(DECK, CARDS, tags, scripts={"Rampant Growth": RAMPANT_GROWTH}), CFG)
 
 
 def test_roles_are_derived_from_profile_fields_not_names():
@@ -190,15 +191,47 @@ _SPELL_SCRIPTS = {"Cast Tokens": CAST_TOKENS, "Cast Drain": CAST_DRAIN, "Overrun
                   "Token Trinket": CAST_TOKENS_ARTIFACT}
 
 
-def test_spell_with_only_non_pump_cast_effects_is_unmodelled():
+def test_cast_effects_are_modelled_now():
     deck = build_sim_deck(sim_facts(_SPELL_DECK, _SPELL_CARDS, TAGS, scripts=_SPELL_SCRIPTS), CFG)
     assert deck.cards["Cast Tokens"].effects[0].do == "token" and deck.cards["Cast Drain"].effects[0].do == "drain"
-    for n in ("Cast Tokens", "Cast Drain", "Token Trinket"):   # read, but the engine never applies a non-pump cast effect
-        assert n in deck.unmodelled and n not in deck.partial
-    assert "Overrun" not in deck.unmodelled and "Overrun" not in deck.partial
-    assert "Pump And Token" in deck.partial and "Pump And Token" not in deck.unmodelled   # pump applied, token not
-    # held spells without a cast pump are never cast; Overrun and Pump And Token are held for lethal
-    assert any(n.startswith("2 instant/sorcery card(s)") and "never cast" in n for n in deck.notes)
+    for n in ("Cast Tokens", "Cast Drain", "Token Trinket"):
+        assert n not in deck.unmodelled and n not in deck.partial
+    for n in ("Cast Tokens", "Cast Drain", "Pump And Token"):
+        assert deck.cards[n].role == "spell"
+    assert deck.cards["Overrun"].role == "held" and "Overrun" not in deck.unmodelled and "Overrun" not in deck.partial
+    assert "Pump And Token" not in deck.unmodelled and "Pump And Token" not in deck.partial
+    assert not any("never cast" in n for n in deck.notes)
+    assert deck.coverage["spell"] == 3
+
+
+def test_spell_role_for_effect_bearing_spells():
+    from .test_sim_effects import HARROW, LIFE_FROM_THE_LOAM, SPLENDID_RECLAMATION
+    cards = [
+        make_card("Cmdr", cmc=4.0, mana_cost="{2}{G}{G}", type_line="Legendary Creature — Elf", power="3", toughness="3"),
+        make_card("Life from the Loam", cmc=2.0, mana_cost="{1}{G}", type_line="Sorcery", oracle_text="Draw a card."),
+        make_card("Splendid Reclamation", cmc=4.0, mana_cost="{3}{G}", type_line="Sorcery"),
+        make_card("Harrow", cmc=3.0, mana_cost="{2}{G}", type_line="Instant"),
+        make_card("Overrun", cmc=5.0, mana_cost="{2}{G}{G}{G}", type_line="Sorcery"),
+    ]
+    scripts = {"Life from the Loam": LIFE_FROM_THE_LOAM, "Splendid Reclamation": SPLENDID_RECLAMATION, "Harrow": HARROW, "Overrun": OVERRUN}
+    tags = {"land-ramp": ["Splendid Reclamation", "Harrow"]}
+    deck = build_sim_deck(sim_facts("1 Cmdr\n\n1 Life from the Loam\n1 Splendid Reclamation\n1 Harrow\n1 Overrun\n", cards, tags, scripts=scripts), CFG)
+    assert deck.cards["Life from the Loam"].draw == 1 and deck.cards["Life from the Loam"].role == "spell"
+    assert deck.cards["Splendid Reclamation"].role == "spell"
+    assert deck.cards["Harrow"].role == "ramp_spell"
+    assert deck.cards["Overrun"].role == "held"
+
+
+def test_entish_is_partial_not_unmodelled():
+    from .test_sim_effects import ENTISH_RESTORATION
+    cards = [
+        make_card("Cmdr", cmc=4.0, mana_cost="{2}{G}{G}", type_line="Legendary Creature — Elf", power="3", toughness="3"),
+        make_card("Entish Restoration", cmc=3.0, mana_cost="{2}{G}", type_line="Instant"),
+    ]
+    deck = build_sim_deck(sim_facts("1 Cmdr\n\n1 Entish Restoration\n", cards, {"land-ramp": ["Entish Restoration"]},
+                                    scripts={"Entish Restoration": ENTISH_RESTORATION}), CFG)
+    assert deck.cards["Entish Restoration"].role == "ramp_spell"
+    assert "Entish Restoration" in deck.partial and "Entish Restoration" not in deck.unmodelled
 
 
 def test_commander_unread_lines_are_noted_without_moving_coverage():

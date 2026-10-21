@@ -35,12 +35,15 @@ RITUAL = make_card("Pyre Charger", cmc=0.0, mana_cost="{0}", oracle_text="{T}, S
 ALL_IS_DUST = make_card("All Is Dust", cmc=7.0, mana_cost="{7}", type_line="Sorcery", oracle_text="Each player sacrifices all colored permanents they control.")
 RAMP = make_card("Traverse the Wastes", cmc=2.0, mana_cost="{2}", type_line="Sorcery", oracle_text="Search your library for a land card and put it onto the battlefield tapped.")
 
+RAMP_SCRIPT = ("Name:Traverse the Wastes\nManaCost:2\nTypes:Sorcery\n"
+               "A:SP$ ChangeZone | Origin$ Library | Destination$ Battlefield | ChangeType$ Land | Tapped$ True | ChangeNum$ 1\n")
 
-def _deck(commander, entries, tags=None, combos=None):
+
+def _deck(commander, entries, tags=None, combos=None, scripts=None):
     """entries: list of (card, count). Returns (SimDeck, lines)."""
     cards = [commander] + [c for c, _ in entries]
     text = f"1 {commander['name']}\n\n" + "".join(f"{n} {c['name']}\n" for c, n in entries)
-    facts = sim_facts(text, cards, tags if tags is not None else {}, combos)
+    facts = sim_facts(text, cards, tags if tags is not None else {}, combos, scripts=scripts)
     return build_sim_deck(facts, CFG), select_lines(facts, CFG)[0]
 
 
@@ -219,7 +222,8 @@ def test_try_one_shot_casts_only_when_it_enables_another_cast():
 
 
 def test_fetch_land_puts_a_tapped_land_and_reports_when_the_library_has_none():
-    deck, _ = _deck(CMD, [(RAMP, 1), (WASTES, 30), (TOMB, 8)], tags={"land-ramp": ["Traverse the Wastes"]})
+    deck, _ = _deck(CMD, [(RAMP, 1), (WASTES, 30), (TOMB, 8)], tags={"land-ramp": ["Traverse the Wastes"]},
+                    scripts={"Traverse the Wastes": RAMP_SCRIPT})
     g = _game(deck)
     g.turn, g.hand, g.board = 3, ["Traverse the Wastes"], [Perm(deck.cards["Wastes"], 0), Perm(deck.cards["Wastes"], 0)]
     g.library = ["Ancient Tomb", "Wastes", "Wastes"]
