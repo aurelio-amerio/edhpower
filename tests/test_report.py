@@ -117,5 +117,6 @@ def test_report_prints_fast_column_and_board_rows():
                   partial=["Bar"], effects_sources={"table": ["Baz"], "forge": [], "none": []})
     text = render_text(replace(a, sim=sim))
     for needle in ["fast", "tokens: Zombie", "win route:", "unmodelled", "damage this turn", "board power", "lands on battlefield",
-                   "biggest swing (median)", "effects: table 1 (Baz) · forge 0 · unmodelled: Foo · partial: Bar"]:
+                   "biggest swing (median)", "effects: table 1 (Baz) · forge 0 · unmodelled: Foo · partial: Bar",
+                   "  not modelled: graveyard, dredge, extra land drops, land recursion, fetch cracking, reanimation, blockers/interaction"]:
         assert needle in text, needle

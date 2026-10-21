@@ -121,9 +121,9 @@ def token_card(type_: str, power: int, toughness: int) -> SimCard:
     )
 
 
-def build_card(p: CardProfile, card: CardData, special: SpecialBehaviour | None, tags_ok: bool, cfg: SimConfig,
-               script: str | None = None) -> SimCard:
-    return _build_card(p, card, special, tags_ok, cfg, effects_for(card, script, special))
+def applied_by_engine(e: Effect) -> bool:
+    """Stage 1 applies every effect except a `cast` effect other than pump (spell effects wait for stage 2)."""
+    return e.on != "cast" or e.do == "pump"
 
 
 def _build_card(p: CardProfile, card: CardData, special: SpecialBehaviour | None, tags_ok: bool, cfg: SimConfig,
@@ -193,7 +193,8 @@ def build_sim_deck(facts: DeckFacts, cfg: SimConfig) -> SimDeck:
     sources: dict[str, list[str]] = {"table": [], "forge": [], "none": []}
     unmodelled: list[str] = []
     partial: list[str] = []
-    never_cast = 0   # held spells with no `cast` effect (pump spells are cast for lethal, so not counted)
+    never_cast = 0   # held spells with no `cast` pump effect (pump spells are cast for lethal, so not counted)
+    commander_unread: list[str] = []
     for e in facts.entries:
         special = specials.get(e.name)
         fx = effects_for(e.card, e.forge_script, special)
@@ -203,16 +204,21 @@ def build_sim_deck(facts: DeckFacts, cfg: SimConfig) -> SimDeck:
             commanders.append(sc)
             if not sc.is_land:
                 sources[fx.source].append(e.name)   # where its effects came from; coverage counts stay library-only
+                if fx.unread:   # a note, so the commander's gaps show without moving the library-only coverage
+                    commander_unread.append(f"commander {e.name} has {len(fx.unread)} script line(s) the model does not read: {list(fx.unread)[:2]}")
         else:
             library.extend([e.name] * e.count)
             coverage[sc.role] += e.count
-            if sc.role == "held" and not any(x.on == "cast" for x in sc.effects):
+            if sc.role == "held" and not any(x.on == "cast" and x.do == "pump" for x in sc.effects):
                 never_cast += e.count
             if not sc.is_land:
                 sources[fx.source].append(e.name)
+                applied = [x for x in fx.effects if applied_by_engine(x)]
                 if fx.source != "table" and not fx.effects and (fx.unread or fx.source == "none"):
                     unmodelled.append(e.name)
-                if fx.effects and fx.unread:
+                elif fx.effects and not applied:   # every effect read is one the engine never applies
+                    unmodelled.append(e.name)
+                elif applied and (fx.unread or len(applied) < len(fx.effects)):
                     partial.append(e.name)
     subtypes: frozenset[str] = frozenset()
     for c in commanders:
@@ -223,9 +229,11 @@ def build_sim_deck(facts: DeckFacts, cfg: SimConfig) -> SimDeck:
     if never_cast:
         notes.append(f"{never_cast} instant/sorcery card(s) with no modelled effect are never cast (a goldfish has nothing to interact with)")
     if unmodelled:
-        notes.append(f"{len(unmodelled)} nonland card(s) have script lines the model does not read: {sorted(unmodelled)[:4]}…")
+        notes.append(f"{len(unmodelled)} nonland card(s) have no effect the model applies (script lines it does not read, "
+                     f"or an instant/sorcery effect other than pump): {sorted(unmodelled)[:4]}…")
     if partial:
-        notes.append(f"{len(partial)} card(s) modelled in part (a mode or branch is skipped): {sorted(partial)[:4]}…")
+        notes.append(f"{len(partial)} card(s) modelled in part (a mode, branch or non-pump spell effect is skipped): {sorted(partial)[:4]}…")
+    notes.extend(commander_unread)
     status = facts.fetched.get("forge_status")
     if status != "ok":
         notes.append(f"Forge scripts unavailable ({status}): effects come from the behaviours table only")

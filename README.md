@@ -111,20 +111,25 @@ Card effects beyond mana — tokens, landfall and enters triggers, +1/+1 counter
 spells, drain — are read from each card's Card-Forge script (see *Data sources*). The reader
 (`sim/effects.py`) understands a fixed vocabulary of script lines and nothing else: a card none
 of whose lines it reads is **unmodelled**, a card with some lines read and some skipped is
-**partial**, so coverage is exact rather than heuristic. The `special_behaviours` table
+**partial**, so coverage is exact rather than heuristic. Stage 1 applies no instant or sorcery
+effect other than a pump, so a spell whose only read effect is, say, a token or drain counts as
+unmodelled. The `special_behaviours` table
 overrides a card's script where an entry carries `effects`. Tokens attack from the turn after
 they enter; there are no blockers and no haste.
 
 The table has three opponents at 40 life each (`opponents`, `life_per_opponent` in
 `scoring.toml`); attackers are assigned greedily to the opponent with the most life, and drain
-hits every opponent (or the one with the most life, when the script names one opponent). Each clock (`engine.CLOCKS`) reports a median turn, a `fast` turn and a
-by-turn cumulative share:
+hits every opponent (or the one with the most life, when the script names one opponent).
+
+Each clock (`engine.CLOCKS`) reports a median turn, a `fast` turn and a by-turn cumulative
+share:
 
 - `win` — the first turn of `lethal_table` or `lethal_combo`: the headline comparison number.
 - `lethal_table` — every opponent at 0 from combat and drain; `first_opponent` — the first one.
 - `commander`, `mana_threshold`, `tipping_target`, `threat` — as in sim v2.
 - `combat` — 40 cumulative combat damage to one opponent, counting effective power (printed
-  power, counters, anthems, tokens and pumps cast for lethal); kept for comparison with sim v2
+  power, counters, the anthems the reader understands, tokens and pumps cast for lethal; any
+  other anthem appears as unmodelled or partial); kept for comparison with sim v2
   rows, which counted printed power only.
 - `combo`, `lethal_combo` — a simulated Spellbook line assembled (with a detected payoff, for
   the lethal one).

@@ -454,3 +454,56 @@ def test_other_sacrifice_cost_is_unread():
     ce = _read(SAC_COST_DAMAGE)
     assert SAC_COST_DAMAGE != OVERRUN
     assert ce.effects == (Effect("cast", "drain", 3),) and ce.unread == ("Cost$ 2 G G G Sac<1/Creature>",) and ce.partial
+
+
+UNLESS_DRAIN = MIRKWOOD_BATS.replace("LifeAmount$ 1 | Defined$ Opponent", "LifeAmount$ 1 | Defined$ Opponent | UnlessCost$ 2 | UnlessPayer$ Player.Opponent")
+UNLESS_PAYER_ONLY = MIRKWOOD_BATS.replace("LifeAmount$ 1 | Defined$ Opponent", "LifeAmount$ 1 | Defined$ Opponent | UnlessPayer$ Opponent")
+UNLESS_TRIGGER = BALOTHS.replace("| Execute$ TrigToken", "| UnlessCost$ 1 | Execute$ TrigToken")
+UNLESS_SPELL = SAC_COST_DAMAGE.replace("Cost$ 2 G G G Sac<1/Creature> | ", "UnlessCost$ 3 | ")
+
+
+def test_punisher_unless_cost_is_unread():
+    for script in (UNLESS_DRAIN, UNLESS_PAYER_ONLY):
+        ce = _read(script)
+        assert script != MIRKWOOD_BATS and ce.effects == ()
+        assert any(u.startswith("T:Mode$ TokenCreated") for u in ce.unread)
+    ce = _read(UNLESS_TRIGGER)
+    assert UNLESS_TRIGGER != BALOTHS and ce.effects == () and ce.unread[0].startswith("T:Mode$ ChangesZone")
+    ce = _read(UNLESS_SPELL)
+    assert "UnlessCost" in UNLESS_SPELL and ce.effects == () and ce.unread[0].startswith("A:SP$ DealDamage")
+
+
+# ---------------------------------------------------------------------------------- payoffs.py / effects.py agreement
+from pathlib import Path  # noqa: E402
+
+from edhpower.payoffs import detect  # noqa: E402
+from edhpower.profile import load_special_behaviours  # noqa: E402
+
+from .conftest import fixture_facts  # noqa: E402
+
+# payoff category <-> the (trigger, action) effects.py reads for the same oracle ability
+_AGREEING = {"landfall_tokens": ("landfall", "token"), "landfall_payoff": ("landfall", "drain"), "token_drain": ("token_created", "drain")}
+_FIXTURE_NAMES = sorted(p.name.removesuffix(".facts.json") for p in (Path(__file__).parent / "fixtures").glob("*.facts.json"))
+
+
+def _matches(want: tuple[str, str], fx: CardEffects, script: str | None) -> bool:
+    if any((e.on, e.do) == want for e in fx.effects):
+        return True
+    # a Treasure token is read as mana (it is spent, not attacked with); for this comparison it is a token maker
+    return want == ("landfall", "token") and "TokenScript$ c_a_treasure_sac" in (script or "") and any(
+        (e.on, e.do) == ("landfall", "mana") for e in fx.effects)
+
+
+@pytest.mark.parametrize("name", _FIXTURE_NAMES)
+def test_payoffs_and_effects_agree(name):
+    """Spec: payoffs.py and sim/effects.py read the same abilities; a disagreement is a test failure."""
+    facts = fixture_facts(name)
+    payoffs, specials = detect(facts), load_special_behaviours()
+    disagree: list[str] = []
+    for e in facts.entries:
+        fx = effects_for(e.card, e.forge_script, specials.get(e.name))
+        for cat, want in _AGREEING.items():
+            detected = e.name in payoffs.by_category.get(cat, [])
+            if detected != _matches(want, fx, e.forge_script):
+                disagree.append(f"{e.name}: payoffs {cat}={detected}, effects {[(x.on, x.do) for x in fx.effects]}")
+    assert disagree == []

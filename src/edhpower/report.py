@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from edhpower.analysis import Analysis
 from edhpower.payoffs import CATEGORY_LABELS
+from edhpower.sim import NOT_MODELLED
 from edhpower.stats import BUCKETS
 
 
@@ -173,6 +174,7 @@ def render_text(analysis: Analysis) -> str:
         if sim.partial:
             eff += f" · partial: {_names(sim.partial, 4)}"
         out.append(eff)
+        out.append(f"  not modelled: {', '.join(NOT_MODELLED)}")
         for n in sim.notes:
             out.append(f"  note: {n}")
     out.append("")

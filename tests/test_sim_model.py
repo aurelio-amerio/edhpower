@@ -165,3 +165,47 @@ def test_table_card_is_never_unmodelled():
     assert deck.cards["Six"].effects == table_fx
     assert "Six" not in deck.partial
     assert "Six" not in deck.effects_sources["forge"]
+
+
+# ---------------------------------------------------------------------------------- effects the engine never applies
+from .test_sim_effects import OVERRUN  # noqa: E402
+
+# Hand-written probes: a spell whose only read effect is a cast token / cast drain (stage 1 never applies those).
+CAST_TOKENS = "Name:Cast Tokens\nManaCost:1 W\nTypes:Instant\nA:SP$ Token | TokenAmount$ 2 | TokenScript$ w_1_1_soldier | TokenOwner$ You\n"
+CAST_DRAIN = "Name:Cast Drain\nManaCost:R\nTypes:Sorcery\nA:SP$ DealDamage | ValidTgts$ Opponent | NumDmg$ 3\n"
+PUMP_AND_TOKEN = OVERRUN.replace("| SpellDescription$", "| SubAbility$ DBToken | SpellDescription$") + "SVar:DBToken:DB$ Token | TokenScript$ g_1_1_insect | TokenOwner$ You\n"
+CAST_TOKENS_ARTIFACT = CAST_TOKENS.replace("Types:Instant", "Types:Artifact")
+
+_SPELL_CARDS = [
+    make_card("Cmdr", cmc=4.0, mana_cost="{2}{G}{G}", type_line="Legendary Creature — Elf", power="3", toughness="3"),
+    make_card("Cast Tokens", cmc=2.0, mana_cost="{1}{W}", type_line="Instant"),
+    make_card("Cast Drain", cmc=1.0, mana_cost="{R}", type_line="Sorcery"),
+    make_card("Overrun", cmc=5.0, mana_cost="{2}{G}{G}{G}", type_line="Sorcery"),
+    make_card("Pump And Token", cmc=5.0, mana_cost="{2}{G}{G}{G}", type_line="Sorcery"),
+    make_card("Token Trinket", cmc=2.0, mana_cost="{2}", type_line="Artifact"),
+    make_card("Forest", cmc=0.0, mana_cost="", type_line="Basic Land — Forest", produced_mana=["G"]),
+]
+_SPELL_DECK = "1 Cmdr\n\n1 Cast Tokens\n1 Cast Drain\n1 Overrun\n1 Pump And Token\n1 Token Trinket\n1 Forest\n"
+_SPELL_SCRIPTS = {"Cast Tokens": CAST_TOKENS, "Cast Drain": CAST_DRAIN, "Overrun": OVERRUN, "Pump And Token": PUMP_AND_TOKEN,
+                  "Token Trinket": CAST_TOKENS_ARTIFACT}
+
+
+def test_spell_with_only_non_pump_cast_effects_is_unmodelled():
+    deck = build_sim_deck(sim_facts(_SPELL_DECK, _SPELL_CARDS, TAGS, scripts=_SPELL_SCRIPTS), CFG)
+    assert deck.cards["Cast Tokens"].effects[0].do == "token" and deck.cards["Cast Drain"].effects[0].do == "drain"
+    for n in ("Cast Tokens", "Cast Drain", "Token Trinket"):   # read, but the engine never applies a non-pump cast effect
+        assert n in deck.unmodelled and n not in deck.partial
+    assert "Overrun" not in deck.unmodelled and "Overrun" not in deck.partial
+    assert "Pump And Token" in deck.partial and "Pump And Token" not in deck.unmodelled   # pump applied, token not
+    # held spells without a cast pump are never cast; Overrun and Pump And Token are held for lethal
+    assert any(n.startswith("2 instant/sorcery card(s)") and "never cast" in n for n in deck.notes)
+
+
+def test_commander_unread_lines_are_noted_without_moving_coverage():
+    six_commands = "1 Six\n\n1 Cmdr\n1 Rampaging Baloths\n1 Grizzly Bears\n1 Retreat to Hagra\n1 Mystery\n1 Forest\n"
+    deck = build_sim_deck(sim_facts(six_commands, _FX_CARDS, TAGS, scripts=_FX_SCRIPTS), CFG)
+    assert deck.commanders[0].name == "Six"
+    assert "Six" not in deck.unmodelled and "Six" not in deck.partial
+    assert any(n.startswith("commander Six has") and "does not read" in n for n in deck.notes)
+    assert sum(deck.coverage.values()) == 6
+    assert not any(n.startswith("commander") for n in _fx_deck().notes)   # Cmdr has no script lines left unread

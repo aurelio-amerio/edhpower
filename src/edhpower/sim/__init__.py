@@ -21,6 +21,10 @@ from edhpower.sim.combos import SkippedLine, select_lines
 from edhpower.sim.engine import CLOCKS, play_game
 from edhpower.sim.model import build_sim_deck
 
+# Interactions this stage of the engine does not play (spec: "a `not modelled:` line per stage").
+NOT_MODELLED: tuple[str, ...] = ("graveyard", "dredge", "extra land drops", "land recursion", "fetch cracking", "reanimation",
+                                 "blockers/interaction")
+
 
 @dataclass
 class Clock:

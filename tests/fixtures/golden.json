@@ -127,7 +127,7 @@
       "sim_win_fast": 11,
       "sim_lethal_table_median": null,
       "sim_max_swing_median": 21,
-      "sim_unmodelled_count": 55,
+      "sim_unmodelled_count": 56,
       "sim_idle_window": [
         2,
         4
@@ -253,7 +253,7 @@
       "sim_win_fast": 12,
       "sim_lethal_table_median": null,
       "sim_max_swing_median": 14,
-      "sim_unmodelled_count": 53,
+      "sim_unmodelled_count": 54,
       "sim_idle_window": [
         2,
         12
@@ -379,7 +379,7 @@
       "sim_win_fast": 10,
       "sim_lethal_table_median": 12,
       "sim_max_swing_median": 28,
-      "sim_unmodelled_count": 54,
+      "sim_unmodelled_count": 56,
       "sim_idle_window": [
         8,
         12

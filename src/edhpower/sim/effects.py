@@ -193,7 +193,7 @@ class _Reader:
         api = d.get("DB") or d.get("SP") or d.get("AB") or ""
         if api in _IGNORED_STEPS:
             return [], []
-        if any(k.startswith("Condition") for k in d):  # conditional step: fail closed
+        if any(k.startswith(("Condition", "Unless")) for k in d):  # conditional or punisher ("unless they pay") step: fail closed
             return [], [self.svar_text(name) if name else _clip(_text(d))]
         if api == "Branch":
             return self.branch(name, d, on, seen)
@@ -391,7 +391,7 @@ def _ramp(ability: dict[str, str], svars: dict[str, dict[str, str]]) -> tuple[in
     seen: set[str] = set()
     while step is not None:
         api = step.get("SP") or step.get("DB")
-        if any(k.startswith("Condition") for k in step):
+        if any(k.startswith(("Condition", "Unless")) for k in step):
             return None
         if api == "ChangeZone":
             land = _is_land_type(step.get("ChangeType", ""))

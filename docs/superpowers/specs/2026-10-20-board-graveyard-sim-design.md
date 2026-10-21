@@ -295,11 +295,16 @@ report must show the same cards; a disagreement is a test failure, not a note.
 
 ### What "unmodelled" means
 
-A nonland, non-token card is unmodelled when its Forge script has at least one `T:`, `A:` or
-`S:` line the reader did not turn into an effect or mana behaviour, and the table has no entry
-for it. Vanilla creatures are modelled (they attack). A card with no script (404) is
-unmodelled unless the table covers it. Instants and sorceries with no effect are `held` as
-today and count as unmodelled.
+A nonland, non-token card is **unmodelled** when it has no effect the engine applies: its Forge
+script has lines the reader did not turn into an effect or mana behaviour and none it did, or
+every effect read is one the engine never applies (stage 1: an instant/sorcery `cast` effect
+other than pump), and the table has no entry for it. A card with no script (404) is unmodelled
+unless the table covers it. Instants and sorceries with no effect are `held` as today and count
+as unmodelled. Vanilla creatures are modelled (they attack).
+
+A card is **partial** when some effect is read and applied but some line, mode, branch or
+non-pump spell effect is not. Partial cards are listed separately in the report (`partial:`)
+and are not in the unmodelled count. (Amended at stage 1, ruling R1.)
 
 ## Stages
 
